@@ -1,0 +1,267 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Post Notif 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-04-06 15:26-0600\n"
+"PO-Revision-Date: 2015-04-06 15:26-0600\n"
+"Last-Translator: Devon Ostendorf <devon@devonostendorf.com>\n"
+"Language-Team: Devon Ostendorf <devon@devonostendorf.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 1.6.2\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: post-notif.php:24
+msgid "Notify subscribers when you publish new posts."
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:126
+msgid "Send"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:132
+msgid "RESEND"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:141
+msgid "Post has not yet been published."
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:300
+msgid "Post notification has been sent for this post!"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:303
+msgid "Post notification FAILED for this post!"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:324
+msgid "Post Notif Settings"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:385
+#: ../admin/class-post-notif-admin.php:386
+msgid "Delete Subscribers"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:394
+#: ../admin/class-post-notif-admin.php:395
+msgid "View Subscribers"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:403
+#: ../admin/class-post-notif-admin.php:404
+msgid "View Post Notifs Sent"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:423
+msgid "Delete"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:501
+#: ../includes/views/widget.php:24
+msgid "First Name"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:502
+#: ../includes/views/widget.php:28
+msgid "Email Address"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:503
+msgid "Confirmed?"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:504
+msgid "Date Subscribed"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:505
+msgid "Categories"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:634
+msgid "Yes"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:634
+msgid "No"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:645
+msgid "subscriber"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:646
+msgid "subscribers"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:790
+msgid "Post ID"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:791
+msgid "Post Title"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:792
+msgid "Author"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:793
+msgid "Sent Date/Time"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:794
+msgid "Sent By"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:868
+msgid "notification"
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:869
+msgid "notifications"
+msgstr ""
+
+
+#: ../admin/views/post-notif-admin-display-options.php:21
+msgid "Email Settings"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:25
+msgid "Email sender name::"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:33
+msgid "Email sender email address:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:41
+msgid "Subscription confirmation email subject:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:49
+msgid "Subscription confirmation email body:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:57
+msgid "Post notification email subject:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:65
+msgid "Post notification email body:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:82
+msgid "Page Settings"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:86
+msgid "Subscription confirmed page title:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:95
+msgid "Subscription confirmed page greeting:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:104
+msgid "Subscription preferences selection instructions:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:113
+msgid "Current subscription preferences page title:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:122
+msgid "Current subscription preferences page greeting:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:131
+msgid "Subscription preferences updated page title:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:140
+msgid "Subscription preferences updated page greeting:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:149
+msgid "Unsubscribe link label:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:158
+msgid "Unsubscribe confirmation page title:"
+msgstr ""
+
+#: ../admin/views/post-notif-admin-display-options.php:167
+msgid "Unsubscribe confirmation page greeting:"
+msgstr ""
+
+
+#: ../admin/views/post-notif-admin-view-subs.php:19
+msgid "Subscriber deleted."
+msgstr ""
+
+#: ../admin/views/post-notif-admin-view-subs.php:19
+msgid "%s subscribers deleted."
+msgstr ""
+
+
+#: ../includes/class-post-notif-list-table.php:216
+msgid "No %s found."
+msgstr ""
+
+
+#: ../includes/class-post-notif-widget.php:60
+msgid "Allow users to subscribe to post notifications."
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:249
+msgid "An email address is required"
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:252
+msgid "A valid email address is required"
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:322
+msgid "You're already subscribed so no need to do anything further."
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:332
+msgid "[Unknown]"
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:356
+msgid "there"
+msgstr ""
+
+#: ../includes/class-post-notif-widget.php:376
+msgid "Thanks.  Please check your email to confirm your subscription."
+msgstr ""
+
+
+#: ../includes/views/admin.php:16
+msgid "Title:"
+msgstr ""
+
+#: ../includes/views/admin.php:20
+msgid "Call to Action:"
+msgstr ""
+
+#: ../includes/views/admin.php:24
+msgid "Button Label:"
+msgstr ""
+
+
+#: ../public/views/post-notif-public-display-sub-prefs.php:26
+msgid "All"
+msgstr ""
+
+#: ../public/views/post-notif-public-display-sub-prefs.php:50
+msgid "Update"
+msgstr ""
