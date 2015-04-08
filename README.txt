@@ -109,7 +109,6 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 			`</IfModule>` 
 
 			`# END WordPress`  
-
 	2. Configure options (Settings >> Post Notif)  
 	3. Add and configure widget (Appearance >> Widgets)  
 
@@ -141,7 +140,7 @@ The Post Notif plugin came to life after I used the Post Notification plugin for
 
 == Screenshots ==
 
-= Admin Screenshots =
+**NOTE:** #1 - 7 depict admin functionality while #8 - 13 show subscriber screenshots: 
 
 1. Activating the plugin
 2. Overriding the default settings with your own custom values
@@ -150,9 +149,6 @@ The Post Notif plugin came to life after I used the Post Notification plugin for
 5. Viewing post notifications sent
 6. Viewing current subscribers
 7. Delete subscribers (these two never confirmed their requests)
-
-= Subscriber Screenshots =
-
 8. User subscribing to post notification via the widget
 9.	User receives subscription confirmation email
 10. User has confirmed subscription request
