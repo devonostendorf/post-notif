@@ -276,7 +276,7 @@ class Post_Notif_Admin {
    				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
 
    				$post_notif_email_body = $post_notif_email_body_template;
-   				$post_notif_email_body = str_replace('@@firstname', ($subscriber->first_name != '') ? $subscriber->first_name : '', $post_notif_email_body);
+   				$post_notif_email_body = str_replace('@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body);
    				$post_notif_email_body = str_replace('@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body);
     				$post_notif_email_body = str_replace('@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body);
     				

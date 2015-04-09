@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post Notif 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-04-06 15:26-0600\n"
-"PO-Revision-Date: 2015-04-06 15:26-0600\n"
+"POT-Creation-Date: 2015-04-08 23:11-0600\n"
+"PO-Revision-Date: 2015-04-08 23:11-0600\n"
 "Last-Translator: Devon Ostendorf <devon@devonostendorf.com>\n"
 "Language-Team: Devon Ostendorf <devon@devonostendorf.com>\n"
 "Language: en_US\n"
@@ -29,6 +29,11 @@ msgstr ""
 
 #: ../admin/class-post-notif-admin.php:141
 msgid "Post has not yet been published."
+msgstr ""
+
+#: ../admin/class-post-notif-admin.php:279
+#: ../includes/class-post-notif-widget.php:356
+msgid "there"
 msgstr ""
 
 #: ../admin/class-post-notif-admin.php:300
@@ -234,10 +239,6 @@ msgstr ""
 
 #: ../includes/class-post-notif-widget.php:332
 msgid "[Unknown]"
-msgstr ""
-
-#: ../includes/class-post-notif-widget.php:356
-msgid "there"
 msgstr ""
 
 #: ../includes/class-post-notif-widget.php:376
