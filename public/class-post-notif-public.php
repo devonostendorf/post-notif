@@ -302,8 +302,18 @@ class Post_Notif_Public {
       $posts = null;
       
       $post = new stdClass();
+      // START - v.1.0.1:
+      // Flip sequence of post_content and post_title so it follows sequence 
+      //		shown in https://codex.wordpress.org/Function_Reference/wp_insert_post
+   	$post->post_content = $this->$content_function( $params_arr ); 
    	$post->post_title = $params_arr['page_title'];
-   	$post->post_content = $this->$content_function( $params_arr );   	
+   	
+      //	Add page object properties to prevent attributes (category, author, and
+      //		post date/time) and functionality (add comment) from appearing on 
+      //		subscriber preferences pages
+   	$post->post_type = 'page';     	
+    	$post->comment_status = 'closed';
+      // END - v.1.0.1
 
       $posts[] = $post;
            
