@@ -5,6 +5,8 @@
  * This is verbatim (from ../wp-admin/includes/class-wp-list-table.php), EXCEPT FOR:
  *		1) These header comments
  *		2) The class name 
+ *		3) In the bulk_actions() function where we need to be able to tell which 
+ *				bulk action button was pressed
  * This class was created since use of the core List Table class by plugin (and
  * theme) developers is NOT supported (per http://codex.wordpress.org/Class_Reference/WP_List_Table).
  */
@@ -431,7 +433,9 @@ class Post_Notif_WP_List_Table {
 
 		echo "</select>\n";
 
-		submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
+		// Need to be able to tell which bulk action button was pressed
+		//submit_button( __( 'Apply' ), 'action', false, false, array( 'id' => "doaction$two" ) );
+		submit_button( __( 'Apply' ), 'action', false, false, array( 'name' => "doaction$two", 'id' => "doaction$two" ) );
 		echo "\n";
 	}
 

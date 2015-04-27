@@ -130,7 +130,12 @@ class Post_Notif {
 		 * The class responsible for cloning the core List Table class and making it a little more developer-friendly.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-notif-list-table.php';
-	
+
+		/**
+		 * The class containing miscellaneous functions that need to be available to other classes.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-notif-misc.php';
+
 		$this->loader = new Post_Notif_Loader();
 
 	}

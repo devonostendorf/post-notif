@@ -19,6 +19,12 @@
 					<strong><?php echo sprintf( _n( 'Subscriber deleted.', '%s subscribers deleted.', $subscribers_deleted, 'post-notif' ), number_format_i18n( $subscribers_deleted ) ); ?></strong>
 				</p>
 			</div>
+		<?php elseif ( $subscribers_resent_confirmation ) : ?>
+			<div class="updated fade">
+				<p>
+					<strong><?php echo sprintf( _n( 'Confirmation email re-sent to subscriber.', 'Confirmation emails re-sent to %s subscribers.', $subscribers_resent_confirmation, 'post-notif' ), number_format_i18n( $subscribers_resent_confirmation ) ); ?></strong>
+				</p>
+			</div>
       <?php endif; ?>
       <h2><?php echo esc_html( get_admin_page_title() ); ?></h2>           
 		<div id="post-body-content">
