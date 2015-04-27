@@ -18,14 +18,14 @@ if ( ! empty ($instance['title'] )) {
 ?>
 	<form id="id_frmSubscribe">
 		<span id="id_spnSuccessMsg"></span>
-		<label id="id_lblCallToAction"><?php _e( $instance['call_to_action'] ); ?></label>
+		<label id="id_lblCallToAction"><?php echo $instance['call_to_action']; ?></label>
 		<br />
-<?php		
-echo '<input type="text" id="id_txtFirstName" name="txtFirstName" size="20" maxlength="50" placeholder="' . __( 'First Name', 'post-notif' ) . '" />';
+<?php
+echo '<input type="text" id="id_txtFirstName" name="txtFirstName" size="20" maxlength="50" placeholder="' . $instance['first_name_placeholder'] . '" />';
 ?>		
 		<br />
 <?php		
-echo '<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="30" maxlength="100" placeholder="' . __( 'Email Address', 'post-notif' ) . '" required/>';
+echo '<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="30" maxlength="100" placeholder="' . $instance['email_addr_placeholder'] . '" required/>';
 ?>		
 		<ul>
 			<input type="button" id="id_btnSubmit" name="btnSubmit" value="<?php echo esc_attr( $instance['button_label'] ); ?>" />

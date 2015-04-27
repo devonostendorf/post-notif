@@ -24,3 +24,11 @@
 		<label for="<?php echo esc_attr( $this->get_field_id( 'button_label' ) ); ?>"><?php _e( 'Button Label:', 'post-notif' ); ?></label>
 		<input id="<?php echo esc_attr( $this->get_field_id( 'button_label' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'button_label' ) ); ?>" type="text" value="<?php echo esc_attr( $button_label ); ?>" />
 	</p>
+	<p>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'first_name_placeholder' ) ); ?>"><?php _e( 'First Name Placeholder:', 'post-notif' ); ?></label>
+		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'first_name_placeholder' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'first_name_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $first_name_placeholder ); ?>" />
+	</p>
+	<p>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'email_addr_placeholder' ) ); ?>"><?php _e( 'Email Address Placeholder:', 'post-notif' ); ?></label>
+		<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'email_addr_placeholder' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'email_addr_placeholder' ) ); ?>" type="text" value="<?php echo esc_attr( $email_addr_placeholder ); ?>" />
+	</p>
