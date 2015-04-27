@@ -244,20 +244,20 @@ class Post_Notif_Public {
    	
 			// Update user's subscriber row so they will now receive post notifs
 			$result = $wpdb->update( 
-				$post_notif_subscriber_tbl, 
-				array( 
+				$post_notif_subscriber_tbl
+				,array( 
 					'confirmed' => 1
 					,'last_modified' => date( "Y-m-d H:i:s" )
-				),
-				array( 
+				)
+				,array( 
 					'id' => $subscriber_id
 				)    			
 			);
 
 			// Auto assign them to receive All categories (cat_id = 0)
 			$result = $wpdb->insert(
-				$post_notif_sub_cat_tbl, 
-				array( 
+				$post_notif_sub_cat_tbl
+				,array( 
 					'id' => $subscriber_id
 					,'cat_id' => 0
 				)
@@ -570,8 +570,8 @@ class Post_Notif_Public {
    	
 			// Update user's subscriber row to reflect (pending) update to preferences has occurred
 			$result = $wpdb->update( 
-				$post_notif_subscriber_tbl, 
-				array( 
+				$post_notif_subscriber_tbl 
+				,array( 
 					'last_modified' => date("Y-m-d H:i:s")
 				),
 				array( 
@@ -581,8 +581,8 @@ class Post_Notif_Public {
 			  
 			// Delete user's existing preferences	
 			$result = $wpdb->delete( 
-				$post_notif_sub_cat_tbl, 
-				array( 
+				$post_notif_sub_cat_tbl 
+				,array( 
 					'id' => $subscriber_row['id']
 				)    			
 			);
@@ -598,8 +598,8 @@ class Post_Notif_Public {
 				
 						// Checkbox IS selected, insert					
 						$result = $wpdb->insert(
-							$post_notif_sub_cat_tbl, 
-							array( 
+							$post_notif_sub_cat_tbl 
+							,array( 
 								'id' => $subscriber_row['id']
 								,'cat_id' => $post_notif_value
 							)
@@ -734,16 +734,16 @@ class Post_Notif_Public {
    	
   		// Delete subscriber's preferences
   		$result = $wpdb->delete( 
-  			$post_notif_sub_cat_tbl, 
-  			array( 
+  			$post_notif_sub_cat_tbl
+  			,array( 
   				'id' => $subscriber_id
   			)    			
   		);
    	
   		// Delete subscriber
   		$result = $wpdb->delete( 
-  			$post_notif_subscriber_tbl, 
-  			array( 
+  			$post_notif_subscriber_tbl 
+  			,array( 
   				'id' => $subscriber_id
   			)    			
   		);

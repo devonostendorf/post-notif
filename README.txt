@@ -3,8 +3,8 @@ Contributors: devonostendorf
 Donate link: https://devonostendorf.com
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
-Tested up to: 4.1.1
-Stable tag: 1.0.1
+Tested up to: 4.2
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,18 +32,26 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Unsubscribe link label
 	* Unsubscribe confirmation page title
 	* Unsubscribe confirmation page greeting
+	
+* Configurable widget messages:
+	* Blank and invalid email address errors 	
+	* Already subscribed info message	
+	* Successful subscription request message	
 		
-* Configurable widget labels:
+* Configurable widget labels/input field placeholders:
 	* Title
 	* Call to action
 	* Submit button label
+	* First name and email placeholders
 	
 * Admin and editor tools:
 	* View subscribers (and the post categories they've subscribed to)
 	* View post notifications sent
 		
 * Admin-only tools:
-	* Delete subscribers (either individually or in bulk)
+	* Manage subscribers (either individually or in bulk):
+		* Delete
+		* Resend confirmation email
 		
 * Multisite capable
 
@@ -59,17 +67,20 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 
 == Installation ==
 
+**If upgrading to v1.0.2 from a previous version of the plugin**  
+Be sure you deactivate the plugin and then re-activate it IMMEDIATELY after installing the update!
+
 = Download and Install =    
 1. Go to "Plugins > Add New" in your Dashboard and search for: Post Notif
 2. Click the "Install Now" button for the Post Notif plugin
-3. See the appropriate section below ("Single Site - Activate and Configure" or "Multisite - Activate and Configure" BEFORE activating)
+3. See the appropriate section below ("Single Site - Activate and Configure" or "Multisite - Activate and Configure") **BEFORE** activating
 
 **OR**  
 
 1. Download `post-notif.[version_number].zip` from the WordPress.org plugin directory
 2. Extract `post-notif.[version_number].zip` into a directory on your computer  
 3. Upload the `post-notif` directory to your plugins directory (typically `../wp-content/plugins`)  
-4. See the appropriate section below ("Single Site - Activate and Configure" or "Multisite - Activate and Configure" BEFORE activating)
+4. See the appropriate section below ("Single Site - Activate and Configure" or "Multisite - Activate and Configure") **BEFORE** activating
 
 = Single Site - Activate and Configure =  
 1. Activate the plugin in the Plugins admin menu (Plugins >> Installed Plugins)  
@@ -122,9 +133,9 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 
 == Frequently Asked Questions ==
 
-= Why is WordPress 4.1.1 listed as the minimum version required? =
+= Why is such a recent version of WordPress listed as the minimum version required? =
 
-I strongly believe admins need to keep their sites updated with the current WordPress core.  This is particularly important for security reasons but also because it admins and their users with new-and-improved functionality.  If you cannot (or will not) upgrade, this plugin will probably work fine if you're running WordPress 3.5 or higher.  But seriously, you really should upgrade!
+I strongly believe admins need to keep their sites updated with the current WordPress core.  This is particularly important for security reasons but also because it provides admins and their users with new-and-improved functionality.  If you cannot (or will not) upgrade, this plugin will probably work fine if you're running WordPress 3.5 or higher.  But seriously, you really should upgrade!
 
 = How do I get this thing to work? =
 
@@ -146,6 +157,10 @@ It is because no one who speaks your language has translated this plugin yet.  I
 
 The Post Notif plugin came to life after I used the Post Notification plugin for several years.  Though Post Notification has not been actively maintained for some time now, until WordPress 4.x it worked well enough.  Post Notif aims to take a considerable amount of the functionality I liked from the Post Notification plugin while improving on some of the implementation and configuration challenges I faced while using the plugin (particularly in a multisite environment).
 
+= What does the Resend Confirmation functionality actually do? =
+
+Resending confirmation will both generate a new authcode AND set the CONFIRMED value to 0 for each subscriber it is applied to.  This functionality was implemented to make it easy for a site admin to re-send a confirmation email to a subscriber who has indicated they never received the initial confirmation email.  However, it WILL allow you to resend a confirmation email to a confirmed subscriber (which will effectively unconfirm them and require them to re-confirm), so you probably want to think long and hard about doing this for anyone who has already confirmed, unless they've specifically asked you to do so (because they want their authcode reset, for instance).
+
 == Screenshots ==
 
 1. Activating the plugin
@@ -154,7 +169,7 @@ The Post Notif plugin came to life after I used the Post Notification plugin for
 4. Sending a post notification
 5. Viewing post notifications sent
 6. Viewing current subscribers
-7. Delete subscribers (these two never confirmed their requests)
+7. Manage subscribers
 8. User subscribing to post notification via the widget
 9.	User receives subscription confirmation email
 10. User has confirmed subscription request
@@ -164,17 +179,28 @@ The Post Notif plugin came to life after I used the Post Notification plugin for
 
 == Changelog ==
 
+= 1.0.2 =
+* Confirmed compatibility with WordPress 4.2 (though Post Notif 1.0.1 is compatible as well)
+* Fixed issue with View Post Notifs Sent page showing nothing for installs with table prefix other than "wp"
+* Added widget-related messages as configurable settings (Settings >> Post Notif)
+* Added widget input field placeholders as configurable settings (Appearance >> Widgets >> Post Notif)
+* Added "Resend Confirmation" as both a single and bulk action on "Manage Subscribers" (formerly "Delete Subscribers") page
+* Updated screenshots to accurately reflect current functionality
+
 = 1.0.1 =
 * Updated installation steps in README.txt for clarity
-* Added code to `create_fake_page` function in `public/class-post-notif-public.php`, setting page object properties to prevent attributes (category, author, and post date/time) and functionality (add comment) from appearing on subscriber preferences pages
+* Added code to prevent attributes (category, author, and post date/time) and functionality (add comment) from appearing on subscriber preferences pages
 
 = 1.0.0 =
 * Initial release
 
 == Upgrade Notice ==
 
+= 1.0.2 =
+Fixed issue with View Post Notifs Sent page showing nothing for site installs using a table prefix other than "wp_"
+
 = 1.0.1 =
-* Fixed issue with some themes erroneously displaying extra attributes (category, author, and post date/time) and functionality (add comment) on subscriber preferences pages 
+Fixed issue with some themes erroneously displaying extra attributes (category, author, and post date/time) and functionality (add comment) on subscriber preferences pages 
 
 == Thanks ==
 
