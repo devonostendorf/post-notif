@@ -284,8 +284,8 @@ class Post_Notif_Admin {
    			}
 
    			$notif_row_inserted = $wpdb->insert(
-   				$post_notif_post_tbl, 
-   				array(
+   				$post_notif_post_tbl 
+   				,array(
    					'post_id' => $post_id
    					,'notif_sent_dttm' => date( "Y-m-d H:i:s" ) 
    					,'sent_by' => get_current_user_id()
@@ -382,11 +382,11 @@ class Post_Notif_Admin {
 
 		add_submenu_page(
 			'post-notif-menu'
-			,__( 'Delete Subscribers', 'post-notif' )
-			,__( 'Delete Subscribers', 'post-notif' )
+			,__( 'Manage Subscribers', 'post-notif' )
+			,__( 'Manage Subscribers', 'post-notif' )
 			,'manage_options'	// ONLY admin role has this capability
-			,'post-notif-del-subs'
-			,array( $this, 'define_delete_subscribers_page' )
+			,'post-notif-manage-subs'
+			,array( $this, 'define_manage_subscribers_page' )
 		);
 		
 		add_submenu_page(
@@ -410,17 +410,22 @@ class Post_Notif_Admin {
 	}
 		
 	/**
-	 * Define single and bulk actions for Delete Subscribers page.
+	 * Define single and bulk actions for Manage Subscribers page.
 	 *
-	 * @since	1.0.0
+	 * @since	1.0.2
 	 */	
-	public function define_delete_subscribers_page() {
+	public function define_manage_subscribers_page() {
 
 		$available_actions_arr = array(
 			'actionable_column_name' => 'first_name'
 			,'actions' => array(
 				'delete' => array(
 					'label' => __( 'Delete', 'post-notif' )
+					,'single_ok' => true
+					,'bulk_ok' => true
+				)
+				,'resend' => array(
+					'label' => __( 'Resend Confirmation', 'post-notif' )
 					,'single_ok' => true
 					,'bulk_ok' => true
 				)
@@ -440,9 +445,9 @@ class Post_Notif_Admin {
 		$this->render_subscribers_page( $available_actions_arr );
 		
 	}
-	
+
 	/**
-	 * Render Subscribers [View or Delete] page.
+	 * Render Subscribers [View or Manage] page.
 	 *
 	 * @since	1.0.0
 	 * @access	private
@@ -457,34 +462,69 @@ class Post_Notif_Admin {
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
 		$subscribers_deleted = 0;
+		$subscribers_resent_confirmation = 0;
 		$form_action = $_SERVER['REQUEST_URI'];		
 		$sort_by_category = false;
 		
-		if ( 
-				( !empty( $_REQUEST['action'] ) 
-				|| !empty( $_REQUEST['action2'] ) 
-			)
-			&& ( 
-				( $_REQUEST['action'] == 'delete' ) 
-				|| ( $_REQUEST['action2'] == 'delete' ) 
-			) 
-		) {
+		$affected_subscriber = false;
 		
-			// Delete(s) need to be processed
-			
-			if ( !empty( $_REQUEST['subscriber'] ) ) {
+		if ( !empty( $_REQUEST['subscriber'] ) ) {
 				  
-				// Delete single subscriber
-				$subscribers_deleted = $this->process_single_subscriber_delete( $_REQUEST['subscriber'] );
-				$form_action = remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] );
+			// Single action needs to be processed
+			$current_action = $_REQUEST['action'];
+			$affected_subscriber = $_REQUEST['subscriber'];
+		}
+		else {				  
+			if ( isset( $_REQUEST['doaction'] ) && isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+
+				// Bulk action needs to be processed
+				$current_action = $_REQUEST['action'];						
+			}
+			elseif ( isset( $_REQUEST['doaction2'] ) && isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
+				
+				// Bulk action needs to be processed
+				$current_action = $_REQUEST['action2'];
 			}
 			else {
-				  			 
-				// Delete multiple (selected) subscribers via bulk action
-				$subscribers_deleted = $this->process_multiple_subscriber_delete( $_POST );
+				$current_action = '';	  
 			}
 		}
 		
+		switch ( $current_action ) {
+			case 'delete':
+					  
+				// Delete(s) need to be processed
+			
+				if ( $affected_subscriber ) {
+				  
+					// Delete single subscriber
+					$subscribers_deleted = $this->process_single_subscriber_delete( $affected_subscriber );
+					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+				}
+				else {
+				  			 
+					// Delete multiple (selected) subscribers via bulk action
+					$subscribers_deleted = $this->process_multiple_subscriber_delete( $_POST );
+				}					  
+			break;
+ 			case 'resend':	  
+				
+ 				// Resend confirmation(s) need to be processed
+			
+				if ( $affected_subscriber ) {
+				  
+					// Resend confirmation to single subscriber
+					$subscribers_resent_confirmation = $this->process_single_subscriber_resend( $affected_subscriber );
+					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+				}
+				else {
+				  			 
+					// Resend confirmations to multiple (selected) subscribers via bulk action
+					$subscribers_resent_confirmation = $this->process_multiple_subscriber_resend( $_POST );
+				}
+ 			break;
+		}
+
 		// Define list table columns
 		
 		if ( is_array( $available_actions_arr ) ) {				  
@@ -773,6 +813,160 @@ class Post_Notif_Admin {
 	}
  
 	/**
+	 * Resend confirmation to single subscriber.
+	 *
+	 * @since	1.0.2
+	 * @access	private
+	 * @param	int	$sub_id	ID of subscriber to reconfirm.
+	 *	@return	int	Number of confirmations resent.
+	 */	
+	private function process_single_subscriber_resend( $sub_id ) {
+
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+
+		// Delete subscriber's preferences rows						
+		$results = $wpdb->delete( 
+			$post_notif_sub_cat_tbl
+			,array( 
+				'id' => $sub_id
+			)    			
+		);
+		
+		// Generate authcode
+		$authcode = Post_Notif_Misc::generate_authcode();
+								
+		// Update subscriber row					
+		$num_confirms_resent = $wpdb->update( 
+			$post_notif_subscriber_tbl
+			,array( 
+				'confirmed' => 0
+				,'authcode' => $authcode
+				,'last_modified' => date( "Y-m-d H:i:s" )
+			)
+			,array( 
+				'id' => $sub_id
+			)    			
+		);
+		
+		// Retrieve (subset of columns from) subscriber's row
+		$subscriber_row = $wpdb->get_row(
+			"
+   			SELECT 
+   				email_addr 
+   				,first_name
+   				,authcode
+   			FROM $post_notif_subscriber_tbl
+   			WHERE id = $sub_id
+   		"
+   		,ARRAY_A
+   	);
+
+		// Send confirmation email
+		Post_Notif_Misc::send_confirmation_email( $subscriber_row );
+		
+		if ( $num_confirms_resent ) {
+				  
+			return $num_confirms_resent;
+		}
+		else {
+				  
+		  return 0;
+		}
+		
+	}
+	
+	/**
+	 * Resend confirmation to multiple subscribers.
+	 *
+	 * @since	1.0.2
+	 * @access	private
+	 * @param	array	$form_post	The collection of global query vars.
+	 *	@return	int	Number of confirmations resent.
+	 */	
+	private function process_multiple_subscriber_resend( $form_post ) {
+			  			  
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+	
+		// Define checkbox prefix
+		$rec_subscribers_checkbox_prefix = 'chkKey_';
+		$confirmations_resent = 0;
+		
+		// For each selected subscriber on submitted form:
+		// 	Delete their category rows from preferences table
+		// 	Update subscriber row with CONFIRMED = 0 and new AUTHCODE
+		//		Send new subscription confirmation email
+		foreach ( $form_post as $rec_subscribers_field_name => $rec_subscribers_value ) {
+			if ( !(strncmp($rec_subscribers_field_name, $rec_subscribers_checkbox_prefix, strlen( $rec_subscribers_checkbox_prefix ) ) ) ) {
+						  
+				// This is a Subscriber checkbox
+				if ( isset( $rec_subscribers_field_name ) ) {
+				
+					// Checkbox IS selected
+						
+					// Delete subscriber's preferences rows						
+					$results = $wpdb->delete( 
+						$post_notif_sub_cat_tbl
+						,array( 
+							'id' => $rec_subscribers_value
+						)    			
+					);
+						
+					// Generate authcode
+					$authcode = Post_Notif_Misc::generate_authcode();
+								
+					// Update subscriber row					
+					$num_confirms_resent = $wpdb->update( 
+						$post_notif_subscriber_tbl
+						,array( 
+							'confirmed' => 0
+							,'authcode' => $authcode
+							,'last_modified' => date( "Y-m-d H:i:s" )
+						)
+						,array( 
+							'id' => $rec_subscribers_value
+						)    			
+					);
+		
+					// Retrieve (subset of columns from) subscriber's row
+					$subscriber_row = $wpdb->get_row(
+						"
+							SELECT 
+								email_addr 
+								,first_name
+								,authcode
+							FROM $post_notif_subscriber_tbl
+							WHERE id = $rec_subscribers_value
+						"
+						,ARRAY_A
+					);
+
+					// Send confirmation email
+					Post_Notif_Misc::send_confirmation_email( $subscriber_row );
+
+					if ( $num_confirms_resent )
+					{
+							  
+						// OK, wise-guy, I know you're saying there should never be more than
+						//		one subscriber per id!
+						$confirmations_resent += $num_confirms_resent;
+					}
+				}					  
+			}
+		}
+		
+		return $confirmations_resent;
+		
+	}
+	
+	/**
 	 * Render View Post Notifs Sent page.
 	 *
 	 * @since	1.0.0
@@ -781,8 +975,9 @@ class Post_Notif_Admin {
 			  			
 		global $wpdb;
 		
-		// Tack prefix on to table name
+		// Tack prefix on to table names
 		$post_notif_post_tbl = $wpdb->prefix.'post_notif_post';
+		$users_tbl = $wpdb->prefix.'users';
 		
 		// Define list table columns
 		
@@ -839,20 +1034,22 @@ class Post_Notif_Admin {
 		} 		
 		
 		// Get post notifs sent
+		
+      // Display warning message if Sent By ID cannot be tied to a user
 		$post_notifs_sent_arr = $wpdb->get_results(
 			"
    			SELECT post_id
    				,notif_sent_dttm 
    				,sent_by
-   				,user_login AS sent_by_login
-   			FROM $post_notif_post_tbl
-   			JOIN wp_users
-   				ON ($post_notif_post_tbl.sent_by = wp_users.ID)
+   				,IFNULL(user_login, CONCAT('*** Can''t find user ID ', sent_by)) AS sent_by_login
+   			FROM $post_notif_post_tbl   			
+   			LEFT OUTER JOIN $users_tbl
+   				ON ($post_notif_post_tbl.sent_by = $users_tbl.ID)
    			ORDER BY $orderby $order
    		"
    		,ARRAY_A
    	);
-   	
+ 	
    	// Get post titles, authors' names, and post notif senders' names
    	foreach ( $post_notifs_sent_arr as $notif_key => $notif_val ) {
    		$post_object = get_post( $notif_val['post_id'] );
