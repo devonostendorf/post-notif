@@ -171,7 +171,46 @@
             			<br />
             		</td>
             	</tr>
-            </table>                              
+            </table> 
+            <h3 class="title"><?php _e( 'Widget Messages', 'post-notif' ); ?></h3>
+            <table class="form-table">
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Error (blank email address):', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="75" name="post_notif_settings[widget_error_email_addr_blank]" id="widget_error_email_addr_blank" value="<?php echo esc_attr( $options['widget_error_email_addr_blank'] ); ?>">
+            			<br />
+            		</td>
+            	</tr>
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Error (invalid email address):', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="75" name="post_notif_settings[widget_error_email_addr_invalid]" id="widget_error_email_addr_invalid" value="<?php echo esc_attr( $options['widget_error_email_addr_invalid'] ); ?>">
+            			<br />
+            		</td>
+            	</tr>
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Message (already subscribed):', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="75" name="post_notif_settings[widget_info_message_already_subscribed]" id="widget_info_message_already_subscribed" value="<?php echo esc_attr( $options['widget_info_message_already_subscribed'] ); ?>">
+            			<br />
+            		</td>
+            	</tr>
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Message (successful subscription request):', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="75" name="post_notif_settings[widget_success_message]" id="widget_success_message" value="<?php echo esc_attr( $options['widget_success_message'] ); ?>">
+            			<br />
+            		</td>
+            	</tr>
+            </table> 
             <?php submit_button() ?>
          </form>
       </div> <!-- end post-body-content -->

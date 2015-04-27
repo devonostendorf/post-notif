@@ -36,7 +36,7 @@ class Post_Notif_Activator {
 		$post_notif_db_version = '1.0';
 			  
 		// Get current installed plugin DB version
-		$installed_post_notif_db_version = get_option( 'post_notif_db_version' );
+		$installed_post_notif_db_version = get_option( 'post_notif_db_version', 0 );
 		if ( $installed_post_notif_db_version < $post_notif_db_version ) {
 				  
 			// Need to create/upgrade tables
@@ -93,16 +93,67 @@ class Post_Notif_Activator {
 			,'unsub_link_label' => 'Unsubscribe from post notification'
 			,'unsub_confirmation_page_title' => 'Post Notification - Unsubscribed'
 			,'unsub_confirmation_page_greeting' => "You've been unsubscribed (sorry to see you go!)"
+			,'widget_error_email_addr_blank' => 'An email address is required.'
+			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
+			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
+			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
 		);
-		add_option( 'post_notif_settings', $post_notif_settings_arr );
+		// Cleanly future-proof the addition of settings by
+		//		iterating through defaults array and only updating 
+		//		'post_notif_settings_arr' values that are new to site (thus 
+		//		avoiding overwriting any that an admin has chosen to customize)
+		$curr_post_notif_settings_arr = get_option( 'post_notif_settings', array() );
+		foreach ( $post_notif_settings_arr as $setting_key => $setting_val ) {
+			if ( !array_key_exists( $setting_key, $curr_post_notif_settings_arr) ) {
+				$curr_post_notif_settings_arr[$setting_key] = $setting_val;
+			}				  
+		}
+		// Replace add_option() call with update_option() as the latter will also 
+		//		handle special case of first-time activation of plugin (adding a
+		//		brand new 'post_notif_widget_defaults' option)
+		update_option( 'post_notif_settings', $curr_post_notif_settings_arr );
 				
 		$post_notif_widget_defaults_arr = array(
 			'title_default' => 'Subscribe'
 			,'call_to_action_default' => 'Notify me when new posts are published:'
 			,'button_label_default' => 'Sign me up!'
+			,'first_name_placeholder_default' => 'First Name (optional)'
+			,'email_addr_placeholder_default' => 'Email Address'
 		);
-		add_option( 'post_notif_widget_defaults', $post_notif_widget_defaults_arr );
+		// Replace add_option() call with update_option() as these are strictly
+		//		defaults - user updates to the widget settings are not stored back
+		//		in here
+		update_option( 'post_notif_widget_defaults', $post_notif_widget_defaults_arr );
 
+		// TODO: Change this to a better comment once I'm convinced this is working properly
+		$curr_widget_post_notif_arr = get_option( 'widget_post-notif');
+		if ( $curr_widget_post_notif_arr ) {
+				  
+			// Widget IS defined
+			
+			// Find index containing title so we can (potentially) add new options
+			$options_index = false;
+			foreach( $curr_widget_post_notif_arr as $arr_key => $arr_item ) {
+				if ( array_key_exists( 'title', $arr_item ) ) {
+					$options_index = $arr_key;
+					break;
+				}
+			}
+
+			//	Iterate through widget settings array and only update values that 
+			//		are new to site (thus avoiding overwriting any that an admin has
+			//		chosen to customize)
+			if ( $options_index ) {
+				foreach ( $post_notif_widget_defaults_arr as $default_key => $default_val ) {
+					$trimmed_key = substr( $default_key, 0, strlen( $default_key ) - 8 ); 
+					if ( !array_key_exists( $trimmed_key, $curr_widget_post_notif_arr[$options_index] ) ) {
+						$curr_widget_post_notif_arr[$options_index][$trimmed_key] = $default_val;
+					}				  
+				}
+				update_option( 'widget_post-notif', $curr_widget_post_notif_arr );
+			}
+		}
+		
 	}
 	
 }
