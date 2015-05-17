@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /**
  * Display plugin settings (accessible via Settings >> Post Notif on admin menu sidebar).
@@ -208,6 +208,21 @@
             		<td>
             			<input type="text" size="75" name="post_notif_settings[widget_success_message]" id="widget_success_message" value="<?php echo esc_attr( $options['widget_success_message'] ); ?>">
             			<br />
+            		</td>
+            	</tr>
+            </table> 
+            <h3 class="title"><?php _e( 'Admin Menu Settings', 'post-notif' ); ?></h3>
+            <table class="form-table">
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Position in menu:', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="5" name="post_notif_settings[admin_menu_position]" id="admin_menu_position" value="<?php echo esc_attr( $options['admin_menu_position'] ); ?>">
+            			<br />
+            			<p class="description">
+            				<?php _e( 'If you cannot see the Post Notif admin menu, change this to another number of the form "3.xyz".', 'post-notif' ); ?>
+            			</p>
             		</td>
             	</tr>
             </table> 

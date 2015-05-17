@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /**
  * Fired during plugin activation
@@ -97,6 +97,7 @@ class Post_Notif_Activator {
 			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
 			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
+			,'admin_menu_position' => '3.389'
 		);
 		// Cleanly future-proof the addition of settings by
 		//		iterating through defaults array and only updating 
@@ -125,7 +126,8 @@ class Post_Notif_Activator {
 		//		in here
 		update_option( 'post_notif_widget_defaults', $post_notif_widget_defaults_arr );
 
-		// TODO: Change this to a better comment once I'm convinced this is working properly
+		// If widget is already defined, add any new settings found in default
+		//		array since last activation of plugin
 		$curr_widget_post_notif_arr = get_option( 'widget_post-notif');
 		if ( $curr_widget_post_notif_arr ) {
 				  

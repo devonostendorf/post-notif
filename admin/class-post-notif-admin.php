@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 /**
  * The admin-specific functionality of the plugin.
@@ -368,6 +368,9 @@ class Post_Notif_Admin {
 	 * @since	1.0.0
 	 */	
 	public function add_post_notif_admin_menu() {
+			  
+		// Admin can override default admin menu position of this menu
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
 			
 		// NOTE: This will not have a selectable page associated with it (due to non-existent 'menu_only_no_selectable_item' capability)
 		add_menu_page(
@@ -377,7 +380,7 @@ class Post_Notif_Admin {
 			,'post-notif-menu'
 			,null
 			,''
-			,3
+			,$post_notif_options_arr['admin_menu_position']
 		);
 
 		add_submenu_page(
