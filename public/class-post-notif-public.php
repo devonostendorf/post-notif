@@ -388,7 +388,7 @@ class Post_Notif_Public {
 	private function detect_manage_preferences_url() {
 		  
 		// If this is a manage preferences URL return true
-		return false !== strpos( $_SERVER['REQUEST_URI'], '/post_notif/manage_prefs' );		
+		return false !== strpos( $_SERVER['REQUEST_URI'], '/post_notif/manage_prefs' );	
 
 	}
 
@@ -617,7 +617,15 @@ class Post_Notif_Public {
 			// NOTE: Had to use header() because both wp_redirect AND wp_safe_redirect 
 			//		filter out the "@" in the email addr which in turn caused rewrite 
 			//		rule to fail, resulting in page not found
-			header( 'Location: ' . site_url() . '/post_notif/update_prefs/?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
+			
+   		// Include or omit trailing "/", in URL, based on blog's current permalink settings
+   		$permalink_structure = get_option( 'permalink_structure', '' );
+   		if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+				header( 'Location: ' . site_url() . '/post_notif/update_prefs/?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
+			}
+			else {
+				header( 'Location: ' . site_url() . '/post_notif/update_prefs?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
+			}
 			exit;
 		}
 		
@@ -759,5 +767,8 @@ class Post_Notif_Public {
    	return $post_notif_unsub_pg;	  	  
    	
    }
+   
+ 
+
 
 }	

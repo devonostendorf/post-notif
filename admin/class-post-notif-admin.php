@@ -272,8 +272,17 @@ class Post_Notif_Admin {
    				// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
    				// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
    				//		will be unable to see and/or click the URL links within their email
-   				$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+
+   				// Include or omit trailing "/", in URLs, based on blog's current permalink settings
+   				$permalink_structure = get_option( 'permalink_structure', '' );
+   				if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+   					$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   				}
+   				else {
+    					$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   				}
 
    				$post_notif_email_body = $post_notif_email_body_template;
    				$post_notif_email_body = str_replace('@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body);

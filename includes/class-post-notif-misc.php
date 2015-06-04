@@ -115,7 +115,15 @@ class Post_Notif_Misc {
 
 		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
 		//		will be unable to see and/or click the confirm URL link within their email
-		$conf_url = get_site_url() . '/post_notif/confirm/?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
+
+   	// Include or omit trailing "/", in URL, based on blog's current permalink settings
+   	$permalink_structure = get_option( 'permalink_structure', '' );
+   	if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+			$conf_url = get_site_url() . '/post_notif/confirm/?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
+		}
+		else {
+			$conf_url = get_site_url() . '/post_notif/confirm?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
+		}
 		$conf_email_body = str_replace( '@@confurl', '<a href="' . $conf_url . '">' . $conf_url . '</a>', $conf_email_body );
 
 		$conf_email_body = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $conf_email_body );

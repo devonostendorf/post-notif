@@ -50,6 +50,14 @@ echo '</ul>';
 echo '<input type="submit" value="' . __( 'Update', 'post-notif' ) . '" />';
 echo '</form>';
 echo '<br />';
-echo '<a href="' . site_url() . '/post_notif/unsubscribe/?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode ) . '">' . $unsub_link_label . '</a>';
+
+// Include or omit trailing "/", in URL, based on blog's current permalink settings
+$permalink_structure = get_option( 'permalink_structure', '' );
+if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+	echo '<a href="' . site_url() . '/post_notif/unsubscribe/?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode ) . '">' . $unsub_link_label . '</a>';
+}
+else {
+	echo '<a href="' . site_url() . '/post_notif/unsubscribe?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode ) . '">' . $unsub_link_label . '</a>';
+}
 $this->get_sidebar_minus_post_notif_recent_posts_widgets(); 
 ?>
