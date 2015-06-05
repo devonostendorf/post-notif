@@ -69,7 +69,7 @@ class Post_Notif {
 	public function __construct() {
 
 		$this->plugin_name = 'post-notif';
-		$this->version = '1.0.0';
+		$this->version = '1.0.3';
 
 		$this->load_dependencies();
 		$this->set_locale();

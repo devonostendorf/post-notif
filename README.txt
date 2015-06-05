@@ -4,7 +4,7 @@ Donate link: https://devonostendorf.com
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
 Tested up to: 4.2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,7 +67,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 
 == Installation ==
 
-**If upgrading to v1.0.2 from a previous version of the plugin**  
+**If upgrading to v1.0.3 from a previous version of the plugin**  
 Be sure you deactivate the plugin and then re-activate it IMMEDIATELY after installing the update!
 
 = Download and Install =    
@@ -161,6 +161,10 @@ The Post Notif plugin came to life after I used the Post Notification plugin for
 
 Resending confirmation will both generate a new authcode AND set the CONFIRMED value to 0 for each subscriber it is applied to.  This functionality was implemented to make it easy for a site admin to re-send a confirmation email to a subscriber who has indicated they never received the initial confirmation email.  However, it WILL allow you to resend a confirmation email to a confirmed subscriber (which will effectively unconfirm them and require them to re-confirm), so you probably want to think long and hard about doing this for anyone who has already confirmed, unless they've specifically asked you to do so (because they want their authcode reset, for instance).
 
+= Why can't I see the Post Notif admin menu? =
+
+It is likely clashing with another plugin's menu.  By default, Post Notif is set with a menu position value of 3.389.  If you do not see the Post Notif admin menu, go to the Admin Menu Settings section (under Settings >> Post Notif) and try new values in "Position in menu" (like 3.390) until you CAN see the menu.  For further reference see the [explanation of the position parameter](https://codex.wordpress.org/Function_Reference/add_menu_page).
+
 == Screenshots ==
 
 1. Activating the plugin
@@ -179,6 +183,10 @@ Resending confirmation will both generate a new authcode AND set the CONFIRMED v
 
 == Changelog ==
 
+= 1.0.3 =
+* Made the Post Notif admin menu position configurable to avoid clashes with other plugins that were resulting in "invisible" Post Notif admin menu
+* Fixed issue with Post Notif custom URLs causing "Page not found" errors for installs using (non-default) permalink settings with no trailing "/" 
+
 = 1.0.2 =
 * Confirmed compatibility with WordPress 4.2 (though Post Notif 1.0.1 is compatible as well)
 * Fixed issue with View Post Notifs Sent page showing nothing for installs with table prefix other than "wp"
@@ -195,6 +203,9 @@ Resending confirmation will both generate a new authcode AND set the CONFIRMED v
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+Fixed issues with "invisible" Post Notif admin menu (due to clashes with other plugins) and with Post Notif custom URLs causing "Page not found" errors for installs using (non-default) permalink settings with no trailing "/" 
 
 = 1.0.2 =
 Fixed issue with View Post Notifs Sent page showing nothing for site installs using a table prefix other than "wp_"

@@ -97,8 +97,7 @@ class Post_Notif_Misc {
 		// This is based on Post Notif settings, with placeholders replaced by user-specific/admin-specified data
     		
 		// Compose confirmation email
-		// NOTE: It is IMPERATIVE that there is "/" at the end of this URL or "@" will get filtered out of URL, causing all sorts of problems!
-    
+		    
 		$post_notif_options_arr = get_option( 'post_notif_settings' );
     
 		// Replace variables in both the post notif email subject and body

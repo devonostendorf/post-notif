@@ -92,7 +92,7 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
     		foreach ( $this->available_actions_arr['actions'] as $single_action_arr_key => $single_action_arr_val ) {
     			if ( $single_action_arr_val['single_ok'] == true )  {
     					  
-    				// This column DOES need as single action link, for current action
+    				// This column DOES need a single action link, for current action
     				$actions[$single_action_arr_key] = sprintf( 
     					'<a href="%s&action=%s&%s=%s">%s</a>'
     					,$_SERVER['REQUEST_URI']
@@ -190,7 +190,7 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
       
       if ( $per_page != 0 ) {
         
-         // Trim up dataset to pass Post_Notif_WP_List_Table class only the current page.
+         // Trim up dataset to pass Post_Notif_WP_List_Table class only the current page
          $data = array_slice( $data,( ( $current_page - 1 ) * $per_page ), $per_page );
          $pagination_arr['per_page'] = $per_page;	  
          $pagination_arr['total_pages'] = ceil( $total_items / $per_page );

@@ -303,9 +303,7 @@ class Post_Notif_Widget extends WP_Widget {
 					,'authcode' => $authcode
 				);
 				Post_Notif_Misc::send_confirmation_email( $subscriber_arr );
-
 				wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_success_message'] ) );    		
-				// END - v.1.0.2
 			}
 		}
 		else
