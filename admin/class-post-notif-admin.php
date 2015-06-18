@@ -76,7 +76,23 @@ class Post_Notif_Admin {
 
 	}
 	
+	/**
+	 * Call Post Notif Updater class in case options or tables need updating.
+	 *
+	 * @since	1.0.4
+	 */	
+	public function update_check() {
 	
+		// Get current installed plugin DB version
+		$installed_post_notif_db_version = intval( get_option( 'post_notif_db_version', 0 ) );
+		
+		// Check for updates and apply, if needed
+		$post_notif_updater = new Post_Notif_Updater( $installed_post_notif_db_version );
+		$post_notif_updater->apply_updates_if_needed();
+		
+	}
+	
+		
 	// Functions related to adding Post Notif meta box to Edit Post page
 	
 	/**
@@ -394,6 +410,24 @@ class Post_Notif_Admin {
 
 		add_submenu_page(
 			'post-notif-menu'
+			,__( 'Import Subscribers', 'post-notif' )
+			,__( 'Import Subscribers', 'post-notif' )
+			,'manage_options'	// ONLY admin role has this capability
+			,'post-notif-import-subs'
+			,array( $this, 'render_import_subscribers_page' )
+		);
+
+		add_submenu_page(
+			'post-notif-menu'
+			,__( 'Staged Subscribers', 'post-notif' )
+			,__( 'Staged Subscribers', 'post-notif' )
+			,'manage_options'	// ONLY admin role has this capability
+			,'post-notif-staged-subs'
+			,array( $this, 'define_staged_subscribers_page' )
+		);
+
+		add_submenu_page(
+			'post-notif-menu'
 			,__( 'Manage Subscribers', 'post-notif' )
 			,__( 'Manage Subscribers', 'post-notif' )
 			,'manage_options'	// ONLY admin role has this capability
@@ -420,7 +454,970 @@ class Post_Notif_Admin {
 		);
 
 	}
+
+	/**
+	 * Render Import Subscribers page.
+	 *
+	 * @since	1.0.4
+	 */	
+	public function render_import_subscribers_page() {
+
+		// Render page	  
+		$post_notif_import_subs_pg = '';
+    	ob_start();
+		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-import-subs.php' );
+		$post_notif_import_subs_pg .= ob_get_clean();
+		print $post_notif_import_subs_pg;	
+	  
+	}
+	
+	/**
+	 * Perform validation and import of raw subscriber data.
+	 *
+	 * @since	1.0.4
+	 */	
+	public function process_subscriber_import() {
+
+		// Perform validation and (attempt) loading to staging tables
 		
+		global $wpdb;
+		
+		$row_delimiter = chr( 13 );
+		
+		// Tack prefix on to table names 
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+		
+		// Split out single textarea, by delimiter (newline), into array elements
+		$subscriber_arr = explode( $row_delimiter, trim( $_POST['tarSubscriberData'] ) );
+		
+		if ( count( $subscriber_arr > 0 ) ) {
+				  
+			// There IS subscriber data to validate and (potentially) load
+			
+			$import_row_number = 1;
+				  
+			// Retrieve active system categories (for validation below)
+			$category_args = array(
+				'exclude' => 1,		// Omit Uncategorized
+				'orderby' => 'name',
+				'order' => 'ASC',
+				'hide_empty' => 0
+			);
+			$existing_categories = get_categories( $category_args );
+			$existing_categories_arr = array();
+			foreach ( $existing_categories as $existing_category ) {			
+				$existing_categories_arr[] = $existing_category->cat_ID;
+			}
+		
+			// Attempt to process each import row
+			foreach ( $subscriber_arr as $subscriber_row ) {
+					  
+				// Assume all is well until proven otherwise
+				$import_status = 'S';
+				$status_message = '';
+				$valid_row_format = true;
+				
+				// Split out subscriber string, by delimiter (comma), into array
+				//		elements corresponding to staging tables' columns
+				$trimmed_subscriber_row = trim( $subscriber_row );
+				if ( !empty( $trimmed_subscriber_row ) ) {
+						  
+					// This is NOT a blank row - attempt to process
+					$subscriber_data_arr = explode( ',', $trimmed_subscriber_row );
+				
+					// Each subscriber row MUST include email addr, first name, and at
+					//		least one category
+					if ( ( $num_subscriber_fields = count( $subscriber_data_arr ) ) >= 3) {
+						  
+						$email_addr = trim( $subscriber_data_arr[0] );
+						$first_name = trim( $subscriber_data_arr[1] );
+			
+						$category_arr = array();
+						for ( $subscriber_data_arr_index = 2; $subscriber_data_arr_index < $num_subscriber_fields; $subscriber_data_arr_index++ ) {
+								  
+							// Do not store empty category values (e.g CSV row ends with ",")
+							$potential_category = trim( $subscriber_data_arr[$subscriber_data_arr_index] );
+							if ( $potential_category != '') {							  
+								$category_arr[$subscriber_data_arr_index - 2] = $potential_category;
+							}
+						}
+			
+						// Perform validation
+					
+						// Perform truncation checks first since they should be
+						//		overshadowed by hard validation errors if they exist
+					
+						// Validate email address
+						
+						if ( $email_addr == '' ) {
+								  
+							// Blank email address is a showstopper
+							$import_status = 'V';
+							$status_message = 'Blank email address.';		  
+						}
+						else {
+							if ( strlen( $email_addr ) > 100 ) {
+								$email_addr = substr( $email_addr, 0, 100 );
+								
+								// Truncated email address is probably not good but as
+								//		long as it is in valid format, let the user decide
+								//		whether to ignore the warning
+								$import_status = 'T';
+								$status_message = 'Email address truncated (more than 100 chars).';
+							}
+							if ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $email_addr ) ) {
+							
+								// Invalid email address is a showstopper
+								$import_status = 'V';
+								$status_message .= ' Invalid email address.';
+							}
+						}
+			
+						// Validate first name
+						if ( $first_name == '' ) {
+							  
+							// Default blank first name
+							$first_name = '[Unknown]';
+						}
+						elseif ( strlen( $first_name ) > 50 ) {
+							$first_name = substr( $first_name, 0, 50 );
+							
+							// Truncated first name should only generate a warning
+							//		UNLESS email addr was a showstopper, in which case
+							//		do NOT override that hard error
+							if ( $import_status == 'S') {
+								$import_status = 'T';
+							}
+							$status_message .= ' First name truncated (more than 50 chars).';
+						}
+		
+						// Validate categories
+					
+						foreach ( $category_arr as $category_key => $category_val ) {
+					
+							if ( !is_numeric( $category_val ) ) {
+							
+								// Non-numeric value is a showstopper
+								$import_status = 'V';
+								$status_message .= ' Non-numeric category (' . $category_val . ').';
+								$category_arr[$category_key] = -1;
+							}
+							elseif ( ( $category_val != 0 ) && ( !in_array( $category_val, $existing_categories_arr) ) ) {
+
+								// Value that does NOT match and existing category in
+								//		system is a showstopper
+								$import_status = 'V';
+								$status_message .= ' Invalid category (' . $category_val . ').';
+								$category_arr[$category_key] = -1;
+							}
+						}		
+					
+						if ( $import_status == 'S' ) {
+							$status_message = 'Staged (pending creation)';
+						}
+					}
+					else {
+			
+						// This is an error row (that doesn't have proper format)
+						// No idea which column is supposed to be which so "blank"
+						//		them out and supply import row number so user can
+						//		identify problematic row and fix it
+						$valid_row_format = false;
+						$email_addr = '-';
+						$first_name = '-';
+						$import_status = 'V';
+						$status_message = ' Row #' . $import_row_number . ' is missing one or more required fields (email address, first name, category).';
+					}
+
+					// Insert subscriber stage row
+					$num_subs_loaded = $wpdb->insert( 
+						$post_notif_subscriber_stage_tbl
+						,array( 
+							'id' => ''
+							,'email_addr' => $email_addr
+							,'first_name' => $first_name
+							,'import_status' => $import_status
+							,'status_message' => $status_message
+						) 
+					);
+					
+					// Only load categories if row format was valid 
+					if ( ( $num_subs_loaded ) && ( $valid_row_format ) ) {
+			
+						// Get new subscriber ID
+						$subscriber_id = $wpdb->insert_id;
+			
+						// Insert subscriber cat stage row(s)
+						foreach ( $category_arr as $category_key => $category_val ) {
+								
+							// Insert all VALID categories (invalid categories were
+							//		set to -1
+							if ( $category_val != -1 ) {
+								$num_cats_loaded = $wpdb->insert( 
+									$post_notif_sub_stage_cat_tbl
+									,array( 
+										'id' => $subscriber_id
+										,'cat_id' => $category_val
+									) 
+								);
+							}
+						}
+					}
+				
+					if ( ( $import_status == 'S' ) && ( isset( $_POST['chkSkipStaging'] ) ) ) {
+							  
+						// "Skip staging of clean rows?" was set - create actual
+						//		subscriber row and real category row(s) too!
+						$this->process_single_staged_subscriber_create( $subscriber_id );
+					}
+									
+					// NOTE: Allegedly pre-increment is faster than post?!
+					++$import_row_number;
+				}				
+			}	
+		}
+		
+		// Redirect to Staged Subscribers page
+		wp_redirect( site_url() . '/wp-admin/admin.php?page=post-notif-staged-subs' );
+		exit;
+	}
+	
+	/**
+	 * Define single and bulk actions for Staged Subscribers page.
+	 *
+	 * @since	1.0.4
+	 */	
+	public function define_staged_subscribers_page() {
+
+		$available_actions_arr = array(
+			'actionable_column_name' => 'first_name'
+			,'actions' => array(
+				'create' => array(
+					'label' => __( 'Create', 'post-notif' )
+					,'single_ok' => true
+					,'single_conditional' => array(
+						'conditional_field' => 'import_status'
+						,'field_values' => array(
+							'S'
+							,'T'
+						)
+					)
+					,'bulk_ok' => true
+				)
+				,'delete' => array(
+					'label' => __( 'Delete', 'post-notif' )
+					,'single_ok' => true
+					,'bulk_ok' => true
+				)
+			)
+		);
+		$this->render_staged_subscribers_page( $available_actions_arr );		
+	}
+
+	/**
+	 * Render Staged Subscribers page.
+	 *
+	 * @since	1.0.4
+	 * @access	private
+	 * @param	array	$available_actions_arr	The available actions for the list table items.
+	 */	
+	private function render_staged_subscribers_page ( $available_actions_arr ) {
+			  	
+		global $wpdb;
+		
+		// Tack prefix on to table names
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+		
+		// Define possible status descrs
+		$import_status_descr_arr = array(
+			'C' => __( 'Created', 'post-notif' )						// (C)reated a new subscriber
+			,'S' => __( 'Staged', 'post-notif' )						// (S)taged a new subscriber for later creation
+  			,'T' => __( 'Warning', 'post-notif' )						// (T)runcated column(s)
+  			,'U' => __( 'Duplicate email address', 'post-notif' )	//	D(U)plicate email address
+  			,'V' => __( 'Import error', 'post-notif' )				// (V)alidation error
+  			,'X' => __( 'System error', 'post-notif' )				//	This indicates a system error
+		);
+
+		$staged_subscribers_deleted = 0;
+		$staged_subscribers_created = 0;
+		$form_action = $_SERVER['REQUEST_URI'];		
+		$sort_by_category = false;
+		
+		$affected_subscriber = false;
+		
+		if ( !empty( $_REQUEST['subscriber'] ) ) {
+				  
+			// Single action needs to be processed
+			$current_action = $_REQUEST['action'];
+			$affected_subscriber = $_REQUEST['subscriber'];
+		}
+		else {				  
+			if ( isset( $_REQUEST['doaction'] ) && isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+
+				// Bulk action needs to be processed
+				$current_action = $_REQUEST['action'];						
+			}
+			elseif ( isset( $_REQUEST['doaction2'] ) && isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
+				
+				// Bulk action needs to be processed
+				$current_action = $_REQUEST['action2'];
+			}
+			else {
+				$current_action = '';	  
+			}
+		}
+		
+		switch ( $current_action ) {
+ 			case 'create':	  
+				
+ 				// Creates need to be processed
+			
+				if ( $affected_subscriber ) {
+				  
+					// Create single staged subscriber
+					$staged_subscribers_created = $this->process_single_staged_subscriber_create( $affected_subscriber );
+					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+				}
+				else {
+				  			 
+					// Create multiple (selected) staged subscribers via bulk action
+					$staged_subscribers_created = $this->process_multiple_staged_subscriber_create( $_POST );
+				}
+ 			break;
+			case 'delete':
+					  
+				// Delete(s) need to be processed
+			
+				if ( $affected_subscriber ) {
+				  
+					// Delete single staged subscriber
+					$staged_subscribers_deleted = $this->process_single_staged_subscriber_delete( $affected_subscriber );
+					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+				}
+				else {
+				  			 
+					// Delete multiple (selected) staged subscribers via bulk action
+					$staged_subscribers_deleted = $this->process_multiple_staged_subscriber_delete( $_POST );
+				}					  
+			break;
+		}
+
+		// Define list table columns
+		
+		if ( is_array( $available_actions_arr ) ) {				  
+			$columns_arr = array();
+			foreach ( $available_actions_arr['actions'] as $single_action_arr ) {
+				if ( $single_action_arr['bulk_ok'] == true ) {
+
+					// There are bulk actions, add checkbox column
+					$columns_arr['cb'] = '<input type="checkbox" />';	 
+					break;
+				}
+			}
+		}	 		
+		$columns_arr['first_name'] = __( 'First Name', 'post-notif' );
+		$columns_arr['email_addr'] = __( 'Email Address', 'post-notif' );
+		$columns_arr['import_status_descr'] = __( 'Status', 'post-notif' );
+		$columns_arr['status_message'] = __( 'Message', 'post-notif' );
+		$columns_arr['categories'] = __( 'Categories', 'post-notif' );
+
+		// NOTE: Third parameter indicates whether column data is already sorted 
+		$sortable_columns_arr = array(
+         'first_name' => array( 
+         	'first_name'
+         	,false
+         )
+         ,'email_addr' => array(
+         	'email_addr'
+         	,false
+         )
+         ,'import_status_descr' => array(
+         	'import_status_descr'
+         	,false
+         )
+         ,'status_message' => array(
+         	'status_message'
+         	,false
+         )
+         ,'categories' => array(
+         	'categories'
+         	,false
+         )
+      );    
+				
+		if ( !empty( $_REQUEST['orderby'] ) ) {					 
+			if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
+					  
+				// This IS a valid, sortable column
+				if ( $_REQUEST['orderby'] != 'categories' ) {
+					$orderby = $_REQUEST['orderby'];		 
+				}
+				else {
+					$orderby = 'id';
+					$sort_by_category = true;
+				
+					// Sort by category requires some special handling since category data is not
+					//		retrieved by original query
+					function usort_reorder( $a, $b ) {
+						$order = ( !empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
+						$result = strcmp( $a['categories'], $b['categories'] );
+  					
+						return ( $order === 'asc' ) ? $result : -$result;
+					}
+				}
+			}
+			else {
+					  
+				// This is NOT a valid, sortable column					  
+				$orderby = 'id';
+			}
+		}
+		else {
+				  
+			// No orderby specified
+			$orderby = 'id';
+		}
+		if ( !empty( $_REQUEST['order'] ) ) {
+			if ( $_REQUEST['order'] == 'desc' ) {
+				$order = 'desc';
+			}
+			else {
+					  
+				// This is NOT a valid order				  
+				$order = 'asc';
+			}
+		}
+		else {
+			
+			// No order specified
+			$order = 'asc';
+		}
+		
+		// Get subscribers
+		$subscribers_arr = $wpdb->get_results(
+			"
+   			SELECT 
+   				id
+   				,first_name
+   				,email_addr 
+   				,import_status
+   				,import_status AS import_status_descr
+   				,status_message
+   			FROM $post_notif_subscriber_stage_tbl
+   			ORDER BY $orderby $order
+   		"
+   		,ARRAY_A
+   	);
+   	
+   	// Select categories each subscriber is subscribed to AND pass array to page
+   	//		for display
+ 		$args = array(
+			'exclude' => 1		// Omit Uncategorized
+			,'orderby' => 'name'
+			,'order' => 'ASC'
+			,'hide_empty' => 0
+		);
+		$category_arr = get_categories( $args );
+		$category_name_arr = array();
+		foreach ( $category_arr as $category )
+		{
+			$category_name_arr[$category->cat_ID] = $category->name;
+		}
+
+   	$subscriber_cats_arr = array();
+   	foreach ( $subscribers_arr as $sub_key => $sub_val ) {
+   		$selected_cats_arr = $wpdb->get_results( 
+   			"
+   				SELECT cat_id 
+   				FROM $post_notif_sub_stage_cat_tbl
+   				WHERE id = " . $sub_val['id']
+   				. " ORDER BY cat_id
+   			"
+   		);
+   		
+   		$cat_string = '';
+   		foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
+   			if ($cat_val->cat_id != 0) {
+    				$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
+   			}
+   			else {
+   				$cat_string = 'All';	  
+   				break;
+   			}
+   		}
+  	   	$cat_string = rtrim ( $cat_string, ', ' );   	
+  			$subscribers_arr[$sub_key]['categories'] = $cat_string;
+  			
+  			// Translate import_status to descriptive words/phrases
+  			$subscribers_arr[$sub_key]['import_status_descr'] = $import_status_descr_arr[$sub_val['import_status']];
+  		}	
+		if ( $sort_by_category ) {
+				  
+			// Special sort for category
+			usort( $subscribers_arr, 'usort_reorder' );
+		}
+   	
+		// Build page	  
+	
+    	$class_settings_arr = array(
+    		'singular' => __( 'subscriber', 'post-notif' )
+    		,'plural' => __( 'subscribers', 'post-notif' )
+    		,'ajax' => false
+    		,'available_actions_arr' => $available_actions_arr
+    	);
+    
+    	// Single array containing the various arrays to pass to the list table class constructor
+    	$table_data_arr = array(
+    		'columns_arr' => $columns_arr
+    		,'hidden_columns_arr' => array()
+    		,'sortable_columns_arr' => $sortable_columns_arr
+    		,'rows_per_page' => 0		// NOTE: Pass 0 for single page with all data (i.e. NO pagination)
+    		,'table_contents_arr' => $subscribers_arr    			  
+    	);
+
+    	$view_staged_subs_pg_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr );
+		$view_staged_subs_pg_list_table->prepare_items();		
+         
+      // Render page	  
+		$post_notif_view_staged_subs_pg = '';
+    	ob_start();
+		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-view-staged-subs.php' );
+		$post_notif_view_staged_subs_pg .= ob_get_clean();
+		print $post_notif_view_staged_subs_pg;	
+		
+   }
+	
+   /**
+	 * Perform single staged subscriber create.
+	 *
+	 * @since	1.0.4
+	 * @access	private
+	 * @param	int	$sub_id	ID of staged subscriber to create.
+	 *	@return	int	Number of staged subscribers created.
+	 */	
+	private function process_single_staged_subscriber_create( $sub_id ) {
+
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		
+		// (Attempt to) insert staged subscriber row UNLESS already (C)reated, has
+		//		a d(U)plicate email addr error or has a (V)alidation error
+		$staged_subscriber_row = $wpdb->get_row(
+			$wpdb->prepare(
+				"
+   				SELECT 
+   					id
+   					,email_addr 
+   					,first_name
+   				FROM $post_notif_subscriber_stage_tbl
+   				WHERE id = %d
+   				AND import_status NOT IN ('C','U','V')
+   			"
+   			,$sub_id
+   		)
+   	);
+   	
+   	if ( $staged_subscriber_row ) {
+   			  
+   		// Staged subscriber row, to attempt to create, found
+		
+   		// Does email addr already exist in subscriber table?
+    		$subscriber_exists = $wpdb->get_var( 
+				"SELECT COUNT(id) FROM " . $post_notif_subscriber_tbl 
+				. " WHERE email_addr = '" . $staged_subscriber_row->email_addr . "'"
+			);
+			if ( $subscriber_exists ) {
+				
+				// Subscriber DOES already exist
+		
+				// Update status of stage subscriber row to "U", with message of "Duplicate email address"
+				$result = $wpdb->update( 
+					$post_notif_subscriber_stage_tbl
+					,array( 
+						'import_status' => 'U'
+						,'status_message' => 'Duplicate email address'
+					)
+					,array( 
+						'id' => $staged_subscriber_row->id
+					)    			
+				);
+			}
+			else {
+			
+				// Subscriber is new
+
+				// Generate authcode			
+				$authcode = Post_Notif_Misc::generate_authcode();
+						
+				// Insert new subscriber row
+				$num_subs_created = $wpdb->insert( 
+					$wpdb->prefix.'post_notif_subscriber' 
+					,array( 
+						'id' => ''
+						,'email_addr' => $staged_subscriber_row->email_addr
+						,'first_name' => $staged_subscriber_row->first_name
+						,'confirmed' => 1
+						,'last_modified' => date( "Y-m-d H:i:s" )
+						,'date_subscribed' => date( "Y-m-d H:i:s" )
+						,'authcode' => $authcode
+					) 
+				);
+				if ( $num_subs_created ) {
+			
+					// Get new subscriber ID
+					$subscriber_id = $wpdb->insert_id;
+				
+					// Get staged category rows for subscriber
+					$staged_cats_arr = $wpdb->get_results( 
+						"
+							SELECT cat_id 
+							FROM $post_notif_sub_stage_cat_tbl
+							WHERE id = $staged_subscriber_row->id
+							ORDER BY cat_id
+						"
+					);
+				
+					// Insert category row(s)
+					foreach ( $staged_cats_arr as $staged_cat ) {
+						$result = $wpdb->insert(
+							$post_notif_sub_cat_tbl 
+							,array( 
+								'id' => $subscriber_id
+								,'cat_id' => $staged_cat->cat_id
+							)
+						);								  
+					}
+				
+					// Update status of stage subscriber row to "C", with 
+					//		message of "Successfully created"
+					$result = $wpdb->update( 
+						$post_notif_subscriber_stage_tbl
+						,array( 
+							'import_status' => 'C'
+							,'status_message' => 'Successfully created'
+						)
+						,array( 
+							'id' => $staged_subscriber_row->id
+						)    			
+					);
+												
+					// Return count var
+					if ( $num_subs_created ) {
+						return $num_subs_created;
+					}
+					else {
+						return 0;
+					}
+				}
+				else {
+
+					// Else, update status of stage subscriber row to "X", with 
+					//		message of "System error - try again later"
+					$result = $wpdb->update( 
+						$post_notif_subscriber_stage_tbl
+						,array( 
+							'import_status' => 'X'
+							,'status_message' => 'System error - try again later'
+						)
+						,array( 
+							'id' => $staged_subscriber_row->id
+						)    			
+					);
+				
+					return 0;
+					  
+				}				
+			}
+		}
+		else {
+					  
+			// No staged subscriber row found
+			return 0;
+		}
+		
+	}	  
+	
+	/**
+	 * Perform multiple subscriber staged subscriber create.
+	 *
+	 * @since	1.0.4
+	 * @access	private
+	 * @param	array	$form_post	The collection of global query vars.
+	 *	@return	int	Number of staged subscribers created.
+	 */	
+	private function process_multiple_staged_subscriber_create( $form_post ) {
+			  
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		
+		// Define checkbox prefix
+		$create_subscribers_checkbox_prefix = 'chkKey_';
+		$subscribers_created = 0;
+
+		// For each selected staged subscriber on submitted form:
+		//		Retrieve existing staged subscriber row
+		// 	Attempt to insert a new subscriber row with data from staged
+		//			subscriber row
+		//		Retrieve existing staged subscriber's category row(s)
+		// 	Attempt to insert a new category row with data from each staged
+		//			subscriber category row
+		foreach ( $form_post as $create_subscribers_field_name => $create_subscribers_value ) {
+			if ( !(strncmp($create_subscribers_field_name, $create_subscribers_checkbox_prefix, strlen( $create_subscribers_checkbox_prefix ) ) ) ) {
+						  
+				// This is a Subscriber checkbox
+				if ( isset( $create_subscribers_field_name ) ) {
+				
+					// Checkbox IS selected
+					
+					// (Attempt to) insert staged subscriber into subscriber table
+					//		UNLESS already (C)reated, has a d(U)plicate email addr
+					//		error or has a (V)alidation error
+					$staged_subscriber_row = $wpdb->get_row(
+						$wpdb->prepare(
+							"
+								SELECT 
+									id
+									,email_addr 
+									,first_name
+								FROM $post_notif_subscriber_stage_tbl
+								WHERE id = %d
+								AND import_status NOT IN ('C','U','V')
+							"
+							,$create_subscribers_value
+						)
+					);
+
+					if ( $staged_subscriber_row ) {
+   			  
+						// Staged subscriber row, to attempt to create, found
+		
+						// Does email addr already exist in subscriber table?
+						$subscriber_exists = $wpdb->get_var( 
+							"SELECT COUNT(id) FROM " . $post_notif_subscriber_tbl 
+							. " WHERE email_addr = '" . $staged_subscriber_row->email_addr . "'"
+						);
+						if ( $subscriber_exists ) {
+				
+							// Subscriber DOES already exist
+		
+							// Update status of stage subscriber row to "U", with message of "Duplicate email address"
+							$result = $wpdb->update( 
+								$post_notif_subscriber_stage_tbl
+								,array( 
+									'import_status' => 'U'
+									,'status_message' => 'Duplicate email address'
+								)
+								,array( 
+									'id' => $staged_subscriber_row->id
+								)    			
+							);
+						}
+						else {
+			
+							// Subscriber is new
+
+							// Generate authcode			
+							$authcode = Post_Notif_Misc::generate_authcode();
+						
+							// Insert new subscriber row
+							$num_subs_created = $wpdb->insert( 
+								$wpdb->prefix.'post_notif_subscriber' 
+								,array( 
+									'id' => ''
+									,'email_addr' => $staged_subscriber_row->email_addr
+									,'first_name' => $staged_subscriber_row->first_name
+									,'confirmed' => 1
+									,'last_modified' => date( "Y-m-d H:i:s" )
+									,'date_subscribed' => date( "Y-m-d H:i:s" )
+									,'authcode' => $authcode
+								) 
+							);
+							if ( $num_subs_created ) {
+			
+								// Get new subscriber ID
+								$subscriber_id = $wpdb->insert_id;
+				
+								// Get staged category rows for subscriber
+								$staged_cats_arr = $wpdb->get_results( 
+									"
+										SELECT cat_id 
+										FROM $post_notif_sub_stage_cat_tbl
+										WHERE id = $staged_subscriber_row->id
+										ORDER BY cat_id
+									"
+								);
+				
+								// Insert category row(s)
+								foreach ( $staged_cats_arr as $staged_cat ) {
+									$result = $wpdb->insert(
+										$post_notif_sub_cat_tbl 
+										,array( 
+											'id' => $subscriber_id
+											,'cat_id' => $staged_cat->cat_id
+										)
+									);								  
+								}
+				
+								// Update status of stage subscriber row to "C", with 
+								//		message of "Successfully created"
+								$result = $wpdb->update( 
+									$post_notif_subscriber_stage_tbl
+									,array( 
+										'import_status' => 'C'
+										,'status_message' => 'Successfully created'
+									)
+									,array( 
+										'id' => $staged_subscriber_row->id
+									)    			
+								);
+												
+								// Return count var
+								if ( $num_subs_created ) {
+									// OK, wise-guy, I know you're saying there should never be more than
+									//		one subscriber per id!
+									$subscribers_created += $num_subs_created;
+								}
+							}
+							else {
+
+								// Else, update status of stage subscriber row to "X", with 
+								//		message of "System error - try again later"
+								$result = $wpdb->update( 
+									$post_notif_subscriber_stage_tbl
+									,array( 
+										'import_status' => 'X'
+										,'status_message' => 'System error - try again later'
+									)
+									,array( 
+										'id' => $staged_subscriber_row->id
+									)    			
+								);									  
+							}				
+						}
+					}
+				}					  
+			}
+		}
+		
+		return $subscribers_created;
+
+	}	
+   
+   /**
+	 * Perform single staged subscriber delete.
+	 *
+	 * @since	1.0.4
+	 * @access	private
+	 * @param	int	$sub_id	ID of staged subscriber to delete.
+	 *	@return	int	Number of staged subscribers deleted.
+	 */	
+	private function process_single_staged_subscriber_delete( $sub_id ) {
+
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+
+		// Delete staged subscriber's preferences rows						
+		$results = $wpdb->delete( 
+			$post_notif_sub_stage_cat_tbl
+			,array( 
+				'id' => $sub_id
+			)    			
+		);
+						
+		// Delete staged subscriber row					
+		$num_subs_deleted = $wpdb->delete( 
+			$post_notif_subscriber_stage_tbl
+			,array( 
+				'id' => $sub_id
+			)    			
+		);
+		if ( $num_subs_deleted ) {
+				  
+			return $num_subs_deleted;
+		}
+		else {
+				  
+		  return 0;
+		}
+		
+	}
+	
+	/**
+	 * Perform multiple staged subscriber delete.
+	 *
+	 * @since	1.0.4
+	 * @access	private
+	 * @param	array	$form_post	The collection of global query vars.
+	 *	@return	int	Number of staged subscribers deleted.
+	 */	
+	private function process_multiple_staged_subscriber_delete( $form_post ) {
+			  			  
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
+		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
+	
+		// Define checkbox prefix
+		$del_subscribers_checkbox_prefix = 'chkKey_';
+		$subscribers_deleted = 0;
+		
+		// For each selected staged subscriber on submitted form:
+		// 	Delete their staged category rows
+		// 	Delete their row from staged subscribers table
+		foreach ( $form_post as $del_subscribers_field_name => $del_subscribers_value ) {
+			if ( !(strncmp($del_subscribers_field_name, $del_subscribers_checkbox_prefix, strlen( $del_subscribers_checkbox_prefix ) ) ) ) {
+						  
+				// This is a Subscriber checkbox
+				if ( isset( $del_subscribers_field_name ) ) {
+				
+					// Checkbox IS selected
+						
+					// Delete subscriber's preferences rows						
+					$results = $wpdb->delete( 
+						$post_notif_sub_stage_cat_tbl
+						,array( 
+							'id' => $del_subscribers_value
+						)    			
+					);
+						
+					// Delete subscriber row					
+					$num_subs_deleted = $wpdb->delete( 
+						$post_notif_subscriber_stage_tbl 
+						,array( 
+							'id' => $del_subscribers_value
+						)    			
+					);
+					if ( $num_subs_deleted )
+					{
+							  
+						// OK, wise-guy, I know you're saying there should never be more than
+						//		one subscriber per id!
+						$subscribers_deleted += $num_subs_deleted;
+					}
+				}					  
+			}
+		}
+		
+		return $subscribers_deleted;
+		
+	}
+	
 	/**
 	 * Define single and bulk actions for Manage Subscribers page.
 	 *
@@ -457,7 +1454,7 @@ class Post_Notif_Admin {
 		$this->render_subscribers_page( $available_actions_arr );
 		
 	}
-
+	
 	/**
 	 * Render Subscribers [View or Manage] page.
 	 *
@@ -720,7 +1717,7 @@ class Post_Notif_Admin {
 		print $post_notif_view_subs_pg;	
 		
    }
-
+	
 	/**
 	 * Perform single subscriber delete.
 	 *

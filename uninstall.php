@@ -28,6 +28,8 @@ $custom_table_arr = array(
 	'post_notif_subscriber'
 	,'post_notif_sub_cat'
 	,'post_notif_post'
+	,'post_notif_subscriber_stage'
+	,'post_notif_sub_cat_stage'
 );
  
 if ( !is_multisite() ) {

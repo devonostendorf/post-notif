@@ -92,15 +92,25 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
     		foreach ( $this->available_actions_arr['actions'] as $single_action_arr_key => $single_action_arr_val ) {
     			if ( $single_action_arr_val['single_ok'] == true )  {
     					  
-    				// This column DOES need a single action link, for current action
-    				$actions[$single_action_arr_key] = sprintf( 
-    					'<a href="%s&action=%s&%s=%s">%s</a>'
-    					,$_SERVER['REQUEST_URI']
-    					,$single_action_arr_key
-    					,$this->_args['singular']
-    					,$item['id']
-    					,$single_action_arr_val['label']
-    				);
+    				// If either there is NO single conditional field defined OR
+    				//		there IS a single conditional field defined AND that
+    				//		field's value is in the defined set of permissible values
+    				if ( ( !array_key_exists( 'single_conditional', $single_action_arr_val ) )   				
+    					|| ( ( in_array( 'single_conditional', $single_action_arr_val ) ) 
+    						&& ( in_array( $item[$single_action_arr_val['single_conditional']['conditional_field']], $single_action_arr_val['single_conditional']['field_values'] ) ) 
+    						) 
+    					) {
+
+    					// This column DOES need a single action link, for current action
+    					$actions[$single_action_arr_key] = sprintf( 
+    						'<a href="%s&action=%s&%s=%s">%s</a>'
+    						,$_SERVER['REQUEST_URI']
+    						,$single_action_arr_key
+    						,$this->_args['singular']
+    						,$item['id']
+    						,$single_action_arr_val['label']
+    					);
+    				}
     			}
     		}
     		

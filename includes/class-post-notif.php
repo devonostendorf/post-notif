@@ -136,6 +136,11 @@ class Post_Notif {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-notif-misc.php';
 
+		/**
+		 * The class responsible for applying options and/or table updates.
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-notif-updater.php';
+		
 		$this->loader = new Post_Notif_Loader();
 
 	}
@@ -171,6 +176,9 @@ class Post_Notif {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 	
+		// Perform check for options and/or table updates
+		$this->loader->add_action( 'plugins_loaded', $plugin_admin, 'update_check' );		
+		
 		// Send notif (from Edit Post page) functionality
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'add_post_notif_meta_box' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'send_post_notif_enqueue' );
@@ -183,6 +191,9 @@ class Post_Notif {
 		// Add Post Notif top level menu to the admin menu sidebar
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_post_notif_admin_menu' );
 
+		// Handle submission of Import Subscribers form
+		$this->loader->add_action( 'admin_post_import-subs-form', $plugin_admin, 'process_subscriber_import' );
+		
 	}
 
 	/**
