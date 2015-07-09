@@ -509,15 +509,15 @@ class Post_Notif_Admin {
 			foreach ( $existing_categories as $existing_category ) {			
 				$existing_categories_arr[] = $existing_category->cat_ID;
 			}
-		
+			
 			// Attempt to process each import row
 			foreach ( $subscriber_arr as $subscriber_row ) {
 					  
 				// Assume all is well until proven otherwise
 				$import_status = 'S';
 				$status_message = '';
-				$valid_row_format = true;
-				
+				$category_arr = array();
+			
 				// Split out subscriber string, by delimiter (comma), into array
 				//		elements corresponding to staging tables' columns
 				$trimmed_subscriber_row = trim( $subscriber_row );
@@ -525,55 +525,55 @@ class Post_Notif_Admin {
 						  
 					// This is NOT a blank row - attempt to process
 					$subscriber_data_arr = explode( ',', $trimmed_subscriber_row );
-				
-					// Each subscriber row MUST include email addr, first name, and at
-					//		least one category
-					if ( ( $num_subscriber_fields = count( $subscriber_data_arr ) ) >= 3) {
-						  
-						$email_addr = trim( $subscriber_data_arr[0] );
-						$first_name = trim( $subscriber_data_arr[1] );
-			
-						$category_arr = array();
-						for ( $subscriber_data_arr_index = 2; $subscriber_data_arr_index < $num_subscriber_fields; $subscriber_data_arr_index++ ) {
-								  
-							// Do not store empty category values (e.g CSV row ends with ",")
-							$potential_category = trim( $subscriber_data_arr[$subscriber_data_arr_index] );
-							if ( $potential_category != '') {							  
-								$category_arr[$subscriber_data_arr_index - 2] = $potential_category;
-							}
-						}
-			
-						// Perform validation
+					$num_subscriber_fields = count( $subscriber_data_arr );
 					
-						// Perform truncation checks first since they should be
-						//		overshadowed by hard validation errors if they exist
+					// Email address is ONLY required field
+					// If there are only 2 fields it is assumed they are email address and first name
+					// If there are 3 or more fields it is assumed they are email address, first name, and one or more category IDs
 					
-						// Validate email address
+					$email_addr = trim( $subscriber_data_arr[0] );
+					
+					// Validate email address
 						
-						if ( $email_addr == '' ) {
+					if ( $email_addr == '' ) {
 								  
-							// Blank email address is a showstopper
-							$import_status = 'V';
-							$status_message = 'Blank email address.';		  
-						}
-						else {
-							if ( strlen( $email_addr ) > 100 ) {
-								$email_addr = substr( $email_addr, 0, 100 );
-								
-								// Truncated email address is probably not good but as
-								//		long as it is in valid format, let the user decide
-								//		whether to ignore the warning
-								$import_status = 'T';
-								$status_message = 'Email address truncated (more than 100 chars).';
-							}
-							if ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $email_addr ) ) {
+						// Blank email address is a showstopper
+						$import_status = 'V';
+						$status_message = 'Blank email address.';		  
+					}
+					else {
+						if ( strlen( $email_addr ) > 100 ) {
+							$email_addr = substr( $email_addr, 0, 100 );
 							
-								// Invalid email address is a showstopper
-								$import_status = 'V';
-								$status_message .= ' Invalid email address.';
-							}
+							// Truncated email address is probably not good but as
+							//		long as it is in valid format, let the user decide
+							//		whether to ignore the warning
+							$import_status = 'T';
+							$status_message = 'Email address truncated (more than 100 chars).';
 						}
-			
+						if ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $email_addr ) ) {
+							
+							// Invalid email address is a showstopper
+							$import_status = 'V';
+							$status_message .= ' Invalid email address.';
+						}
+					}
+
+					if ( $num_subscriber_fields == 1 ) {
+							  
+						// NO first name field provided:
+						
+						// Default blank first name
+						$first_name = '[Unknown]';
+						
+						// Default "All" category
+						$category_arr[0] = 0;
+					}
+					else {
+						
+						// First name field HAS been provided (may be blank)
+						$first_name = trim( $subscriber_data_arr[1] );
+							  
 						// Validate first name
 						if ( $first_name == '' ) {
 							  
@@ -591,45 +591,53 @@ class Post_Notif_Admin {
 							}
 							$status_message .= ' First name truncated (more than 50 chars).';
 						}
-		
-						// Validate categories
-					
-						foreach ( $category_arr as $category_key => $category_val ) {
-					
-							if ( !is_numeric( $category_val ) ) {
 							
-								// Non-numeric value is a showstopper
-								$import_status = 'V';
-								$status_message .= ' Non-numeric category (' . $category_val . ').';
-								$category_arr[$category_key] = -1;
-							}
-							elseif ( ( $category_val != 0 ) && ( !in_array( $category_val, $existing_categories_arr) ) ) {
-
-								// Value that does NOT match and existing category in
-								//		system is a showstopper
-								$import_status = 'V';
-								$status_message .= ' Invalid category (' . $category_val . ').';
-								$category_arr[$category_key] = -1;
-							}
-						}		
+						if ( $num_subscriber_fields == 2 ) {
+								  
+							// No categories provided, default "All" category
+							$category_arr[0] = 0;								  
+						}
+						else {
 					
-						if ( $import_status == 'S' ) {
-							$status_message = 'Staged (pending creation)';
+							// Iterate through provided categories
+							for ( $subscriber_data_arr_index = 2; $subscriber_data_arr_index < $num_subscriber_fields; $subscriber_data_arr_index++ ) {
+								  
+								// Do not store empty category values (e.g CSV row ends with ",")
+								$category_val = trim( $subscriber_data_arr[$subscriber_data_arr_index] );
+								if ( $category_val != '') {
+									$category_arr[$subscriber_data_arr_index - 2] = $category_val;
+										  
+									// Validate categories
+									
+									if ( !is_numeric( $category_val ) ) {
+							
+										// Non-numeric value is a showstopper
+										$import_status = 'V';
+										$status_message .= ' Non-numeric category (' . $category_val . ').';
+										$category_arr[$subscriber_data_arr_index - 2] = -1;
+									}
+									elseif ( ( $category_val != 0 ) && ( !in_array( $category_val, $existing_categories_arr) ) ) {
+
+										// Value that does NOT match and existing category in
+										//		system is a showstopper
+										$import_status = 'V';
+										$status_message .= ' Invalid category (' . $category_val . ').';
+										$category_arr[$subscriber_data_arr_index - 2] = -1;
+									}
+								}
+							}
+							if ( count( $category_arr ) == 0 ) {
+								
+								// No categories provided, default "All" category
+								$category_arr[0] = 0;								  
+							}
 						}
 					}
-					else {
-			
-						// This is an error row (that doesn't have proper format)
-						// No idea which column is supposed to be which so "blank"
-						//		them out and supply import row number so user can
-						//		identify problematic row and fix it
-						$valid_row_format = false;
-						$email_addr = '-';
-						$first_name = '-';
-						$import_status = 'V';
-						$status_message = ' Row #' . $import_row_number . ' is missing one or more required fields (email address, first name, category).';
-					}
 
+					if ( $import_status == 'S' ) {
+						$status_message = 'Staged (pending creation)';
+					}
+					
 					// Insert subscriber stage row
 					$num_subs_loaded = $wpdb->insert( 
 						$post_notif_subscriber_stage_tbl
@@ -642,8 +650,8 @@ class Post_Notif_Admin {
 						) 
 					);
 					
-					// Only load categories if row format was valid 
-					if ( ( $num_subs_loaded ) && ( $valid_row_format ) ) {
+					// Only load categories if a subscriber row was successfully loaded 
+					if ( $num_subs_loaded ) {
 			
 						// Get new subscriber ID
 						$subscriber_id = $wpdb->insert_id;

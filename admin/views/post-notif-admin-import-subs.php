@@ -24,6 +24,9 @@
 						<td>
 							<textarea name="tarSubscriberData" rows="10" cols="73" id="id_tarSubscriberData"></textarea>
             			<p class="description">
+            				<?php _e( 'See FAQ for row format (required and optional fields).' ); ?>
+            			</p>
+            			<p class="description">
             				<?php _e( 'For best results, limit your imports to batches of less than 100 rows.' ); ?>
             			</p>
  						</td>
@@ -33,7 +36,7 @@
             			<?php _e( 'Skip staging of clean rows?', 'post-notif' ); ?>
             		</th>
             		<td>
-            			<input type="checkbox" id="id_chkSkipStaging" name="chkSkipStaging" CHECKED>
+            			<input type="checkbox" id="id_chkSkipStaging" name="chkSkipStaging">
             			<br />
             		</td>
             	</tr>
