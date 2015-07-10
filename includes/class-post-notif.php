@@ -194,6 +194,8 @@ class Post_Notif {
 		// Handle submission of Import Subscribers form
 		$this->loader->add_action( 'admin_post_import-subs-form', $plugin_admin, 'process_subscriber_import' );
 		
+		// Subscriber export functionality (requires getting ahead of WordPress header generation)
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'process_multiple_subscriber_export' );
 	}
 
 	/**

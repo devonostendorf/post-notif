@@ -13,7 +13,13 @@
  */
 ?>
 	<div class="wrap">
-		<?php if ( $subscribers_deleted ) : ?>
+		<?php if ( $subscribers_exported ) : ?>
+			<div class="updated fade">
+				<p>
+					<strong><?php echo sprintf( _n( 'Subscriber exported.', '%s subscribers exported.', $subscribers_exported, 'post-notif' ), number_format_i18n( $subscribers_exported ) ); ?></strong>
+				</p>
+			</div>
+		<?php elseif ( $subscribers_deleted ) : ?>
 			<div class="updated fade">
 				<p>
 					<strong><?php echo sprintf( _n( 'Subscriber deleted.', '%s subscribers deleted.', $subscribers_deleted, 'post-notif' ), number_format_i18n( $subscribers_deleted ) ); ?></strong>

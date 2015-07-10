@@ -1436,7 +1436,12 @@ class Post_Notif_Admin {
 		$available_actions_arr = array(
 			'actionable_column_name' => 'first_name'
 			,'actions' => array(
-				'delete' => array(
+				'export' => array(
+					'label' => __( 'Export', 'post-notif' )
+					,'single_ok' => false
+					,'bulk_ok' => true
+				)
+				,'delete' => array(
 					'label' => __( 'Delete', 'post-notif' )
 					,'single_ok' => true
 					,'bulk_ok' => true
@@ -1478,6 +1483,7 @@ class Post_Notif_Admin {
 		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
+		$subscribers_exported = 0;
 		$subscribers_deleted = 0;
 		$subscribers_resent_confirmation = 0;
 		$form_action = $_SERVER['REQUEST_URI'];		
@@ -1508,6 +1514,12 @@ class Post_Notif_Admin {
 		}
 		
 		switch ( $current_action ) {
+			case 'exported':
+					  
+				// Display subscriber export count passed from process_multiple_subscriber_export()
+				$subscribers_exported = $_REQUEST['exportcount'];
+				$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber', 'exported', 'exportcount' ), $_SERVER['REQUEST_URI'] ) );
+			break;
 			case 'delete':
 					  
 				// Delete(s) need to be processed
@@ -1725,6 +1737,186 @@ class Post_Notif_Admin {
 		print $post_notif_view_subs_pg;	
 		
    }
+ 
+	/**
+	 * Perform multiple subscriber export.
+	 *
+	 * @since	1.0.4
+	 */	
+   public function process_multiple_subscriber_export() {
+   		 
+   	if ( ( isset( $_REQUEST['doaction'] ) && ($_REQUEST['action'] == 'export') )
+   		|| ( isset( $_REQUEST['doaction2'] ) && ($_REQUEST['action2'] == 'export') ) ) {
+   	
+   		$suggested_filename = 'subscriber_export.' . date( 'Y-m-d' ) . '_' . date( 'Hi' ) . '.csv';
+
+ 			// Specifying these headers will force the export file to be downloaded, not displayed
+ 			header( 'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ), true );
+ 			header( 'Content-Disposition: attachment; filename=' . $suggested_filename );
+ 
+ 			global $wpdb;
+	  
+ 			// Tack prefix on to table names
+ 			$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+ 			$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+	
+ 			// Define checkbox prefix
+ 			$exp_subscribers_checkbox_prefix = 'chkKey_';
+		
+ 			$subscriber_arr = array();
+		
+ 			// NOTE: Third parameter indicates whether column data is already sorted 
+ 			$sortable_columns_arr = array(
+ 				'first_name' => array( 
+ 					'first_name'
+ 					,false
+ 				)
+ 				,'email_addr' => array(
+ 					'email_addr'
+ 					,false
+ 				)
+ 				,'confirmed' => array(
+ 					'confirmed'
+ 					,false
+ 				)
+ 				,'date_subscribed' => array(
+ 					'date_subscribed'
+ 					,false
+ 				)
+ 				,'categories' => array(
+ 					'categories'
+ 					,false
+ 				)
+ 			);    
+				
+ 			if ( !empty( $_REQUEST['orderby'] ) ) {					 
+ 				if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
+					  
+ 					// This IS a valid, sortable column
+ 					if ( $_REQUEST['orderby'] != 'categories' ) {
+ 						$orderby = $_REQUEST['orderby'];		 
+ 					}
+ 					else {
+ 						$orderby = 'id';
+ 						$sort_by_category = true;
+				
+ 						// Sort by category requires some special handling since category data is not
+ 						//		retrieved by original query
+ 						function usort_reorder( $a, $b ) {
+ 							$order = ( !empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
+ 							$result = strcmp( $a['categories'], $b['categories'] );
+  					
+ 							return ( $order === 'asc' ) ? $result : -$result;
+ 						}
+ 					}
+ 				}
+ 				else {
+					  
+ 					// This is NOT a valid, sortable column					  
+ 					$orderby = 'first_name';
+ 				}
+ 			}
+ 			else {
+				  
+ 				// No orderby specified
+ 				$orderby = 'first_name';
+ 			}
+ 			if ( !empty( $_REQUEST['order'] ) ) {
+ 				if ( $_REQUEST['order'] == 'desc' ) {
+ 					$order = 'desc';
+ 				}
+ 				else {
+					  
+ 					// This is NOT a valid order				  
+ 					$order = 'asc';
+ 				}
+ 			}
+ 			else {
+			
+ 				// No order specified
+ 				$order = 'asc';
+ 			}
+
+ 			// For each selected subscriber on submitted form:
+ 			//		Add their ID to IN clause
+ 			//				
+ 			foreach ( $_POST as $exp_subscribers_field_name => $exp_subscribers_value ) {
+ 				if ( !(strncmp($exp_subscribers_field_name, $exp_subscribers_checkbox_prefix, strlen( $exp_subscribers_checkbox_prefix ) ) ) ) {
+						  
+ 					// This is a Subscriber checkbox
+ 					if ( isset( $exp_subscribers_field_name ) ) {
+				
+ 						// Checkbox IS selected
+					
+ 						// Add subscriber's ID to list
+ 						$subscriber_arr[] = $exp_subscribers_value;
+ 					}					  
+ 				}
+ 			}
+		
+ 			// prepare() needs to handle any number of subscribers
+ 			$id_clause_string = rtrim( str_repeat( '%d,', count( $subscriber_arr ) ), ',' );
+
+ 			// Select subscribers 
+ 			$subscribers_arr = $wpdb->get_results(
+ 				$wpdb->prepare(
+ 					"
+   					SELECT 
+   						id
+   						,email_addr 
+   						,first_name
+   					FROM $post_notif_subscriber_tbl
+   					WHERE id IN ( $id_clause_string )
+   					ORDER BY $orderby $order
+   				"
+   				,$subscriber_arr
+   			)
+   			,ARRAY_A
+   		);
+   		
+   		// Remove submitted action from URL
+   		$new_url = esc_url_raw( remove_query_arg( array ( 'action' ), $_SERVER['REQUEST_URI'] ) );
+   		
+   		// Add new query args so that exported subscriber count is displayed on page following file save
+   		$new_url = esc_url_raw( add_query_arg( array ( 'doaction' => 1, 'action' => 'exported', 'exportcount' => count( $subscribers_arr ) ), $new_url ) );
+   		  		
+   		// Reroute to new URL
+   		header( 'refresh:1; URL="' . $new_url . '"' );  			  
+   		
+   		// Get each subscriber's categories
+   		// NOTE: 0 means All and unconfirmed subscribers have NO categories
+   		$subscriber_cats_arr = array();
+   		foreach ( $subscribers_arr as $sub_key => $sub_val ) {
+   			$selected_cats_arr = $wpdb->get_results( 
+   				"
+   					SELECT cat_id 
+   					FROM $post_notif_sub_cat_tbl
+   					WHERE id = " . $sub_val['id']
+   					. " ORDER BY cat_id
+   				"
+   			);
+   		   			
+   			foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
+   				$subscribers_arr[$sub_key][] = $cat_val->cat_id;
+   			}
+   		}
+ 			
+ 			// Create a file pointer to the output stream
+  			$file_pointer = fopen('php://output', 'w');
+
+ 			foreach ($subscribers_arr as $fields_key => $fields_val ) 
+ 			{
+ 					  
+ 				// Suppress output of ID column by popping it off of the front of the array
+ 				$trash = array_shift( $fields_val );
+ 				
+ 				// Write subscriber row, in CSV format, to output stream
+ 				fputcsv( $file_pointer, $fields_val );
+ 			}
+ 			fclose( $file_pointer );
+ 			exit;
+ 		}
+ 	}
 	
 	/**
 	 * Perform single subscriber delete.
