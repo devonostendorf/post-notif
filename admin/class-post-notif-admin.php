@@ -480,6 +480,9 @@ class Post_Notif_Admin {
 
 		// Perform validation and (attempt) loading to staging tables
 		
+		// Confirm matching nonce
+		check_admin_referer( 'import_subscribers', 'post-notif-import_subscribers' );
+		
 		global $wpdb;
 		
 		$row_delimiter = chr( 13 );
@@ -488,10 +491,26 @@ class Post_Notif_Admin {
 		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
 		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
 		
-		// Split out single textarea, by delimiter (newline), into array elements
-		$subscriber_arr = explode( $row_delimiter, trim( $_POST['tarSubscriberData'] ) );
 		
-		if ( count( $subscriber_arr > 0 ) ) {
+		// Read import file, if populated				  
+		if ( ( ! empty( $_FILES ) ) && ( isset( $_FILES[ 'btnSubscriberFile' ] ) ) ) {
+				  
+				$file_contents = trim( file_get_contents( $_FILES['btnSubscriberFile']['tmp_name'] ) );
+				if ( ! empty( $file_contents ) ) {
+						  
+					// File IS populated and NOT empty
+					$subscriber_arr = explode( $row_delimiter, $file_contents );
+				}
+		}
+		if ( count( $subscriber_arr ) == 0 ) {
+				  
+			// No import file was selected OR it's empty, so read contents of textarea
+		
+			// Split out single textarea, by delimiter (newline), into array elements
+			$subscriber_arr = explode( $row_delimiter, trim( $_POST['tarSubscriberData'] ) );
+		}
+		
+		if ( count( $subscriber_arr ) > 0 ) {
 				  
 			// There IS subscriber data to validate and (potentially) load
 			
@@ -689,6 +708,7 @@ class Post_Notif_Admin {
 		// Redirect to Staged Subscribers page
 		wp_redirect( site_url() . '/wp-admin/admin.php?page=post-notif-staged-subs' );
 		exit;
+		
 	}
 	
 	/**
