@@ -36,6 +36,15 @@
 							<input type="text" size="75" name="post_notif_settings[eml_sender_eml_addr]" id="eml_sender_eml_addr" value="<?php echo esc_attr( $options['eml_sender_eml_addr'] ); ?>">
 						</td>
 					</tr>
+               <tr valign="top">
+               	<th scope="row">
+               		<?php echo '@@signature:'; ?>
+               	</th>
+               	<td>
+               		<input type="text" size="75" name="post_notif_settings[@@signature]" id="@@signature" value="<?php echo esc_attr( $options['@@signature'] ); ?>">
+               		<br />
+               	</td>
+               </tr>
 					<tr valign="top">
 						<th scope="row">
 							<label for="sub_conf_eml_subj"><?php _e( 'Subscription confirmation email subject:', 'post-notif' ); ?></label>
@@ -52,6 +61,34 @@
 							<textarea name="post_notif_settings[sub_conf_eml_body]" rows="10" cols="73" id="sub_conf_eml_body"><?php echo $options['sub_conf_eml_body']; ?></textarea>
  						</td>
 					</tr>
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'After subscription is confirmed:', 'post-notif' ); ?>
+            		</th>
+            		<td>
+							<label for="send_eml_to_sub_after_conf">
+            				<input type="checkbox" name="post_notif_settings[send_eml_to_sub_after_conf]" id="send_eml_to_sub_after_conf" value="1" <?php echo ( ( array_key_exists( 'send_eml_to_sub_after_conf', $options ) ) ? 'CHECKED' : '' ); ?> />
+            				<?php _e( 'Send email to subscriber?', 'post-notif' ); ?>
+            			</label>
+            			<br />
+            		</td>
+            	</tr>
+					<tr valign="top">
+						<th scope="row">
+							<label for="eml_to_sub_after_conf_subj"><?php _e( 'Email sent after subscription is confirmed subject:', 'post-notif' ); ?></label>
+						</th>
+						<td>
+							<input type="text" size="75" name="post_notif_settings[eml_to_sub_after_conf_subj]" id="eml_to_sub_after_conf_subj" value="<?php echo esc_attr( $options['eml_to_sub_after_conf_subj'] ); ?>">
+						</td>
+					</tr>
+					<tr valign="top">
+						<th scope="row">
+							<label for="eml_to_sub_after_conf_body"><?php _e( 'Email sent after subscription is confirmed body:', 'post-notif' ); ?></label>
+						</th>
+						<td>
+							<textarea name="post_notif_settings[eml_to_sub_after_conf_body]" rows="10" cols="73" id="eml_to_sub_after_conf_body"><?php echo $options['eml_to_sub_after_conf_body']; ?></textarea>
+ 						</td>
+					</tr>
 					<tr valign="top">
 						<th scope="row">
 							<label for="post_notif_eml_subj"><?php _e( 'Post notification email subject:', 'post-notif' ); ?>
@@ -66,15 +103,6 @@
                	</th>
                	<td>
                		<textarea name="post_notif_settings[post_notif_eml_body]" rows="10" cols="73" id="post_notif_eml_body"><?php echo $options['post_notif_eml_body']; ?></textarea>
-               		<br />
-               	</td>
-               </tr>
-               <tr valign="top">
-               	<th scope="row">
-               		<?php echo '@@signature:'; ?>
-               	</th>
-               	<td>
-               		<input type="text" size="75" name="post_notif_settings[@@signature]" id="@@signature" value="<?php echo esc_attr( $options['@@signature'] ); ?>">
                		<br />
                	</td>
                </tr>

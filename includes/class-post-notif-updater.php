@@ -91,6 +91,8 @@ class Post_Notif_Updater {
 			,'eml_sender_eml_addr' => '[ENTER EMAIL ADDRESS HERE]'
 			,'sub_conf_eml_subj' => '@@blogname: Confirmation needed for subscription request'
 			,'sub_conf_eml_body' => "Hi @@firstname,<br />\n<br />\nPlease click the link below to confirm your subscription to posts on @@blogname:<br />\n<br />\n@@confurl<br />\n<br />\n@@signature"
+			,'eml_to_sub_after_conf_subj' => 'Your subscription to @@blogname has been confirmed!'
+			,'eml_to_sub_after_conf_body' => "Hi @@firstname,<br />\n<br />\nThanks for subscribing to the posts on @@blogname.<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
 			,'post_notif_eml_subj' => 'New post on @@blogname: @@posttitle'
 			,'post_notif_eml_body' => "Hi @@firstname,<br />\n<br />\nHere's the direct link to the post:<br />@@permalink<br />\n<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
 			,'@@signature' => 'Thanks,<br />[ENTER NAME HERE]'
@@ -171,7 +173,7 @@ class Post_Notif_Updater {
 		//		initial install]) needs updating - apply all DB updates sequentially
 			
 		// NOTE: In order for this all to work going forward need to:
-		//		1) Increment DB version even if there options changes OR table 
+		//		1) Increment DB version if there are options changes AND/OR table 
 		//			structure changes
 		//		2) When there are table changes, add them to new 
 		//			"post_notif_db_update_version_" function
@@ -204,7 +206,6 @@ class Post_Notif_Updater {
 	private function post_notif_db_update_version_1() {
 			
 		global $wpdb;
-		//require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );	// dbDelta function lives in here
 		
 		$charset_collate = $wpdb->get_charset_collate();
 		
@@ -247,7 +248,6 @@ class Post_Notif_Updater {
 	private function post_notif_db_update_version_2() {
 			
 		global $wpdb;
-		//require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );	// dbDelta function lives in here
 		
 		$charset_collate = $wpdb->get_charset_collate();
 		

@@ -231,14 +231,25 @@ class Post_Notif_Public {
 		}
 	 
 		// Get subscriber
-		$subscriber_id = $wpdb->get_var( 
-			$wpdb->prepare( 
-				"SELECT id FROM " . $post_notif_subscriber_tbl . " WHERE email_addr = %s AND authcode = %s AND confirmed = 0"
+		$subscriber = $wpdb->get_row(
+			$wpdb->prepare(
+				"
+   				SELECT 
+   					id
+   					,email_addr 
+   					,first_name
+   					,authcode
+   				FROM $post_notif_subscriber_tbl
+   				WHERE email_addr = %s
+   				AND authcode = %s
+   				AND confirmed = 0
+   			"
 				,$email_addr
 				,$authcode
-			)
-		);
-		if ( $subscriber_id != null ) {
+   		)
+   	);
+
+		if ( $subscriber ) {
   		  
 			// This IS a valid authcode
    	
@@ -250,7 +261,7 @@ class Post_Notif_Public {
 					,'last_modified' => date( "Y-m-d H:i:s" )
 				)
 				,array( 
-					'id' => $subscriber_id
+					'id' => $subscriber->id
 				)    			
 			);
 
@@ -258,10 +269,58 @@ class Post_Notif_Public {
 			$result = $wpdb->insert(
 				$post_notif_sub_cat_tbl
 				,array( 
-					'id' => $subscriber_id
+					'id' => $subscriber->id
 					,'cat_id' => 0
 				)
 			);
+
+  			$post_notif_options_arr = get_option( 'post_notif_settings' );
+			
+			// If admin has chosen to activate this functionality, send email after
+			//		subscription is confirmed
+			if ( array_key_exists( 'send_eml_to_sub_after_conf', $post_notif_options_arr ) ) {
+		
+   			//	Compose email
+   		   		
+   			// Replace variables in both the subject and body of the email to subscriber
+   		
+   			$after_conf_email_subject = $post_notif_options_arr['eml_to_sub_after_conf_subj'];
+   			$after_conf_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_subject );
+ 
+   			// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
+   			$after_conf_email_subject = html_entity_decode(  $after_conf_email_subject, ENT_QUOTES, 'UTF-8' );
+   			
+   			$after_conf_email_body = $post_notif_options_arr['eml_to_sub_after_conf_body'];
+   			$after_conf_email_body = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_body );
+   			$after_conf_email_body = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $after_conf_email_body );
+
+				// Set sender name and email address
+				$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
+					. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
+  		
+   			// Specify HTML-formatted email
+   			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+   			//	Physically send email
+   				
+   			// Tailor links (change prefs, unsubscribe) to subscriber
+  				// Include or omit trailing "/", in URLs, based on blog's current permalink settings
+   			$permalink_structure = get_option( 'permalink_structure', '' );
+   			if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+   				$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   			}
+   			else {
+    				$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+   			}
+
+   			$after_conf_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $after_conf_email_body );
+   			$after_conf_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $after_conf_email_body );
+    			$after_conf_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $after_conf_email_body );
+    				
+   			$mail_sent = wp_mail( $subscriber->email_addr, $after_conf_email_subject, $after_conf_email_body, $headers );   			
+   		}
 				  
 			// Retrieve options to populate page
 			
@@ -275,7 +334,7 @@ class Post_Notif_Public {
 			$params_arr = array(
 				'email_addr' => $email_addr
 				,'authcode' => $authcode
-				,'subscriber_id' => $subscriber_id
+				,'subscriber_id' => $subscriber->id
 				,'page_title' => $sub_confirmed_page_title
 				,'page_greeting' => $sub_confirmed_page_greeting
 			);
@@ -298,29 +357,25 @@ class Post_Notif_Public {
 	 * @return	array	The current (pseudo) page.
 	 */	
 	private function create_fake_page( $posts, $content_function, $params_arr ) {
-			  
-      $posts = null;
+		
+		$posts = null;
       
-      $post = new stdClass();
-      // START - v.1.0.1:
-      // Flip sequence of post_content and post_title so it follows sequence 
-      //		shown in https://codex.wordpress.org/Function_Reference/wp_insert_post
-   	$post->post_content = $this->$content_function( $params_arr ); 
-   	$post->post_title = $params_arr['page_title'];
+		$post = new stdClass();
+		$post->post_content = $this->$content_function( $params_arr ); 
+		$post->post_title = $params_arr['page_title'];
    	
-      //	Add page object properties to prevent attributes (category, author, and
-      //		post date/time) and functionality (add comment) from appearing on 
-      //		subscriber preferences pages
-   	$post->post_type = 'page';     	
-    	$post->comment_status = 'closed';
-      // END - v.1.0.1
+		//	Add page object properties to prevent attributes (category, author, and
+		//		post date/time) and functionality (add comment) from appearing on 
+		//		subscriber preferences pages
+		$post->post_type = 'page';     	
+		$post->comment_status = 'closed';
 
-      $posts[] = $post;
+		$posts[] = $post;
            
-      return $posts;
-      
-   }
+		return $posts;
 
+	}
+	
 	/**
 	 * Retrieve subscriber's selected preferences, prep preferences page with
 	 *	admin-defined page template variables, and render page.
@@ -767,8 +822,5 @@ class Post_Notif_Public {
    	return $post_notif_unsub_pg;	  	  
    	
    }
-   
- 
-
 
 }	
