@@ -357,21 +357,21 @@ class Post_Notif_Public {
 	 * @return	array	The current (pseudo) page.
 	 */	
 	private function create_fake_page( $posts, $content_function, $params_arr ) {
-		
+			  
 		$posts = null;
-      
+		
 		$post = new stdClass();
-		$post->post_content = $this->$content_function( $params_arr ); 
+		$post->post_content = $this->$content_function( $params_arr );
 		$post->post_title = $params_arr['page_title'];
-   	
+		
 		//	Add page object properties to prevent attributes (category, author, and
-		//		post date/time) and functionality (add comment) from appearing on 
+		//		post date/time) and functionality (add comment) from appearing on
 		//		subscriber preferences pages
-		$post->post_type = 'page';     	
+		$post->post_type = 'page';
 		$post->comment_status = 'closed';
-
+		
 		$posts[] = $post;
-           
+		
 		return $posts;
 
 	}

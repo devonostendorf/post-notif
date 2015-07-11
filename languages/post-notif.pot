@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Post Notif package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Notif 1.0.3\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/post-notif\n"
-"POT-Creation-Date: 2015-06-05 02:49:26+00:00\n"
+"Project-Id-Version: Post Notif 1.0.4\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-notif\n"
+"POT-Creation-Date: 2015-07-11 22:01:05+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,115 +12,211 @@ msgstr ""
 "Last-Translator: Devon Ostendorf <devon@devonostendorf.com>\n"
 "Language-Team: Devon Ostendorf <devon@devonostendorf.com>\n"
 
-#: admin/class-post-notif-admin.php:126
+#: admin/class-post-notif-admin.php:142
 msgid "Send"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:132
+#: admin/class-post-notif-admin.php:148
 msgid "RESEND"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:141
+#: admin/class-post-notif-admin.php:157
 msgid "Post has not yet been published."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:288 includes/class-post-notif-misc.php:113
+#: admin/class-post-notif-admin.php:304 includes/class-post-notif-misc.php:112
+#: public/class-post-notif-public.php:318
 msgid "there"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:309
+#: admin/class-post-notif-admin.php:325
 msgid "Post notification has been sent for this post!"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:312
+#: admin/class-post-notif-admin.php:328
 msgid "Post notification FAILED for this post!"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:333
+#: admin/class-post-notif-admin.php:349
 msgid "Post Notif Settings"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:397 admin/class-post-notif-admin.php:398
+#: admin/class-post-notif-admin.php:413 admin/class-post-notif-admin.php:414
+msgid "Import Subscribers"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:422 admin/class-post-notif-admin.php:423
+msgid "Staged Subscribers"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:431 admin/class-post-notif-admin.php:432
 msgid "Manage Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:406 admin/class-post-notif-admin.php:407
+#: admin/class-post-notif-admin.php:440 admin/class-post-notif-admin.php:441
 msgid "View Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:415 admin/class-post-notif-admin.php:416
+#: admin/class-post-notif-admin.php:449 admin/class-post-notif-admin.php:450
 msgid "View Post Notifs Sent"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:435
+#: admin/class-post-notif-admin.php:561
+msgid "Blank email address."
+msgstr ""
+
+#: admin/class-post-notif-admin.php:571
+msgid "Email address truncated (more than 100 chars)."
+msgstr ""
+
+#: admin/class-post-notif-admin.php:577
+msgid " Invalid email address."
+msgstr ""
+
+#: admin/class-post-notif-admin.php:586 admin/class-post-notif-admin.php:600
+#: includes/class-post-notif-widget.php:291
+msgid "[Unknown]"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:611
+msgid " First name truncated (more than 50 chars)."
+msgstr ""
+
+#: admin/class-post-notif-admin.php:635
+msgid " Non-numeric category "
+msgstr ""
+
+#: admin/class-post-notif-admin.php:643
+msgid " Invalid category "
+msgstr ""
+
+#: admin/class-post-notif-admin.php:657
+msgid "Staged (pending creation)"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:725
+msgid "Create"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:737 admin/class-post-notif-admin.php:1465
 msgid "Delete"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:440
-msgid "Resend Confirmation"
+#: admin/class-post-notif-admin.php:763
+msgid "Created"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:553
+#: admin/class-post-notif-admin.php:764
+msgid "Staged"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:765
+msgid "Warning"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:766 admin/class-post-notif-admin.php:1073
+#: admin/class-post-notif-admin.php:1248
+msgid "Duplicate email address"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:767
+msgid "Import error"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:768
+msgid "System error"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:848 admin/class-post-notif-admin.php:1590
 msgid "First Name"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:554
+#: admin/class-post-notif-admin.php:849 admin/class-post-notif-admin.php:1591
 msgid "Email Address"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:555
-msgid "Confirmed?"
+#: admin/class-post-notif-admin.php:850
+msgid "Status"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:556
-msgid "Date Subscribed"
+#: admin/class-post-notif-admin.php:851
+msgid "Message"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:557
+#: admin/class-post-notif-admin.php:852 admin/class-post-notif-admin.php:1594
 msgid "Categories"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:686
-msgid "Yes"
+#: admin/class-post-notif-admin.php:974 admin/class-post-notif-admin.php:1715
+#: public/views/post-notif-public-display-sub-prefs.php:26
+msgid "All"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:686
-msgid "No"
-msgstr ""
-
-#: admin/class-post-notif-admin.php:697
+#: admin/class-post-notif-admin.php:993 admin/class-post-notif-admin.php:1734
 msgid "subscriber"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:698
+#: admin/class-post-notif-admin.php:994 admin/class-post-notif-admin.php:1735
 msgid "subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:997
+#: admin/class-post-notif-admin.php:1132 admin/class-post-notif-admin.php:1307
+msgid "Successfully created"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1155 admin/class-post-notif-admin.php:1329
+msgid "System error - try again later"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1460
+msgid "Export"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1470
+msgid "Resend Confirmation"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1592
+msgid "Confirmed?"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1593
+msgid "Date Subscribed"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1723
+msgid "Yes"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:1723
+msgid "No"
+msgstr ""
+
+#: admin/class-post-notif-admin.php:2214
 msgid "Post ID"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:998
+#: admin/class-post-notif-admin.php:2215
 msgid "Post Title"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:999
+#: admin/class-post-notif-admin.php:2216
 msgid "Author"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1000
+#: admin/class-post-notif-admin.php:2217
 msgid "Sent Date/Time"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1001
+#: admin/class-post-notif-admin.php:2218
 msgid "Sent By"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1077
+#: admin/class-post-notif-admin.php:2294
 msgid "notification"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1078
+#: admin/class-post-notif-admin.php:2295
 msgid "notifications"
 msgstr ""
 
@@ -136,122 +232,189 @@ msgstr ""
 msgid "Email sender email address:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:41
+#: admin/views/post-notif-admin-display-options.php:50
 msgid "Subscription confirmation email subject:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:49
+#: admin/views/post-notif-admin-display-options.php:58
 msgid "Subscription confirmation email body:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:57
-msgid "Post notification email subject:"
+#: admin/views/post-notif-admin-display-options.php:66
+msgid "After subscription is confirmed:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:65
-msgid "Post notification email body:"
+#: admin/views/post-notif-admin-display-options.php:71
+msgid "Send email to subscriber?"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:82
-msgid "Page Settings"
+#: admin/views/post-notif-admin-display-options.php:78
+msgid "Email sent after subscription is confirmed subject:"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:86
+msgid "Email sent after subscription is confirmed body:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:94
+msgid "Post notification email subject:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:102
+msgid "Post notification email body:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:110
+msgid "Page Settings"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:114
 msgid "Subscription confirmed page title:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:95
+#: admin/views/post-notif-admin-display-options.php:123
 msgid "Subscription confirmed page greeting:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:104
+#: admin/views/post-notif-admin-display-options.php:132
 msgid "Subscription preferences selection instructions:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:113
+#: admin/views/post-notif-admin-display-options.php:141
 msgid "Current subscription preferences page title:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:122
+#: admin/views/post-notif-admin-display-options.php:150
 msgid "Current subscription preferences page greeting:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:131
+#: admin/views/post-notif-admin-display-options.php:159
 msgid "Subscription preferences updated page title:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:140
+#: admin/views/post-notif-admin-display-options.php:168
 msgid "Subscription preferences updated page greeting:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:149
+#: admin/views/post-notif-admin-display-options.php:177
 msgid "Unsubscribe link label:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:158
+#: admin/views/post-notif-admin-display-options.php:186
 msgid "Unsubscribe confirmation page title:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:167
+#: admin/views/post-notif-admin-display-options.php:195
 msgid "Unsubscribe confirmation page greeting:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:175
+#: admin/views/post-notif-admin-display-options.php:203
 msgid "Widget Messages"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:179
+#: admin/views/post-notif-admin-display-options.php:207
 msgid "Error (blank email address):"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:188
+#: admin/views/post-notif-admin-display-options.php:216
 msgid "Error (invalid email address):"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:197
+#: admin/views/post-notif-admin-display-options.php:225
 msgid "Message (already subscribed):"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:206
+#: admin/views/post-notif-admin-display-options.php:234
 msgid "Message (successful subscription request):"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:214
+#: admin/views/post-notif-admin-display-options.php:242
 msgid "Admin Menu Settings"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:218
+#: admin/views/post-notif-admin-display-options.php:246
 msgid "Position in menu:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:224
+#: admin/views/post-notif-admin-display-options.php:252
 msgid ""
 "If you cannot see the Post Notif admin menu, change this to another number "
 "of the form \"3.xyz\"."
 msgstr ""
 
+#: admin/views/post-notif-admin-import-subs.php:23
+msgid "Import from file:"
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:32
+msgid "Import directly:"
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:37
+msgid "NOTES:"
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:40
+msgid ""
+"1. Data entered into \"Import directly\" field is NOT preserved; do NOT type "
+"in data directly (copy-and-paste from a file you've saved somewhere)."
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:43
+msgid ""
+"2. Data entered into \"Import directly\" field will only be processed if NO "
+"file is selected."
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:46
+msgid "3. See FAQ for row format (required and optional fields)."
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:49
+msgid ""
+"4. For best results, limit your imports to batches of less than 100 rows."
+msgstr ""
+
+#: admin/views/post-notif-admin-import-subs.php:55
+msgid "Skip staging of clean rows?"
+msgstr ""
+
+#: admin/views/post-notif-admin-view-staged-subs.php:18
+msgid "Staged subscriber created."
+msgid_plural "%s staged subscribers created."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/views/post-notif-admin-view-staged-subs.php:24
+msgid "Staged subscriber deleted."
+msgid_plural "%s staged subscribers deleted."
+msgstr[0] ""
+msgstr[1] ""
+
 #: admin/views/post-notif-admin-view-subs.php:19
+msgid "Subscriber exported."
+msgid_plural "%s subscribers exported."
+msgstr[0] ""
+msgstr[1] ""
+
+#: admin/views/post-notif-admin-view-subs.php:25
 msgid "Subscriber deleted."
 msgid_plural "%s subscribers deleted."
 msgstr[0] ""
 msgstr[1] ""
 
-#: admin/views/post-notif-admin-view-subs.php:25
+#: admin/views/post-notif-admin-view-subs.php:31
 msgid "Confirmation email re-sent to subscriber."
 msgid_plural "Confirmation emails re-sent to %s subscribers."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-post-notif-list-table.php:216
+#: includes/class-post-notif-list-table.php:226
 msgid "No %s found."
 msgstr ""
 
 #: includes/class-post-notif-widget.php:60
 msgid "Allow users to subscribe to post notifications."
-msgstr ""
-
-#: includes/class-post-notif-widget.php:291
-msgid "[Unknown]"
 msgstr ""
 
 #: includes/class-post-notif-wp-list-table.php:141
@@ -353,10 +516,6 @@ msgstr ""
 
 #: includes/views/admin.php:32
 msgid "Email Address Placeholder:"
-msgstr ""
-
-#: public/views/post-notif-public-display-sub-prefs.php:26
-msgid "All"
 msgstr ""
 
 #: public/views/post-notif-public-display-sub-prefs.php:50

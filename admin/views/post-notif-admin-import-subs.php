@@ -34,19 +34,19 @@
 						<td>
 							<textarea name="tarSubscriberData" rows="10" cols="73" id="id_tarSubscriberData"></textarea>
             			<p class="description">
-            				<?php _e( "NOTES:" ); ?>
+            				<?php _e( "NOTES:", 'post-notif' ); ?>
             			</p>
             			<p class="description">
-            				<?php _e( "1. Data entered into \"Import directly\" field is NOT preserved; do NOT type in data directly (copy-and-paste from a file you've saved somewhere)." ); ?>
+            				<?php _e( "1. Data entered into \"Import directly\" field is NOT preserved; do NOT type in data directly (copy-and-paste from a file you've saved somewhere).", 'post-notif' ); ?>
             			</p>
             			<p class="description">
-            				<?php _e( '2. Data entered into "Import directly" field will only be processed if NO file is selected.' ); ?>
+            				<?php _e( '2. Data entered into "Import directly" field will only be processed if NO file is selected.', 'post-notif' ); ?>
             			</p>            			
             			<p class="description">
-            				<?php _e( '3. See FAQ for row format (required and optional fields).' ); ?>
+            				<?php _e( '3. See FAQ for row format (required and optional fields).', 'post-notif' ); ?>
             			</p>
             			<p class="description">
-            				<?php _e( '4. For best results, limit your imports to batches of less than 100 rows.' ); ?>
+            				<?php _e( '4. For best results, limit your imports to batches of less than 100 rows.', 'post-notif' ); ?>
             			</p>
  						</td>
 					</tr>

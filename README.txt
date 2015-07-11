@@ -1,10 +1,10 @@
 === Post Notif ===
-Contributors: devonostendorf
-Donate link: https://devonostendorf.com
+Contributors: DevonOstendorf
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
 Tested up to: 4.2
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,7 +22,8 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Plugin email sender name and email address
 	* Subscription confirmation email subject and body
 	* Post notification email subject and body
-	* @@signature variable (for optional use in subscription confirmation and/or post notification emails)
+	* Email sent to subscriber after subscription is confirmed subject and body
+	* @@signature variable (for optional use in emails)
 		
 * Configurable page settings:
 	* Subscription confirmed page title and page greeting 	
@@ -49,7 +50,9 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* View post notifications sent
 		
 * Admin-only tools:
-	* Manage subscribers (either individually or in bulk):
+	* Import subscribers (see FAQ for details on how import process works)
+	* Manage subscribers:
+		* Export
 		* Delete
 		* Resend confirmation email
 		
@@ -66,9 +69,6 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 * For Multisite networks, once the plugin is installed in the network's plugin directory, individual site activation and configuration of the plugin can be handled by individual site admins without any access to the file server.
 
 == Installation ==
-
-**If upgrading to v1.0.3 from a previous version of the plugin**  
-Be sure you deactivate the plugin and then re-activate it IMMEDIATELY after installing the update!
 
 = Download and Install =    
 1. Go to "Plugins > Add New" in your Dashboard and search for: Post Notif
@@ -149,6 +149,14 @@ The email sender email address (under Email Settings in the settings) must be an
 
 Since WordPress Cron is not a true UNIX-style Cron daemon, I believe it is disingenuous to imply that a notification will definitely be sent out according to a schedule that relies on it.  Since WP Cron's effectiveness is highly dependent on a site's traffic, allowing authors to manually trigger notification, once they've published a post, is the functionality I've chosen to provide.
 
+= Why aren't all my notifications being sent out? =
+
+If your web host throttles the number of emails you can send during a period of time, this plugin cannot override that limit.
+
+= I have 10,000 subscribers - is this a good plugin for me to use to notify them? =
+
+Post Notif is probably not a good fit for your needs (at least at this point in time).  Look into using a plugin that works in conjunction with a service like AWeber or MailChimp.
+
 = Why isn't Post Notif translated into my language? =
 
 It is because no one who speaks your language has translated this plugin yet.  If you'd like to do so, you'll find the current post-notif.pot file in the post-notif/languages directory.  [Please contact me](https://devonostendorf.com) with any translation files you create - thanks much!
@@ -164,6 +172,96 @@ Resending confirmation will both generate a new authcode AND set the CONFIRMED v
 = Why can't I see the Post Notif admin menu? =
 
 It is likely clashing with another plugin's menu.  By default, Post Notif is set with a menu position value of 3.389.  If you do not see the Post Notif admin menu, go to the Admin Menu Settings section (under Settings >> Post Notif) and try new values in "Position in menu" (like 3.390) until you CAN see the menu.  For further reference see the [explanation of the position parameter](https://codex.wordpress.org/Function_Reference/add_menu_page).
+
+= Why don't you provide a way for me to import subscribers directly from another plugin? =
+
+In an effort to avoid an arms race of sorts, I've elected not to try to keep up on what various other plugins' database table structures are.  Consequently, the subscriber import functionality assumes you are able to export your existing subscribers and get them into comma-separated value (CSV) format.  That is, each row of data contains one or more fields, separated by commas, and terminated with a newline/carriage return.  If you are not familiar with CSV files, you can generate them fairly easily from Excel or an equivalent spreadsheet application (Excel allows you to save a file as CSV).
+
+= Where do I import subscribers? =
+
+Go to the Import Subscribers page (Post Notif >> Import Subscribers) and choose one of the two methods available there: "Import from file" or "Import directly".  If you choose to import directly, please be sure to copy-and-paste from a file you've saved somewhere as, once you press the Import button, the data in the field will not be retained when you return to the Import Subscribers page.
+
+= What is the row format required for importing subscribers? =
+
+At a minimum, each row requires a valid email address for the subscriber-to-be, like so:
+
+jill@jill.com<br />
+bill@bill.com<br />
+gene@gene.com<br />
+
+Optionally, you can include a first name (available for use in personalizing your email templates):
+
+jill@jill.com,Jill<br />
+bill@bill.com,Bill<br />
+gene@gene.com<br />
+
+Or, if your previous plugin tracked which categories each subscriber chose to be notified of posts for, you can provide one or more category IDs as well:
+
+jill@jill.com,Jill,2,3<br />
+bill@bill.com,Bill,1<br />
+gene@gene.com,,2<br />
+
+Please note that, as you can see from this last example, if you want to specify a category, you MUST provide a first name (even if it is blank/empty).
+
+If you omit a first name for a row it will be defaulted to "[Unknown]" and when it is used in email templates it will be replaced with "there" (e.g. instead of "Hi Jill" or "Hi Bill", a subscriber with an unknown first name will be addressed as "Hi there").
+
+If you omit categories for a row (as in the first two sets of examples above), the subscriber will be assigned all categories active in your system.
+
+Also, do not worry if you have a trailing comma at the end of a row (as you may end up with via saving as CSV from Excel) - this will work fine too:
+
+jill@jill.com,Jill,2,3<br />
+bill@bill.com,Bill,1,<br />
+gene@gene.com,,2,<br />
+
+= What is the complete process for importing subscribers? =
+
+Because I don't expect people to have 100% clean data the first time through, the subscriber creation process has two phases.  First, subscriber import, which loads each subscriber (and their categories) into staging tables in the database and validates each field against certain rules.  If the row is found valid (or has only permissible warnings), the import phase also stages it for subscriber creation.  If errors are found in a row during import, the staged row indicates those errors and cannot proceed to the second phase.  The second phase is subscriber creation, which takes cleanly staged subscriber rows and creates actual subscriber rows (which will receive post notifications going forward).  The only error that may occur during the subscriber creation phase is if a staged subscriber with an email address matching an existing subscriber (a duplicate) is encountered.
+
+Once you've supplied your subscriber data (in the row format described above) and pressed the Import button, and the initial import phase completes, you are re-routed to the Staged Subscribers page.  Here you'll see the current status of each row you've attempted to load.
+
+Please note that the Staged Subscribers page (and the database tables containing what you see on it) retain ALL rows you attempt to load, from ALL batches (you can think of a batch as those rows loaded each time you press the Import button) until you delete some or all of the rows (see below for how you do this).  There is no functional requirement to retain anything in the Staged Subscribers page once subscribers have been successfully created during the second phase of the process; it is strictly for the admin's analysis purposes, so rows can be deleted whenever you want to, or not at all.
+
+If a row passed all the validation rules, you will see it with a Status of "Staged" (assuming the "Skip staging of clean rows?" checkbox is NOT selected - see 'What does the "Skip staging of clean rows?" checkbox do?' below for a bit more explanation of this).
+
+Any row that failed one or more of the validation rules will fall into one of the following classifications:
+
+1. The row has a blank email address: An error message is shown, indicating that the email address is missing - this row will not make it past this initial import step
+
+2. The row has an invalid (badly formed) email address: An error message is shown, indicating that the email address is invalid - this row will not make it past this initial import step
+
+3. The row has an email address that is too long (more than 100 characters): A warning message is shown, explaining that the email address has been truncated - this row IS eligible to continue through to subscriber creation
+
+4. The row has a first name that is too long (more than 50 characters): A warning message is shown, explaining that the first name has been truncated - this row IS eligible to continue through to subscriber creation
+
+5. The row has one or more category values that are non-numeric: An error message is shown, indicating which category(s) are non-numeric - this row will not make it past this initial import step
+
+6. The row has one or more categories that cannot be found in the system: An error message is shown, indicating which category(s) are invalid - this row will not make it past this initial import step
+
+On the Staged Subscribers page there are two actions available:
+
+1. Delete (both single and bulk), which does exactly what you'd think it does - deletes selected staged subscribers (and their categories) from the staging tables (this has no bearing on the "real" subscriber tables)
+
+2. Create (both single, for rows with no problems or with only truncation warnings [that still passed formatting checks] and bulk [though you can select rows ineligible for single creation, they get filtered out during processing]), which attempts to create the subscriber and their categories.  Since at this point they've passed the previously mentioned validation checks, the only thing that prevents creation at this point is if there is already a subscriber with the same email address, in which case, when the Staged Subscriber page refreshes, you'll see a status of "Duplicate email address".  All successfully created subscribers will show "Created".
+
+Please note that selecting the checkbox to the left of the First Name header selects all rows.  Similarly, unchecking that checkbox clears the checkbox on each row.
+
+= What does the "Skip staging of clean rows?" checkbox on the Import Subscribers page do? =
+
+Selecting the "Skip staging of clean rows?" checkbox will do precisely that, effectively applying the Staged Subscriber "Create" functionality to each valid row in the import set.
+
+= Why'd you make the subscriber import process so complicated?! =
+
+I chose this two-phase approach as an attempt to satisfy both those in a hurry to simply import a bunch of email addresses they'd accumulated while using another plugin and for those that want to explicitly select what gets created during the creation phase, following review of the results of the validation process performed during the import phase.
+
+= How do I export subscribers? =
+
+Go to the Manage Subscribers page (Post Notif >> Manage Subscribers), select the subscribers you wish to export, select the Export option from the Bulk Actions dropdown, and press the Apply button.  You will be prompted for a file name and location to save the export file.  Subscribers are exported in the same CSV format as used by the import subscriber process (email address, first name, and category[s] subscribed to).  Here's an example:
+
+jill@jill.com,Jill,2,3<br />
+bill@bill.com,Bill<br />
+gene@gene.com,[Unknown],2<br />
+
+Note that Bill is an unconfirmed subscriber so he has no categories selected.
 
 == Screenshots ==
 
@@ -182,6 +280,12 @@ It is likely clashing with another plugin's menu.  By default, Post Notif is set
 13. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
 
 == Changelog ==
+
+= 1.0.4 =
+* Reworked plugin options and custom table update handling
+* Added import subscriber functionality
+* Added export subscriber functionality
+* Added functionality to optionally send email after subscription is confirmed
 
 = 1.0.3 =
 * Made the Post Notif admin menu position configurable to avoid clashes with other plugins that were resulting in "invisible" Post Notif admin menu
@@ -203,6 +307,9 @@ It is likely clashing with another plugin's menu.  By default, Post Notif is set
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Fixed issue with plugin options and custom table updates requiring manual plugin deactivate/re-activate
 
 = 1.0.3 =
 Fixed issues with "invisible" Post Notif admin menu (due to clashes with other plugins) and with Post Notif custom URLs causing "Page not found" errors for installs using (non-default) permalink settings with no trailing "/" 

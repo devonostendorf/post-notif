@@ -301,9 +301,9 @@ class Post_Notif_Admin {
    				}
 
    				$post_notif_email_body = $post_notif_email_body_template;
-   				$post_notif_email_body = str_replace('@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body);
-   				$post_notif_email_body = str_replace('@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body);
-    				$post_notif_email_body = str_replace('@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body);
+   				$post_notif_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body );
+   				$post_notif_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body );
+    				$post_notif_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body );
     				
    				$mail_sent = wp_mail( $subscriber->email_addr, $post_notif_email_subject, $post_notif_email_body, $headers );   			
    			}
@@ -495,12 +495,12 @@ class Post_Notif_Admin {
 		// Read import file, if populated				  
 		if ( ( ! empty( $_FILES ) ) && ( isset( $_FILES[ 'btnSubscriberFile' ] ) ) ) {
 				  
-				$file_contents = trim( file_get_contents( $_FILES['btnSubscriberFile']['tmp_name'] ) );
-				if ( ! empty( $file_contents ) ) {
+			$file_contents = trim( file_get_contents( $_FILES['btnSubscriberFile']['tmp_name'] ) );
+			if ( ! empty( $file_contents ) ) {
 						  
-					// File IS populated and NOT empty
-					$subscriber_arr = explode( $row_delimiter, $file_contents );
-				}
+				// File IS populated and NOT empty
+				$subscriber_arr = explode( $row_delimiter, $file_contents );
+			}
 		}
 		if ( count( $subscriber_arr ) == 0 ) {
 				  
@@ -558,7 +558,7 @@ class Post_Notif_Admin {
 								  
 						// Blank email address is a showstopper
 						$import_status = 'V';
-						$status_message = 'Blank email address.';		  
+						$status_message = __( 'Blank email address.', 'post-notif' );		  
 					}
 					else {
 						if ( strlen( $email_addr ) > 100 ) {
@@ -568,13 +568,13 @@ class Post_Notif_Admin {
 							//		long as it is in valid format, let the user decide
 							//		whether to ignore the warning
 							$import_status = 'T';
-							$status_message = 'Email address truncated (more than 100 chars).';
+							$status_message = __( 'Email address truncated (more than 100 chars).', 'post-notif' );
 						}
 						if ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $email_addr ) ) {
 							
 							// Invalid email address is a showstopper
 							$import_status = 'V';
-							$status_message .= ' Invalid email address.';
+							$status_message .= __( ' Invalid email address.', 'post-notif' );
 						}
 					}
 
@@ -583,7 +583,7 @@ class Post_Notif_Admin {
 						// NO first name field provided:
 						
 						// Default blank first name
-						$first_name = '[Unknown]';
+						$first_name = __( '[Unknown]', 'post-notif' );
 						
 						// Default "All" category
 						$category_arr[0] = 0;
@@ -597,7 +597,7 @@ class Post_Notif_Admin {
 						if ( $first_name == '' ) {
 							  
 							// Default blank first name
-							$first_name = '[Unknown]';
+							$first_name = __( '[Unknown]', 'post-notif' );
 						}
 						elseif ( strlen( $first_name ) > 50 ) {
 							$first_name = substr( $first_name, 0, 50 );
@@ -608,7 +608,7 @@ class Post_Notif_Admin {
 							if ( $import_status == 'S') {
 								$import_status = 'T';
 							}
-							$status_message .= ' First name truncated (more than 50 chars).';
+							$status_message .= __( ' First name truncated (more than 50 chars).', 'post-notif' );
 						}
 							
 						if ( $num_subscriber_fields == 2 ) {
@@ -632,7 +632,7 @@ class Post_Notif_Admin {
 							
 										// Non-numeric value is a showstopper
 										$import_status = 'V';
-										$status_message .= ' Non-numeric category (' . $category_val . ').';
+										$status_message .= __( ' Non-numeric category ', 'post-notif' ) . '(' . $category_val . ').';
 										$category_arr[$subscriber_data_arr_index - 2] = -1;
 									}
 									elseif ( ( $category_val != 0 ) && ( !in_array( $category_val, $existing_categories_arr) ) ) {
@@ -640,7 +640,7 @@ class Post_Notif_Admin {
 										// Value that does NOT match and existing category in
 										//		system is a showstopper
 										$import_status = 'V';
-										$status_message .= ' Invalid category (' . $category_val . ').';
+										$status_message .= __( ' Invalid category ', 'post-notif' ) . '(' . $category_val . ').';
 										$category_arr[$subscriber_data_arr_index - 2] = -1;
 									}
 								}
@@ -654,7 +654,7 @@ class Post_Notif_Admin {
 					}
 
 					if ( $import_status == 'S' ) {
-						$status_message = 'Staged (pending creation)';
+						$status_message = __( 'Staged (pending creation)', 'post-notif' );
 					}
 					
 					// Insert subscriber stage row
@@ -971,7 +971,7 @@ class Post_Notif_Admin {
     				$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
    			}
    			else {
-   				$cat_string = 'All';	  
+   				$cat_string = __( 'All', 'post-notif' );  
    				break;
    			}
    		}
@@ -1070,7 +1070,7 @@ class Post_Notif_Admin {
 					$post_notif_subscriber_stage_tbl
 					,array( 
 						'import_status' => 'U'
-						,'status_message' => 'Duplicate email address'
+						,'status_message' => __( 'Duplicate email address', 'post-notif' )
 					)
 					,array( 
 						'id' => $staged_subscriber_row->id
@@ -1129,7 +1129,7 @@ class Post_Notif_Admin {
 						$post_notif_subscriber_stage_tbl
 						,array( 
 							'import_status' => 'C'
-							,'status_message' => 'Successfully created'
+							,'status_message' => __( 'Successfully created', 'post-notif' )
 						)
 						,array( 
 							'id' => $staged_subscriber_row->id
@@ -1152,7 +1152,7 @@ class Post_Notif_Admin {
 						$post_notif_subscriber_stage_tbl
 						,array( 
 							'import_status' => 'X'
-							,'status_message' => 'System error - try again later'
+							,'status_message' => __( 'System error - try again later', 'post-notif' )
 						)
 						,array( 
 							'id' => $staged_subscriber_row->id
@@ -1245,7 +1245,7 @@ class Post_Notif_Admin {
 								$post_notif_subscriber_stage_tbl
 								,array( 
 									'import_status' => 'U'
-									,'status_message' => 'Duplicate email address'
+									,'status_message' => __( 'Duplicate email address', 'post-notif' )
 								)
 								,array( 
 									'id' => $staged_subscriber_row->id
@@ -1304,7 +1304,7 @@ class Post_Notif_Admin {
 									$post_notif_subscriber_stage_tbl
 									,array( 
 										'import_status' => 'C'
-										,'status_message' => 'Successfully created'
+										,'status_message' => __( 'Successfully created', 'post-notif' )
 									)
 									,array( 
 										'id' => $staged_subscriber_row->id
@@ -1326,7 +1326,7 @@ class Post_Notif_Admin {
 									$post_notif_subscriber_stage_tbl
 									,array( 
 										'import_status' => 'X'
-										,'status_message' => 'System error - try again later'
+										,'status_message' => __( 'System error - try again later', 'post-notif' )
 									)
 									,array( 
 										'id' => $staged_subscriber_row->id
@@ -1495,7 +1495,7 @@ class Post_Notif_Admin {
 	 * @access	private
 	 * @param	array	$available_actions_arr	The available actions for the list table items.
 	 */	
-	private function render_subscribers_page ( $available_actions_arr ) {
+	private function render_subscribers_page( $available_actions_arr ) {
 	
 		global $wpdb;
 		
@@ -1712,7 +1712,7 @@ class Post_Notif_Admin {
    				$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
    			}
    			else {
-   				$cat_string = 'All';	  
+   				$cat_string = __( 'All', 'post-notif' );	  
    				break;
    			}
    		}

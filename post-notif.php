@@ -22,7 +22,7 @@
  * Plugin Name:       Post Notif
  * Plugin URI:        https://devonostendorf.com/projects/#post-notif
  * Description:       Notify subscribers when you publish new posts.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Author:            Devon Ostendorf <devon@devonostendorf.com>
  * Author URI:        https://devonostendorf.com/
  * License:           GPL-2.0+
