@@ -50,7 +50,7 @@ class Post_Notif_Updater {
 	 */
 	public function __construct( $installed_post_notif_db_version ) {
 
-		$this->post_notif_db_version = 2;
+		$this->post_notif_db_version = 3;
 		$this->installed_post_notif_db_version = $installed_post_notif_db_version;
 		  
 	}
@@ -108,6 +108,7 @@ class Post_Notif_Updater {
 			,'unsub_confirmation_page_greeting' => "You've been unsubscribed (sorry to see you go!)"
 			,'widget_error_email_addr_blank' => 'An email address is required.'
 			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
+			,'widget_info_message_processing' => 'Processing...'
 			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
 			,'admin_menu_position' => '3.389'
@@ -149,9 +150,11 @@ class Post_Notif_Updater {
 			// Find index containing title so we can (potentially) add new options
 			$options_index = false;
 			foreach( $curr_widget_post_notif_arr as $arr_key => $arr_item ) {
-				if ( array_key_exists( 'title', $arr_item ) ) {
-					$options_index = $arr_key;
-					break;
+				if ( is_array( $arr_item ) ) {
+					if ( array_key_exists( 'title', $arr_item ) ) {
+						$options_index = $arr_key;
+						break;
+					}
 				}
 			}
 
@@ -269,5 +272,17 @@ class Post_Notif_Updater {
 		dbDelta( $sql );
 		
 	}
-		  		  		  
+
+	/**
+	 * Apply changes to get database schema to version 3.
+	 *
+	 * @since	1.0.5
+	 * @access	private
+	 */
+	private function post_notif_db_update_version_3() {
+			
+		// Noop
+		
+	}
+	
 }

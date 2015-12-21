@@ -222,6 +222,15 @@
             	</tr>
             	<tr valign="top">
             		<th scope="row">
+            			<?php _e( 'Message (processing):', 'post-notif' ); ?>
+            		</th>
+            		<td>
+            			<input type="text" size="75" name="post_notif_settings[widget_info_message_processing]" id="widget_info_message_processing" value="<?php echo esc_attr( $options['widget_info_message_processing'] ); ?>">
+            			<br />
+            		</td>
+            	</tr>
+            	<tr valign="top">
+            		<th scope="row">
             			<?php _e( 'Message (already subscribed):', 'post-notif' ); ?>
             		</th>
             		<td>

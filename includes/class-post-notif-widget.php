@@ -224,6 +224,9 @@ class Post_Notif_Widget extends WP_Widget {
 	 */
 	public function post_notif_widget_enqueue( $hook ) {
 	
+		// Get widget messages from options
+		$post_notif_settings_arr = get_option( 'post_notif_settings' );
+
 		$post_notif_widget_nonce = wp_create_nonce( 'post_notif_widget' );
 		wp_localize_script( 
 			$this->get_widget_slug().'-script'
@@ -231,6 +234,7 @@ class Post_Notif_Widget extends WP_Widget {
 			,array(
 				'ajax_url' => admin_url( 'admin-ajax.php' )
 				,'nonce'    => $post_notif_widget_nonce
+				,'processing_msg' => $post_notif_settings_arr['widget_info_message_processing']
 			)
 		);
 		
@@ -281,7 +285,7 @@ class Post_Notif_Widget extends WP_Widget {
 				wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_info_message_already_subscribed'] ) );					  
 			}
 			else {
-					  
+				
 				// Subscriber is new
 				$result = $wpdb->insert( 
 					$wpdb->prefix.'post_notif_subscriber' 
