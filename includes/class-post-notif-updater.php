@@ -111,6 +111,7 @@ class Post_Notif_Updater {
 			,'widget_info_message_processing' => 'Processing...'
 			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
+			,'available_categories' => array( '0' )
 			,'admin_menu_position' => '3.389'
 		);
 		// Cleanly future-proof the addition of settings by

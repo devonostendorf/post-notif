@@ -248,6 +248,58 @@
             		</td>
             	</tr>
             </table> 
+            <h3 class="title"><?php _e( 'Category Settings', 'post-notif' ); ?></h3>
+            <table class="form-table">
+            	<tr valign="top">
+            		<th scope="row">
+            			<?php _e( 'Categories available to subscribers:', 'post-notif' ); ?>
+            		</th>
+            	</tr>
+<?php
+
+// If the available_categories array exists in options, assign it to variable
+//	otherwise assign a placeholder array with a single element, with index of
+//	-1, representing NO categories selected
+$available_categories = array_key_exists( 'available_categories', $options ) ? $options['available_categories'] : array ( '-1' => '1' );
+
+// The presence of an element with index of 0 means ALL categories are selected
+$all_selected = array_key_exists( 0, $available_categories );
+?> 
+
+            	<tr valign="top">            		
+            		<td>
+            			<input type="checkbox" name="post_notif_settings[available_categories][0]" id="available_categories[0]" value="1" <?php echo $all_selected  ? 'CHECKED' : ''; ?> >All</input>
+            		</td>
+            	</tr>
+<?php
+
+// Retrieve all categories in the system
+$args = array(
+	'orderby' => 'name',
+	'order' => 'ASC',
+	'hide_empty' => 0
+);
+
+$categories = get_categories( $args );
+foreach( $categories as $category ) { 
+?>
+            	<tr valign="top">            		
+            		<td>
+<?php
+	if ( $all_selected ) {
+		echo '&nbsp;&nbsp;<input type="checkbox" class="cats" name="post_notif_settings[available_categories][' . $category->cat_ID . ']" id="available_categories[' . $category->cat_ID . ']" value="1" CHECKED DISABLED>&nbsp;' . $category->name . '</input>';
+	}
+	else {
+		echo '&nbsp;&nbsp;<input type="checkbox" class="cats" name="post_notif_settings[available_categories][' . $category->cat_ID . ']" id="available_categories[' . $category->cat_ID . ']" value="1"' . ( ( array_key_exists( $category->cat_ID, $available_categories ) ) ? ' CHECKED' : ' ' ) . ' >' . $category->name . '</input>';
+	}
+?>            			
+             		</td>
+            	</tr>
+<?php
+} 
+?>
+            	
+            </table> 
             <h3 class="title"><?php _e( 'Admin Menu Settings', 'post-notif' ); ?></h3>
             <table class="form-table">
             	<tr valign="top">
