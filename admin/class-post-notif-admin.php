@@ -180,6 +180,7 @@ class Post_Notif_Admin {
 			,array(
 				'ajax_url' => admin_url( 'admin-ajax.php' )
 				,'nonce' => $post_notif_send_nonce
+				,'processing_msg' => __( 'Processing...', 'post-notif' )
 			)
 		);  
 
@@ -232,109 +233,130 @@ class Post_Notif_Admin {
    		
 				// Tack on "All" category too
 				$post_category_clause .= '0)';
+				
+				$post_notif_options_arr = get_option( 'post_notif_settings' );
+				
+				$available_categories = array_key_exists( 'available_categories', $post_notif_options_arr ) ? $post_notif_options_arr['available_categories'] : '-1';
+				if ( '-1' != $available_categories ) {
+					
+					// Categories ARE available for subscribers to choose from
+					//	so join sub cat tbl to only notify subscribers about
+					//	categories they care about
+					$sub_cat_tbl_join = 
+						"
+							JOIN $post_notif_sub_cat_tbl
+							ON $post_notif_subscriber_tbl.id = $post_notif_sub_cat_tbl.id
+						"
+					;
+					$cat_id_clause = "AND cat_id IN $post_category_clause";
+				}
+				else {
+					
+					// Categories are NOT being used with Post Notif, so send
+					//	notification to all (confirmed) subscribers
+					$sub_cat_tbl_join = '';
+					$cat_id_clause = '';
+				}
 
     			// Find subscribers to this/these ^^^ category/s
     			$subscribers_arr = $wpdb->get_results(
     				"
-   					SELECT $post_notif_subscriber_tbl.id AS id
-   						,email_addr 
-   						,first_name
-   						,authcode
-   					FROM $post_notif_subscriber_tbl
-   					JOIN $post_notif_sub_cat_tbl
-   					ON $post_notif_subscriber_tbl.id = $post_notif_sub_cat_tbl.id
-   					WHERE confirmed = 1
-   						AND cat_id IN $post_category_clause
-   					ORDER BY $post_notif_subscriber_tbl.id
-   				"
-   			);
+   						SELECT $post_notif_subscriber_tbl.id AS id
+   							,email_addr 
+   							,first_name
+   							,authcode
+   						FROM $post_notif_subscriber_tbl
+   						$sub_cat_tbl_join
+   						WHERE confirmed = 1
+   							$cat_id_clause
+   						ORDER BY $post_notif_subscriber_tbl.id
+   					"
+   				);
    		   		
-   			//	Compose emails
+   				//	Compose emails
    		
-   			$post_notif_options_arr = get_option( 'post_notif_settings' );
+   				// Replace variables in both the post notif email subject and body 
    		
-   			// Replace variables in both the post notif email subject and body 
+   				$post_attribs = get_post( $post_id ); 
+   				$post_title = $post_attribs->post_title;
    		
-   			$post_attribs = get_post( $post_id ); 
-   			$post_title = $post_attribs->post_title;
-   		
-   			// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-   			//		will be unable to see and/or click the URL links within their email
-   			$post_permalink = get_permalink( $post_id );
+   				// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
+   				//		will be unable to see and/or click the URL links within their email
+   				$post_permalink = get_permalink( $post_id );
 
-   			$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
-   			$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
-   			$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
+   				$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
+   				$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
+   				$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
  
-   			// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
-   			$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
+   				// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
+   				$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
    			
-   			$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
-   			$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
-   			$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
-   			$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
-   			$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
+   				$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
+   				$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
 
 				// Set sender name and email address
 				$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
 					. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
   		
-   			// Specify HTML-formatted email
-   			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+				// Specify HTML-formatted email
+				$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-   			//	Physically send emails
-   			foreach ( $subscribers_arr as $subscriber ) {
+				//	Physically send emails
+				foreach ( $subscribers_arr as $subscriber ) {
    				
-   				// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
-   				// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-   				//		will be unable to see and/or click the URL links within their email
+					// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
+					// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
+					//		will be unable to see and/or click the URL links within their email
 
-   				// Include or omit trailing "/", in URLs, based on blog's current permalink settings
-   				$permalink_structure = get_option( 'permalink_structure', '' );
-   				if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
-   					$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   				}
-   				else {
+					// Include or omit trailing "/", in URLs, based on blog's current permalink settings
+					$permalink_structure = get_option( 'permalink_structure', '' );
+					if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+						$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+						$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+					}
+					else {
     					$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   				}
+    					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+    				}
 
-   				$post_notif_email_body = $post_notif_email_body_template;
-   				$post_notif_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body );
-   				$post_notif_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body );
+    				$post_notif_email_body = $post_notif_email_body_template;
+    				$post_notif_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body );
+    				$post_notif_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body );
     				$post_notif_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body );
     				
-   				$mail_sent = wp_mail( $subscriber->email_addr, $post_notif_email_subject, $post_notif_email_body, $headers );   			
+    				$mail_sent = wp_mail( $subscriber->email_addr, $post_notif_email_subject, $post_notif_email_body, $headers );   			
+    			}
+
+    			$notif_row_inserted = $wpdb->insert(
+    				$post_notif_post_tbl 
+    				,array(
+    					'post_id' => $post_id
+    					,'notif_sent_dttm' => date( "Y-m-d H:i:s" ) 
+    					,'sent_by' => get_current_user_id()
+    				)
+    			);   		
+   			
+    			// Release lock
+    			$wpdb->get_var( "SELECT RELEASE_LOCK('" . $wpdb->prefix.'post_notif_send_lock' . "')" );
    			}
 
-   			$notif_row_inserted = $wpdb->insert(
-   				$post_notif_post_tbl 
-   				,array(
-   					'post_id' => $post_id
-   					,'notif_sent_dttm' => date( "Y-m-d H:i:s" ) 
-   					,'sent_by' => get_current_user_id()
-   				)
-   			);   		
-   			
-   			// Release lock
-   			$wpdb->get_var( "SELECT RELEASE_LOCK('" . $wpdb->prefix.'post_notif_send_lock' . "')" );
+   			if ( $notif_row_inserted ) {
+   				$post_notif_sent_msg = __( 'Post notification has been sent for this post!', 'post-notif' );
+   			}
+   			else {
+   				$post_notif_sent_msg = __( 'Post notification FAILED for this post!', 'post-notif' );
+   			}
+   			wp_send_json( array( 'message' => $post_notif_sent_msg ) );
    		}
-
-   		if ( $notif_row_inserted ) {
-   			$post_notif_sent_msg = __( 'Post notification has been sent for this post!', 'post-notif' );
-   		}
-   		else {
-   			$post_notif_sent_msg = __( 'Post notification FAILED for this post!', 'post-notif' );
-   		}
-   		wp_send_json( array( 'message' => $post_notif_sent_msg ) );
-   	}
    	
 		// All ajax handlers should die when finished
     	wp_die(); 
    	
    }
-
+   
 	
 	// Functions related to adding Post Notif submenu to Settings menu
 	
