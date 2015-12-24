@@ -51,60 +51,70 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
 	private $table_data_arr;
 	
 	/**
+	 * The string containing clean $_SERVER['REQUEST_URI'] value
+	 *
+	 * @since	1.0.5
+	 * @access	private
+	 * @var     string	$clean_uri	$_SERVER['REQUEST_URI'] value.
+	 */
+	private $clean_uri;
+	
+	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since	1.0.0
 	 * @param	array	$class_settings_arr	Parent class defaults.
 	 * @param	array	$table_data_arr	Actual table data.
 	 */
-	public function __construct( $class_settings_arr, $table_data_arr ) {
-			  
+	public function __construct( $class_settings_arr, $table_data_arr, $clean_uri ) {
+				  
 		global $status, $page;
                 
 		// Set parent defaults
-      parent::__construct(
-      	array(
-      		'singular'  => $class_settings_arr['singular']
-      		,'plural'    => $class_settings_arr['plural']
-      		,'ajax'      => $class_settings_arr['ajax']
-      	)
-      );
+		parent::__construct(
+			array(
+				'singular'  => $class_settings_arr['singular']
+				,'plural'    => $class_settings_arr['plural']
+				,'ajax'      => $class_settings_arr['ajax']
+			)
+		);
 
-      $this->available_actions_arr = $class_settings_arr['available_actions_arr'];
-      $this->table_data_arr = $table_data_arr;
+		$this->available_actions_arr = $class_settings_arr['available_actions_arr'];
+		$this->table_data_arr = $table_data_arr;
+		$this->clean_uri = $clean_uri;
       
-   }
+	}
 
  	/**
 	 * Display any non-checkbox column, with single action, if appropriate.
 	 *
 	 * @since	1.0.0
 	 * @param 	array	$item	A singular item (one full row's worth of data).
-    * @param	string	$column_name	The name/slug of the column to be processed.
+	 * @param	string	$column_name	The name/slug of the column to be processed.
 	 *	@return	string	Column HTML for display
 	 */
 	public function column_default( $item, $column_name ) {
       		    			
-    	if ( $column_name == $this->available_actions_arr['actionable_column_name'] ) {
+		if ( $column_name == $this->available_actions_arr['actionable_column_name'] ) {
     	   		  
     		// This IS the column that MAY need a single action link
     		$actions = array();
     		foreach ( $this->available_actions_arr['actions'] as $single_action_arr_key => $single_action_arr_val ) {
-    			if ( $single_action_arr_val['single_ok'] == true )  {
+    			if ( true == $single_action_arr_val['single_ok'] )  {
     					  
     				// If either there is NO single conditional field defined OR
     				//		there IS a single conditional field defined AND that
     				//		field's value is in the defined set of permissible values
-    				if ( ( !array_key_exists( 'single_conditional', $single_action_arr_val ) )   				
+    				if ( ( ! array_key_exists( 'single_conditional', $single_action_arr_val ) )   				
     					|| ( ( in_array( 'single_conditional', $single_action_arr_val ) ) 
-    						&& ( in_array( $item[$single_action_arr_val['single_conditional']['conditional_field']], $single_action_arr_val['single_conditional']['field_values'] ) ) 
+    						&& ( in_array( $item[ $single_action_arr_val['single_conditional']['conditional_field'] ], $single_action_arr_val['single_conditional']['field_values'] ) ) 
     						) 
     					) {
 
     					// This column DOES need a single action link, for current action
-    					$actions[$single_action_arr_key] = sprintf( 
+    					$actions[ $single_action_arr_key ] = sprintf( 
     						'<a href="%s&action=%s&%s=%s">%s</a>'
-    						,$_SERVER['REQUEST_URI']
+    						,$this->clean_uri
     						,$single_action_arr_key
     						,$this->_args['singular']
     						,$item['id']
@@ -114,15 +124,15 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
     			}
     		}
     		
-         return sprintf( '%1$s%2$s', $item[$column_name], $this->row_actions($actions) );
+    		return sprintf( '%1$s%2$s', $item[ $column_name ], $this->row_actions( $actions ) );
     	}
     	else {
 
 			// This is a normal column, no action link necessary		
-			return $item[$column_name];
+			return $item[ $column_name ];
     	}
     	
-   }
+    }
 
  	/**
 	 * Display checkbox column (for use by bulk actions).

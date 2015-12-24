@@ -297,6 +297,8 @@ class Post_Notif_Widget extends WP_Widget {
 						,'last_modified' => date( "Y-m-d H:i:s" )
 						,'date_subscribed' => date( "Y-m-d H:i:s" )
 						,'authcode' => $authcode
+						,'to_delete' => 0
+						,'last_update_dttm' => date( "Y-m-d H:i:s" )
 					) 
 				);
     

@@ -282,7 +282,24 @@ class Post_Notif_Updater {
 	 */
 	private function post_notif_db_update_version_3() {
 			
-		// Noop
+		global $wpdb;
+		
+		$charset_collate = $wpdb->get_charset_collate();
+		
+		$sql = "CREATE TABLE {$wpdb->prefix}post_notif_subscriber (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			email_addr varchar(100) NOT NULL,
+			first_name varchar(50) NOT NULL,
+			confirmed tinyint(1) NOT NULL,
+			last_modified timestamp NOT NULL,
+			date_subscribed datetime NOT NULL,
+			authcode varchar(32) NOT NULL,
+			to_delete BOOLEAN NOT NULL DEFAULT 0,
+			last_update_dttm TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY  (id),
+			UNIQUE KEY (email_addr)			
+		) $charset_collate;";
+		dbDelta( $sql );		
 		
 	}
 	

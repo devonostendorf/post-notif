@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /**
  * The admin-specific functionality of the plugin.
@@ -1027,10 +1027,10 @@ class Post_Notif_Admin {
     		,'table_contents_arr' => $subscribers_arr    			  
     	);
 
-    	$view_staged_subs_pg_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr );
+    	$view_staged_subs_pg_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr, $form_action );
 		$view_staged_subs_pg_list_table->prepare_items();		
          
-      // Render page	  
+		// Render page	  
 		$post_notif_view_staged_subs_pg = '';
     	ob_start();
 		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-view-staged-subs.php' );
@@ -1528,6 +1528,8 @@ class Post_Notif_Admin {
 		$subscribers_exported = 0;
 		$subscribers_deleted = 0;
 		$subscribers_resent_confirmation = 0;
+		$subscribers_undeleted = 0;
+		$undo_delete_url = '';
 		$form_action = $_SERVER['REQUEST_URI'];		
 		$sort_by_category = false;
 		
@@ -1550,8 +1552,14 @@ class Post_Notif_Admin {
 				// Bulk action needs to be processed
 				$current_action = $_REQUEST['action2'];
 			}
+			elseif ( isset( $_REQUEST['action'] ) && ( 'undo_delete' == $_REQUEST['action'] ) ) {
+				$current_action = 'undo_delete';	  
+			}
 			else {
-				$current_action = '';	  
+				$current_action = '';
+				
+				// Physically delete previously soft-deleted subscribers, if any exist
+				$old_subscribers_deleted = $this->delete_flagged_subscribers();
 			}
 		}
 		
@@ -1570,12 +1578,24 @@ class Post_Notif_Admin {
 				  
 					// Delete single subscriber
 					$subscribers_deleted = $this->process_single_subscriber_delete( $affected_subscriber );
-					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+
+					// Replace delete action with undo_delete action and add nonce to undo delete URL
+					$undo_delete_url = remove_query_arg( array ( 'action' ), $form_action );
+					$undo_delete_url = add_query_arg( array ( 'action' => 'undo_delete' ), $undo_delete_url );
+					$undo_delete_url = wp_nonce_url( $undo_delete_url, 'post_notif_undo_delete_single_subscriber' );
+
+					// Clean up form action by removing action and subscriber parameters
+					$form_action = remove_query_arg( array ( 'action', 'subscriber' ), $form_action );
 				}
 				else {
 				  			 
-					// Delete multiple (selected) subscribers via bulk action
-					$subscribers_deleted = $this->process_multiple_subscriber_delete( $_POST );
+					// Delete multiple (selected) subscribers via bulk action					
+					list( $subscribers_deleted, $dttm_deleted ) = $this->process_multiple_subscriber_delete( $_POST );
+					
+					// Replace delete action with undo_delete action and add dttm_deleted and nonce to undo delete URL
+					$undo_delete_url = remove_query_arg( array ( 'action' ), $_SERVER['REQUEST_URI'] );
+					$undo_delete_url = add_query_arg( array ( 'action' => 'undo_delete', 'dttm_deleted' => $dttm_deleted ), $undo_delete_url );					
+					$undo_delete_url = wp_nonce_url( $undo_delete_url, 'post_notif_undo_delete_multiple_subscribers' );
 				}					  
 			break;
  			case 'resend':	  
@@ -1593,6 +1613,33 @@ class Post_Notif_Admin {
 					// Resend confirmations to multiple (selected) subscribers via bulk action
 					$subscribers_resent_confirmation = $this->process_multiple_subscriber_resend( $_POST );
 				}
+ 			break;
+ 			case 'undo_delete':
+ 				
+ 				// Subscriber undo delete(s) need to be processed
+ 				
+				if ( $affected_subscriber ) {
+					
+					// Confirm matching nonce
+					check_admin_referer( 'post_notif_undo_delete_single_subscriber' );
+					
+					// Undo single subscriber delete
+					$subscribers_undeleted = $this->process_single_subscriber_undo_delete( $affected_subscriber );
+
+					// Clean up form action by removing action, subscriber, and _wpnonce parameters
+					$form_action = remove_query_arg( array ( 'action', 'subscriber', '_wpnonce' ), $form_action );
+				}
+				else {
+
+					// Confirm matching nonce
+					check_admin_referer( 'post_notif_undo_delete_multiple_subscribers' );
+
+					// Undo multiple subscriber delete 
+					$subscribers_undeleted = $this->process_multiple_subscriber_undo_delete( $_REQUEST['dttm_deleted'] );
+
+					// Clean up form action by removing action, dttm_deleted, and _wpnonce parameters
+					$form_action = remove_query_arg( array ( 'action', 'dttm_deleted', '_wpnonce' ), $form_action );
+				} 				 				
  			break;
 		}
 
@@ -1697,6 +1744,7 @@ class Post_Notif_Admin {
    				,confirmed
    				,date_subscribed
    			FROM $post_notif_subscriber_tbl
+   			WHERE to_delete = 0
    			ORDER BY $orderby $order
    		"
    		,ARRAY_A
@@ -1705,8 +1753,7 @@ class Post_Notif_Admin {
    	// Select categories each subscriber is subscribed to AND pass array to page
    	//		for display
  		$args = array(
-			'exclude' => 1		// Omit Uncategorized
-			,'orderby' => 'name'
+			'orderby' => 'name'
 			,'order' => 'ASC'
 			,'hide_empty' => 0
 		);
@@ -1768,10 +1815,10 @@ class Post_Notif_Admin {
     		,'table_contents_arr' => $subscribers_arr    			  
     	);
 
-    	$view_subs_pg_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr );
+    	$view_subs_pg_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr, $form_action );
 		$view_subs_pg_list_table->prepare_items();		
          
-      // Render page	  
+		// Render page	  
 		$post_notif_view_subs_pg = '';
     	ob_start();
 		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-view-subs.php' );
@@ -1961,34 +2008,27 @@ class Post_Notif_Admin {
  	}
 	
 	/**
-	 * Perform single subscriber delete.
+	 * Perform single subscriber (soft-)delete.
 	 *
 	 * @since	1.0.0
 	 * @access	private
-	 * @param	int	$sub_id	ID of subscriber to delete.
-	 *	@return	int	Number of subscribers deleted.
+	 * @param	int	$sub_id	ID of subscriber to (soft-)delete.
+	 * @return	int	Number of subscribers (soft-)deleted.
 	 */	
 	private function process_single_subscriber_delete( $sub_id ) {
 
 		global $wpdb;
-	  
-		// Tack prefix on to table names
-		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
-		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
-
-		// Delete subscriber's preferences rows						
-		$results = $wpdb->delete( 
-			$post_notif_sub_cat_tbl
+	  						
+		// Soft-delete subscriber row					
+		$num_subs_deleted = $wpdb->update( 
+			$wpdb->prefix.'post_notif_subscriber'
 			,array( 
-				'id' => $sub_id
+				'to_delete' => 1
+				,'last_update_dttm' => date( "Y-m-d H:i:s" )
 			)    			
-		);
-						
-		// Delete subscriber row					
-		$num_subs_deleted = $wpdb->delete( 
-			$post_notif_subscriber_tbl
 			,array( 
 				'id' => $sub_id
+				,'to_delete' => 0
 			)    			
 		);
 		if ( $num_subs_deleted ) {
@@ -2003,21 +2043,17 @@ class Post_Notif_Admin {
 	}
 			 
 	/**
-	 * Perform multiple subscriber delete.
+	 * Perform multiple subscriber (soft-)delete.
 	 *
 	 * @since	1.0.0
 	 * @access	private
 	 * @param	array	$form_post	The collection of global query vars.
-	 *	@return	int	Number of subscribers deleted.
+	 * @return	int	Number of subscribers (soft-)deleted.
 	 */	
 	private function process_multiple_subscriber_delete( $form_post ) {
 			  			  
 		global $wpdb;
 	  
-		// Tack prefix on to table names
-		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
-		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
-	
 		// Define checkbox prefix
 		$del_subscribers_checkbox_prefix = 'chkKey_';
 		$subscribers_deleted = 0;
@@ -2030,22 +2066,18 @@ class Post_Notif_Admin {
 						  
 				// This is a Subscriber checkbox
 				if ( isset( $del_subscribers_field_name ) ) {
-				
-					// Checkbox IS selected
-						
-					// Delete subscriber's preferences rows						
-					$results = $wpdb->delete( 
-						$post_notif_sub_cat_tbl
+										
+					// Soft-delete subscriber row
+					$last_updt_dttm = date( "Y-m-d H:i:s" );
+					$num_subs_deleted = $wpdb->update( 
+						$wpdb->prefix.'post_notif_subscriber'
 						,array( 
-							'id' => $del_subscribers_value
+							'to_delete' => 1
+							,'last_update_dttm' => $last_updt_dttm
 						)    			
-					);
-						
-					// Delete subscriber row					
-					$num_subs_deleted = $wpdb->delete( 
-						$post_notif_subscriber_tbl 
 						,array( 
 							'id' => $del_subscribers_value
+							,'to_delete' => 0
 						)    			
 					);
 					if ( $num_subs_deleted )
@@ -2059,9 +2091,67 @@ class Post_Notif_Admin {
 			}
 		}
 		
-		return $subscribers_deleted;
-		
+		return array( $subscribers_deleted, $last_updt_dttm );
 	}
+	
+	/**
+	 * Perform single subscriber undo delete.
+	 *
+	 * @since	1.0.5
+	 * @access	private
+	 * @param	int	$sub_id	ID of subscriber to undo delete of.
+	 * @return	int	Number of subscribers affected by undo delete.
+	 */	
+	private function process_single_subscriber_undo_delete( $sub_id ) {
+
+		global $wpdb;
+						
+		$undo_delete_count = 0;
+
+		// Un(soft-)delete subscriber row					
+		$undo_delete_count = $wpdb->update( 
+			$wpdb->prefix.'post_notif_subscriber'
+			,array( 
+				'to_delete' => 0
+				,'last_update_dttm' => date( "Y-m-d H:i:s" )
+			)    			
+			,array( 
+				'id' => $sub_id
+				,'to_delete' => 1
+			)    			
+		);
+		return $undo_delete_count;		
+	}
+	
+	/**
+	 * Perform multiple subscriber undo delete.
+	 *
+	 * @since	1.0.5
+	 * @access	private
+	 * @param	string	$dttm_deleted	The date/time when batch of subscribers was deleted.
+	 * @return	int	Number of subscribers affected by undo delete.
+	 */	
+	private function process_multiple_subscriber_undo_delete( $dttm_deleted ) {
+			  		
+		global $wpdb;
+	  
+		$undo_delete_count = 0;
+								
+		// Un(soft-)delete all (flagged) subscriber rows				
+		$undo_delete_count = $wpdb->update( 
+			$wpdb->prefix.'post_notif_subscriber'
+			,array( 
+				'to_delete' => 0
+				,'last_update_dttm' => date( "Y-m-d H:i:s" )
+			)    			
+			,array( 
+				'to_delete' => 1
+				,'last_update_dttm' => $dttm_deleted
+			)    			
+		);
+		
+		return $undo_delete_count;		
+	}	
  
 	/**
 	 * Resend confirmation to single subscriber.
@@ -2329,16 +2419,75 @@ class Post_Notif_Admin {
     		,'table_contents_arr' => $post_notifs_sent_arr    			  
     	);
     	
-    	$view_post_notif_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr );
+    	$view_post_notif_list_table = new Post_Notif_List_Table( $class_settings_arr, $table_data_arr, $_SERVER['REQUEST_URI'] );
 		$view_post_notif_list_table->prepare_items();		
            	    	
-      // Render page	  
+		// Render page	  
 		$post_notif_view_posts_pg = '';
     	ob_start();
 		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-view-post-notifs-sent.php' );
 		$post_notif_view_posts_pg .= ob_get_clean();
 		print $post_notif_view_posts_pg;	
 			  
-	}			
+	}
+			
+	/**
+	 * Perform physical delete of subscribers flagged for delete.
+	 *
+	 * @since	1.0.5
+	 * @access	private
+	 * @return	int	Number of subscribers deleted.
+	 */	
+	private function delete_flagged_subscribers() {
+
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		
+		$subscribers_deleted = 0;
+
+		// Retrieve IDs of all previously soft-deleted subscribers, if any exist
+    	$flagged_subscribers_arr = $wpdb->get_col(
+    		"
+   				SELECT id
+   				FROM $post_notif_subscriber_tbl
+   				WHERE to_delete = 1
+   				ORDER BY id
+   			"
+   		);
+   				
+		foreach ( $flagged_subscribers_arr as $subscriber_id ) {
+		
+			// There ARE subscribers flagged for deletion
+			
+			// Delete subscriber's preferences rows						
+			$results = $wpdb->delete( 
+				$post_notif_sub_cat_tbl
+				,array( 
+					'id' => $subscriber_id
+				)    			
+			);
+		
+			// Delete subscriber row					
+			$num_subs_deleted = $wpdb->delete( 
+				$post_notif_subscriber_tbl
+				,array( 
+					'id' => $subscriber_id
+				)    			
+			);
+			if ( $num_subs_deleted )
+			{
+							  
+				// OK, wise-guy, I know you're saying there should never be more than
+				//		one subscriber per id!
+				$subscribers_deleted += $num_subs_deleted;
+			}
+		}
+
+		return $subscribers_deleted;
+		
+	}	
 	
 }
