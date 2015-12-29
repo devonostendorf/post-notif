@@ -3,23 +3,23 @@
 /**
  * The admin-specific functionality of the plugin.
  *					
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/admin
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/admin
  */
-
+		 		
 /**
  * The admin-specific functionality of the plugin.
  *
  * Defines the plugin name, version, and enqueues the admin-specific
  *	JavaScript.
  *
- * @since      1.0.0
- * @package    Post_Notif
- * @subpackage Post_Notif/admin
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.0
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/admin
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_Admin {
 		  	
@@ -28,7 +28,7 @@ class Post_Notif_Admin {
 	 *
 	 * @since	1.0.0
 	 * @access	private
-	 * @var     string	$plugin_name	The ID of this plugin.
+	 * @var		string	$plugin_name	The ID of this plugin.
 	 */
 	private $plugin_name;
 									
@@ -73,7 +73,7 @@ class Post_Notif_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-notif-admin.js', array( 'jquery' ), $this->version, false );
-
+		
 	}
 	
 	/**
@@ -119,7 +119,7 @@ class Post_Notif_Admin {
 	 */
 	public function render_post_notif_meta_box( $post ) {
 		
-		if ( get_post_status($post->ID) == 'publish' ) {
+		if ( 'publish' == get_post_status($post->ID) ) {
 			
 			// Post has been published, allow Post Notif send
 				  
@@ -136,7 +136,7 @@ class Post_Notif_Admin {
 					,$post->ID
 				)		
 			);
-			if ( $notif_sent_dttm == null ) {
+			if ( null == $notif_sent_dttm ) {
 		
 				// Display Send Post Notif button
 				echo '<input type="button" name="btnSendNotif" id="id_btnSendNotif" value="' . __( 'Send', 'post-notif' ) . '" />';
@@ -145,8 +145,8 @@ class Post_Notif_Admin {
 			else {
 				  
 				// Already sent, display RESEND Post Notif button and last sent date
-				echo '<input type="button" name="btnSendNotif" id="id_btnSendNotif" value="' . __( 'RESEND', 'post-notif' ) . '" />';
-				echo '<span id="id_spnPostNotifLastSent">Last sent: ' . date( "F j, Y", strtotime( $notif_sent_dttm ) )
+				echo '<input type="button" name="btnSendNotif" id="id_btnSendNotif" value="' . esc_attr__( 'RESEND', 'post-notif' ) . '" />';
+				echo '<span id="id_spnPostNotifLastSent">&nbsp;&nbsp;' . esc_html__( 'Last sent:' , 'post-notif' ) . '&nbsp;' . date( "F j, Y", strtotime( $notif_sent_dttm ) )
 					. " at "
 					. date( "g:i:s A", strtotime( $notif_sent_dttm ) )
 					. "</span>"
@@ -313,7 +313,7 @@ class Post_Notif_Admin {
 
 					// Include or omit trailing "/", in URLs, based on blog's current permalink settings
 					$permalink_structure = get_option( 'permalink_structure', '' );
-					if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+					if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
 						$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
 						$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
 					}
@@ -323,7 +323,7 @@ class Post_Notif_Admin {
     				}
 
     				$post_notif_email_body = $post_notif_email_body_template;
-    				$post_notif_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $post_notif_email_body );
+    				$post_notif_email_body = str_replace( '@@firstname', ( '[Unknown]' != $subscriber->first_name ) ? $subscriber->first_name : '', $post_notif_email_body );
     				$post_notif_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body );
     				$post_notif_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body );
     				
@@ -355,7 +355,7 @@ class Post_Notif_Admin {
 		// All ajax handlers should die when finished
     	wp_die(); 
    	
-   }
+    }
    
 	
 	// Functions related to adding Post Notif submenu to Settings menu
@@ -386,10 +386,10 @@ class Post_Notif_Admin {
      
 		register_setting(
 			'post_notif_settings_group'
-         ,'post_notif_settings'
-      );
+			,'post_notif_settings'
+		);
       
-   }
+    }
    
 	/**
 	 * Render Post Notif options page.
@@ -398,7 +398,7 @@ class Post_Notif_Admin {
 	 */	
 	public function render_post_notif_options_page() {
 
-   	$post_notif_options_pg = '';
+		$post_notif_options_pg = '';
     	ob_start();
 		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-admin-display-options.php' );
 		$post_notif_options_pg .= ob_get_clean();
@@ -524,7 +524,7 @@ class Post_Notif_Admin {
 				$subscriber_arr = explode( $row_delimiter, $file_contents );
 			}
 		}
-		if ( count( $subscriber_arr ) == 0 ) {
+		if ( 0 == count( $subscriber_arr ) ) {
 				  
 			// No import file was selected OR it's empty, so read contents of textarea
 		
@@ -576,7 +576,7 @@ class Post_Notif_Admin {
 					
 					// Validate email address
 						
-					if ( $email_addr == '' ) {
+					if ( '' == $email_addr ) {
 								  
 						// Blank email address is a showstopper
 						$import_status = 'V';
@@ -600,7 +600,7 @@ class Post_Notif_Admin {
 						}
 					}
 
-					if ( $num_subscriber_fields == 1 ) {
+					if ( 1 == $num_subscriber_fields ) {
 							  
 						// NO first name field provided:
 						
@@ -616,7 +616,7 @@ class Post_Notif_Admin {
 						$first_name = trim( $subscriber_data_arr[1] );
 							  
 						// Validate first name
-						if ( $first_name == '' ) {
+						if ( '' == $first_name ) {
 							  
 							// Default blank first name
 							$first_name = __( '[Unknown]', 'post-notif' );
@@ -633,7 +633,7 @@ class Post_Notif_Admin {
 							$status_message .= __( ' First name truncated (more than 50 chars).', 'post-notif' );
 						}
 							
-						if ( $num_subscriber_fields == 2 ) {
+						if ( 2 == $num_subscriber_fields ) {
 								  
 							// No categories provided, default "All" category
 							$category_arr[0] = 0;								  
@@ -645,19 +645,19 @@ class Post_Notif_Admin {
 								  
 								// Do not store empty category values (e.g CSV row ends with ",")
 								$category_val = trim( $subscriber_data_arr[$subscriber_data_arr_index] );
-								if ( $category_val != '') {
+								if ( '' != $category_val ) {
 									$category_arr[$subscriber_data_arr_index - 2] = $category_val;
 										  
 									// Validate categories
 									
-									if ( !is_numeric( $category_val ) ) {
+									if ( ! is_numeric( $category_val ) ) {
 							
 										// Non-numeric value is a showstopper
 										$import_status = 'V';
 										$status_message .= __( ' Non-numeric category ', 'post-notif' ) . '(' . $category_val . ').';
 										$category_arr[$subscriber_data_arr_index - 2] = -1;
 									}
-									elseif ( ( $category_val != 0 ) && ( !in_array( $category_val, $existing_categories_arr) ) ) {
+									elseif ( ( 0 != $category_val ) && ( ! in_array( $category_val, $existing_categories_arr) ) ) {
 
 										// Value that does NOT match and existing category in
 										//		system is a showstopper
@@ -667,7 +667,7 @@ class Post_Notif_Admin {
 									}
 								}
 							}
-							if ( count( $category_arr ) == 0 ) {
+							if ( 0 == count( $category_arr ) ) {
 								
 								// No categories provided, default "All" category
 								$category_arr[0] = 0;								  
@@ -675,7 +675,7 @@ class Post_Notif_Admin {
 						}
 					}
 
-					if ( $import_status == 'S' ) {
+					if ( 'S' == $import_status ) {
 						$status_message = __( 'Staged (pending creation)', 'post-notif' );
 					}
 					
@@ -702,7 +702,7 @@ class Post_Notif_Admin {
 								
 							// Insert all VALID categories (invalid categories were
 							//		set to -1
-							if ( $category_val != -1 ) {
+							if ( -1 != $category_val ) {
 								$num_cats_loaded = $wpdb->insert( 
 									$post_notif_sub_stage_cat_tbl
 									,array( 
@@ -714,7 +714,7 @@ class Post_Notif_Admin {
 						}
 					}
 				
-					if ( ( $import_status == 'S' ) && ( isset( $_POST['chkSkipStaging'] ) ) ) {
+					if ( ( 'S' == $import_status ) && ( isset( $_POST['chkSkipStaging'] ) ) ) {
 							  
 						// "Skip staging of clean rows?" was set - create actual
 						//		subscriber row and real category row(s) too!
@@ -782,9 +782,9 @@ class Post_Notif_Admin {
 		
 		// Define possible status descrs
 		$import_status_descr_arr = array(
-			'C' => __( 'Created', 'post-notif' )						// (C)reated a new subscriber
-			,'S' => __( 'Staged', 'post-notif' )						// (S)taged a new subscriber for later creation
-  			,'T' => __( 'Warning', 'post-notif' )						// (T)runcated column(s)
+			'C' => __( 'Created', 'post-notif' )					// (C)reated a new subscriber
+			,'S' => __( 'Staged', 'post-notif' )					// (S)taged a new subscriber for later creation
+  			,'T' => __( 'Warning', 'post-notif' )					// (T)runcated column(s)
   			,'U' => __( 'Duplicate email address', 'post-notif' )	//	D(U)plicate email address
   			,'V' => __( 'Import error', 'post-notif' )				// (V)alidation error
   			,'X' => __( 'System error', 'post-notif' )				//	This indicates a system error
@@ -797,20 +797,30 @@ class Post_Notif_Admin {
 		
 		$affected_subscriber = false;
 		
-		if ( !empty( $_REQUEST['subscriber'] ) ) {
+		if ( ! empty( $_REQUEST['subscriber'] ) ) {
 				  
 			// Single action needs to be processed
 			$current_action = $_REQUEST['action'];
 			$affected_subscriber = $_REQUEST['subscriber'];
+
+			// Confirm matching nonce
+			check_admin_referer( 'post_notif_' . $current_action . '_' . $affected_subscriber );
 		}
 		else {				  
+
 			if ( isset( $_REQUEST['doaction'] ) && isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+
+				// Confirm matching nonce
+				check_admin_referer( 'staged_subscribers', 'post-notif-staged_subscribers' );
 
 				// Bulk action needs to be processed
 				$current_action = $_REQUEST['action'];						
 			}
 			elseif ( isset( $_REQUEST['doaction2'] ) && isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
 				
+				// Confirm matching nonce
+				check_admin_referer( 'staged_subscribers', 'post-notif-staged_subscribers' );
+
 				// Bulk action needs to be processed
 				$current_action = $_REQUEST['action2'];
 			}
@@ -859,7 +869,7 @@ class Post_Notif_Admin {
 		if ( is_array( $available_actions_arr ) ) {				  
 			$columns_arr = array();
 			foreach ( $available_actions_arr['actions'] as $single_action_arr ) {
-				if ( $single_action_arr['bulk_ok'] == true ) {
+				if ( true == $single_action_arr['bulk_ok'] ) {
 
 					// There are bulk actions, add checkbox column
 					$columns_arr['cb'] = '<input type="checkbox" />';	 
@@ -875,33 +885,33 @@ class Post_Notif_Admin {
 
 		// NOTE: Third parameter indicates whether column data is already sorted 
 		$sortable_columns_arr = array(
-         'first_name' => array( 
-         	'first_name'
-         	,false
-         )
-         ,'email_addr' => array(
-         	'email_addr'
-         	,false
-         )
-         ,'import_status_descr' => array(
-         	'import_status_descr'
-         	,false
-         )
-         ,'status_message' => array(
-         	'status_message'
-         	,false
-         )
-         ,'categories' => array(
-         	'categories'
-         	,false
-         )
-      );    
+			'first_name' => array( 
+				'first_name'
+				,false
+			)
+			,'email_addr' => array(
+				'email_addr'
+				,false
+			)
+			,'import_status_descr' => array(
+				'import_status_descr'
+				,false
+			)
+			,'status_message' => array(
+				'status_message'
+				,false
+			)
+			,'categories' => array(
+				'categories'
+				,false
+			)
+		);    
 				
-		if ( !empty( $_REQUEST['orderby'] ) ) {					 
+		if ( ! empty( $_REQUEST['orderby'] ) ) {					 
 			if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
 					  
 				// This IS a valid, sortable column
-				if ( $_REQUEST['orderby'] != 'categories' ) {
+				if ( 'categories' != $_REQUEST['orderby'] ) {
 					$orderby = $_REQUEST['orderby'];		 
 				}
 				else {
@@ -929,8 +939,8 @@ class Post_Notif_Admin {
 			// No orderby specified
 			$orderby = 'id';
 		}
-		if ( !empty( $_REQUEST['order'] ) ) {
-			if ( $_REQUEST['order'] == 'desc' ) {
+		if ( ! empty( $_REQUEST['order'] ) ) {
+			if ( 'desc' == $_REQUEST['order'] ) {
 				$order = 'desc';
 			}
 			else {
@@ -948,21 +958,21 @@ class Post_Notif_Admin {
 		// Get subscribers
 		$subscribers_arr = $wpdb->get_results(
 			"
-   			SELECT 
-   				id
-   				,first_name
-   				,email_addr 
-   				,import_status
-   				,import_status AS import_status_descr
-   				,status_message
-   			FROM $post_notif_subscriber_stage_tbl
-   			ORDER BY $orderby $order
-   		"
-   		,ARRAY_A
-   	);
+   				SELECT 
+   					id
+   					,first_name
+   					,email_addr 
+   					,import_status
+   					,import_status AS import_status_descr
+   					,status_message
+   				FROM $post_notif_subscriber_stage_tbl
+   				ORDER BY $orderby $order
+   			"
+   			,ARRAY_A
+   		);
    	
-   	// Select categories each subscriber is subscribed to AND pass array to page
-   	//		for display
+   		// Select categories each subscriber is subscribed to AND pass array to page
+   		//		for display
  		$args = array(
 			'exclude' => 1		// Omit Uncategorized
 			,'orderby' => 'name'
@@ -976,8 +986,8 @@ class Post_Notif_Admin {
 			$category_name_arr[$category->cat_ID] = $category->name;
 		}
 
-   	$subscriber_cats_arr = array();
-   	foreach ( $subscribers_arr as $sub_key => $sub_val ) {
+		$subscriber_cats_arr = array();
+		foreach ( $subscribers_arr as $sub_key => $sub_val ) {
    		$selected_cats_arr = $wpdb->get_results( 
    			"
    				SELECT cat_id 
@@ -989,7 +999,7 @@ class Post_Notif_Admin {
    		
    		$cat_string = '';
    		foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
-   			if ($cat_val->cat_id != 0) {
+   			if ( 0 != $cat_val->cat_id ) {
     				$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
    			}
    			else {
@@ -1037,9 +1047,9 @@ class Post_Notif_Admin {
 		$post_notif_view_staged_subs_pg .= ob_get_clean();
 		print $post_notif_view_staged_subs_pg;	
 		
-   }
+	}
 	
-   /**
+	/**
 	 * Perform single staged subscriber create.
 	 *
 	 * @since	1.0.4
@@ -1062,71 +1072,71 @@ class Post_Notif_Admin {
 		$staged_subscriber_row = $wpdb->get_row(
 			$wpdb->prepare(
 				"
-   				SELECT 
-   					id
-   					,email_addr 
-   					,first_name
-   				FROM $post_notif_subscriber_stage_tbl
-   				WHERE id = %d
-   				AND import_status NOT IN ('C','U','V')
-   			"
-   			,$sub_id
-   		)
-   	);
+   					SELECT 
+   						id
+   						,email_addr 
+   						,first_name
+   					FROM $post_notif_subscriber_stage_tbl
+   					WHERE id = %d
+   					AND import_status NOT IN ('C','U','V')
+   				"
+   				,$sub_id
+   			)
+   		);
    	
-   	if ( $staged_subscriber_row ) {
+   		if ( $staged_subscriber_row ) {
    			  
-   		// Staged subscriber row, to attempt to create, found
+   			// Staged subscriber row, to attempt to create, found
 		
-   		// Does email addr already exist in subscriber table?
+   			// Does email addr already exist in subscriber table?
     		$subscriber_exists = $wpdb->get_var( 
-				"SELECT COUNT(id) FROM " . $post_notif_subscriber_tbl 
-				. " WHERE email_addr = '" . $staged_subscriber_row->email_addr . "'"
-			);
-			if ( $subscriber_exists ) {
+    			"SELECT COUNT(id) FROM " . $post_notif_subscriber_tbl 
+    			. " WHERE email_addr = '" . $staged_subscriber_row->email_addr . "'"
+    		);
+    		if ( $subscriber_exists ) {
 				
-				// Subscriber DOES already exist
+    			// Subscriber DOES already exist
 		
-				// Update status of stage subscriber row to "U", with message of "Duplicate email address"
-				$result = $wpdb->update( 
-					$post_notif_subscriber_stage_tbl
-					,array( 
-						'import_status' => 'U'
-						,'status_message' => __( 'Duplicate email address', 'post-notif' )
-					)
-					,array( 
-						'id' => $staged_subscriber_row->id
-					)    			
-				);
-			}
-			else {
+    			// Update status of stage subscriber row to "U", with message of "Duplicate email address"
+    			$result = $wpdb->update( 
+    				$post_notif_subscriber_stage_tbl
+    				,array( 
+    					'import_status' => 'U'
+    					,'status_message' => __( 'Duplicate email address', 'post-notif' )
+    				)
+    				,array( 
+    					'id' => $staged_subscriber_row->id
+    				)    			
+    			);
+    		}
+    		else {
 			
-				// Subscriber is new
+    			// Subscriber is new
 
-				// Generate authcode			
-				$authcode = Post_Notif_Misc::generate_authcode();
+    			// Generate authcode			
+    			$authcode = Post_Notif_Misc::generate_authcode();
 						
-				// Insert new subscriber row
-				$num_subs_created = $wpdb->insert( 
-					$wpdb->prefix.'post_notif_subscriber' 
-					,array( 
-						'id' => ''
-						,'email_addr' => $staged_subscriber_row->email_addr
-						,'first_name' => $staged_subscriber_row->first_name
-						,'confirmed' => 1
-						,'last_modified' => date( "Y-m-d H:i:s" )
-						,'date_subscribed' => date( "Y-m-d H:i:s" )
-						,'authcode' => $authcode
-					) 
-				);
-				if ( $num_subs_created ) {
+    			// Insert new subscriber row
+    			$num_subs_created = $wpdb->insert( 
+    				$wpdb->prefix.'post_notif_subscriber' 
+    				,array( 
+    					'id' => ''
+    					,'email_addr' => $staged_subscriber_row->email_addr
+    					,'first_name' => $staged_subscriber_row->first_name
+    					,'confirmed' => 1
+    					,'last_modified' => date( "Y-m-d H:i:s" )
+    					,'date_subscribed' => date( "Y-m-d H:i:s" )
+    					,'authcode' => $authcode
+    				) 
+    			);
+    			if ( $num_subs_created ) {
 			
-					// Get new subscriber ID
-					$subscriber_id = $wpdb->insert_id;
+    				// Get new subscriber ID
+    				$subscriber_id = $wpdb->insert_id;
 				
-					// Get staged category rows for subscriber
-					$staged_cats_arr = $wpdb->get_results( 
-						"
+    				// Get staged category rows for subscriber
+    				$staged_cats_arr = $wpdb->get_results( 
+    					"
 							SELECT cat_id 
 							FROM $post_notif_sub_stage_cat_tbl
 							WHERE id = $staged_subscriber_row->id
@@ -1182,7 +1192,7 @@ class Post_Notif_Admin {
 					);
 				
 					return 0;
-					  
+				  
 				}				
 			}
 		}
@@ -1224,7 +1234,7 @@ class Post_Notif_Admin {
 		// 	Attempt to insert a new category row with data from each staged
 		//			subscriber category row
 		foreach ( $form_post as $create_subscribers_field_name => $create_subscribers_value ) {
-			if ( !(strncmp($create_subscribers_field_name, $create_subscribers_checkbox_prefix, strlen( $create_subscribers_checkbox_prefix ) ) ) ) {
+			if ( ! ( strncmp( $create_subscribers_field_name, $create_subscribers_checkbox_prefix, strlen( $create_subscribers_checkbox_prefix ) ) ) ) {
 						  
 				// This is a Subscriber checkbox
 				if ( isset( $create_subscribers_field_name ) ) {
@@ -1365,7 +1375,7 @@ class Post_Notif_Admin {
 
 	}	
    
-   /**
+	/**
 	 * Perform single staged subscriber delete.
 	 *
 	 * @since	1.0.4
@@ -1431,7 +1441,7 @@ class Post_Notif_Admin {
 		// 	Delete their staged category rows
 		// 	Delete their row from staged subscribers table
 		foreach ( $form_post as $del_subscribers_field_name => $del_subscribers_value ) {
-			if ( !(strncmp($del_subscribers_field_name, $del_subscribers_checkbox_prefix, strlen( $del_subscribers_checkbox_prefix ) ) ) ) {
+			if ( ! ( strncmp( $del_subscribers_field_name, $del_subscribers_checkbox_prefix, strlen( $del_subscribers_checkbox_prefix ) ) ) ) {
 						  
 				// This is a Subscriber checkbox
 				if ( isset( $del_subscribers_field_name ) ) {
@@ -1535,20 +1545,30 @@ class Post_Notif_Admin {
 		
 		$affected_subscriber = false;
 		
-		if ( !empty( $_REQUEST['subscriber'] ) ) {
+		if ( ! empty( $_REQUEST['subscriber'] ) ) {
 				  
 			// Single action needs to be processed
 			$current_action = $_REQUEST['action'];
 			$affected_subscriber = $_REQUEST['subscriber'];
+			
+			// Confirm matching nonce
+			check_admin_referer( 'post_notif_' . $current_action . '_' . $affected_subscriber );
 		}
 		else {				  
+
 			if ( isset( $_REQUEST['doaction'] ) && isset( $_REQUEST['action'] ) && -1 != $_REQUEST['action'] ) {
+
+				// Confirm matching nonce
+				check_admin_referer( 'manage_subscribers', 'post-notif-manage_subscribers' );
 
 				// Bulk action needs to be processed
 				$current_action = $_REQUEST['action'];						
 			}
 			elseif ( isset( $_REQUEST['doaction2'] ) && isset( $_REQUEST['action2'] ) && -1 != $_REQUEST['action2'] ) {
 				
+				// Confirm matching nonce
+				check_admin_referer( 'manage_subscribers', 'post-notif-manage_subscribers' );
+
 				// Bulk action needs to be processed
 				$current_action = $_REQUEST['action2'];
 			}
@@ -1569,7 +1589,7 @@ class Post_Notif_Admin {
 				// Display subscriber export count passed from process_multiple_subscriber_export()
 				$subscribers_exported = $_REQUEST['exportcount'];
 				$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber', 'exported', 'exportcount' ), $_SERVER['REQUEST_URI'] ) );
-			break;
+				break;
 			case 'delete':
 					  
 				// Delete(s) need to be processed
@@ -1582,7 +1602,7 @@ class Post_Notif_Admin {
 					// Replace delete action with undo_delete action and add nonce to undo delete URL
 					$undo_delete_url = remove_query_arg( array ( 'action' ), $form_action );
 					$undo_delete_url = add_query_arg( array ( 'action' => 'undo_delete' ), $undo_delete_url );
-					$undo_delete_url = wp_nonce_url( $undo_delete_url, 'post_notif_undo_delete_single_subscriber' );
+					$undo_delete_url = wp_nonce_url( $undo_delete_url, 'post_notif_undo_delete_' . $affected_subscriber );
 
 					// Clean up form action by removing action and subscriber parameters
 					$form_action = remove_query_arg( array ( 'action', 'subscriber' ), $form_action );
@@ -1597,7 +1617,7 @@ class Post_Notif_Admin {
 					$undo_delete_url = add_query_arg( array ( 'action' => 'undo_delete', 'dttm_deleted' => $dttm_deleted ), $undo_delete_url );					
 					$undo_delete_url = wp_nonce_url( $undo_delete_url, 'post_notif_undo_delete_multiple_subscribers' );
 				}					  
-			break;
+				break;
  			case 'resend':	  
 				
  				// Resend confirmation(s) need to be processed
@@ -1613,15 +1633,12 @@ class Post_Notif_Admin {
 					// Resend confirmations to multiple (selected) subscribers via bulk action
 					$subscribers_resent_confirmation = $this->process_multiple_subscriber_resend( $_POST );
 				}
- 			break;
+				break;
  			case 'undo_delete':
  				
  				// Subscriber undo delete(s) need to be processed
  				
 				if ( $affected_subscriber ) {
-					
-					// Confirm matching nonce
-					check_admin_referer( 'post_notif_undo_delete_single_subscriber' );
 					
 					// Undo single subscriber delete
 					$subscribers_undeleted = $this->process_single_subscriber_undo_delete( $affected_subscriber );
@@ -1640,7 +1657,7 @@ class Post_Notif_Admin {
 					// Clean up form action by removing action, dttm_deleted, and _wpnonce parameters
 					$form_action = remove_query_arg( array ( 'action', 'dttm_deleted', '_wpnonce' ), $form_action );
 				} 				 				
- 			break;
+				break;
 		}
 
 		// Define list table columns
@@ -1648,7 +1665,7 @@ class Post_Notif_Admin {
 		if ( is_array( $available_actions_arr ) ) {				  
 			$columns_arr = array();
 			foreach ( $available_actions_arr['actions'] as $single_action_arr ) {
-				if ( $single_action_arr['bulk_ok'] == true ) {
+				if ( true == $single_action_arr['bulk_ok'] ) {
 
 					// There are bulk actions, add checkbox column
 					$columns_arr['cb'] = '<input type="checkbox" />';	 
@@ -1664,33 +1681,33 @@ class Post_Notif_Admin {
 
 		// NOTE: Third parameter indicates whether column data is already sorted 
 		$sortable_columns_arr = array(
-         'first_name' => array( 
-         	'first_name'
-         	,false
-         )
-         ,'email_addr' => array(
-         	'email_addr'
-         	,false
-         )
-         ,'confirmed' => array(
-         	'confirmed'
-         	,false
-         )
-         ,'date_subscribed' => array(
-         	'date_subscribed'
-         	,false
-         )
-         ,'categories' => array(
-         	'categories'
-         	,false
-         )
-      );    
+			'first_name' => array( 
+				'first_name'
+				,false
+			)
+			,'email_addr' => array(
+				'email_addr'
+				,false
+			)
+			,'confirmed' => array(
+				'confirmed'
+				,false
+			)
+			,'date_subscribed' => array(
+				'date_subscribed'
+				,false
+			)
+			,'categories' => array(
+				'categories'
+				,false
+			)
+		);    
 				
-		if ( !empty( $_REQUEST['orderby'] ) ) {					 
+		if ( ! empty( $_REQUEST['orderby'] ) ) {					 
 			if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
 					  
 				// This IS a valid, sortable column
-				if ( $_REQUEST['orderby'] != 'categories' ) {
+				if ( 'categories' != $_REQUEST['orderby'] ) {
 					$orderby = $_REQUEST['orderby'];		 
 				}
 				else {
@@ -1718,8 +1735,8 @@ class Post_Notif_Admin {
 			// No orderby specified
 			$orderby = 'first_name';
 		}
-		if ( !empty( $_REQUEST['order'] ) ) {
-			if ( $_REQUEST['order'] == 'desc' ) {
+		if ( ! empty( $_REQUEST['order'] ) ) {
+			if ( 'desc' == $_REQUEST['order'] ) {
 				$order = 'desc';
 			}
 			else {
@@ -1737,21 +1754,21 @@ class Post_Notif_Admin {
 		// Get subscribers
 		$subscribers_arr = $wpdb->get_results(
 			"
-   			SELECT 
-   				id
-   				,first_name
-   				,email_addr 
-   				,confirmed
-   				,date_subscribed
-   			FROM $post_notif_subscriber_tbl
-   			WHERE to_delete = 0
-   			ORDER BY $orderby $order
-   		"
-   		,ARRAY_A
-   	);
+   				SELECT 
+   					id
+   					,first_name
+   					,email_addr 
+   					,confirmed
+   					,date_subscribed
+   				FROM $post_notif_subscriber_tbl
+   				WHERE to_delete = 0
+   				ORDER BY $orderby $order
+   			"
+   			,ARRAY_A
+   		);
    	
-   	// Select categories each subscriber is subscribed to AND pass array to page
-   	//		for display
+   		// Select categories each subscriber is subscribed to AND pass array to page
+   		//		for display
  		$args = array(
 			'orderby' => 'name'
 			,'order' => 'ASC'
@@ -1759,33 +1776,32 @@ class Post_Notif_Admin {
 		);
 		$category_arr = get_categories( $args );
 		$category_name_arr = array();
-		foreach ( $category_arr as $category )
-		{
+		foreach ( $category_arr as $category ) {
 			$category_name_arr[$category->cat_ID] = $category->name;
 		}
 
-   	$subscriber_cats_arr = array();
-   	foreach ( $subscribers_arr as $sub_key => $sub_val ) {
-   		$selected_cats_arr = $wpdb->get_results( 
-   			"
-   				SELECT cat_id 
-   				FROM $post_notif_sub_cat_tbl
-   				WHERE id = " . $sub_val['id']
-   				. " ORDER BY cat_id
-   			"
-   		);
+		$subscriber_cats_arr = array();
+		foreach ( $subscribers_arr as $sub_key => $sub_val ) {
+			$selected_cats_arr = $wpdb->get_results( 
+				"
+   					SELECT cat_id 
+   					FROM $post_notif_sub_cat_tbl
+   					WHERE id = " . $sub_val['id']
+   					. " ORDER BY cat_id
+   				"
+   			);
    		
-   		$cat_string = '';
-   		foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
-   			if ($cat_val->cat_id != 0) {
-   				$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
+   			$cat_string = '';
+   			foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
+   				if ( 0 != $cat_val->cat_id ) {
+   					$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
+   				}
+   				else {
+   					$cat_string = __( 'All', 'post-notif' );	  
+   					break;
+   				}
    			}
-   			else {
-   				$cat_string = __( 'All', 'post-notif' );	  
-   				break;
-   			}
-   		}
-  	   	$cat_string = rtrim ( $cat_string, ', ' );   	
+   			$cat_string = rtrim ( $cat_string, ', ' );   	
   			$subscribers_arr[$sub_key]['categories'] = $cat_string;
   			
   			// Translate binary "Subscription Confirmed?" value to words
@@ -1825,19 +1841,19 @@ class Post_Notif_Admin {
 		$post_notif_view_subs_pg .= ob_get_clean();
 		print $post_notif_view_subs_pg;	
 		
-   }
+	}
  
 	/**
 	 * Perform multiple subscriber export.
 	 *
 	 * @since	1.0.4
-	 */	
-   public function process_multiple_subscriber_export() {
-   		 
-   	if ( ( isset( $_REQUEST['doaction'] ) && ($_REQUEST['action'] == 'export') )
-   		|| ( isset( $_REQUEST['doaction2'] ) && ($_REQUEST['action2'] == 'export') ) ) {
+	 */
+	public function process_multiple_subscriber_export() {
+		
+		if ( ( isset( $_REQUEST['doaction'] ) && ( 'export' == $_REQUEST['action'] ) )
+			|| ( isset( $_REQUEST['doaction2'] ) && ( 'export' == $_REQUEST['action2'] ) ) ) {
    	
-   		$suggested_filename = 'subscriber_export.' . date( 'Y-m-d' ) . '_' . date( 'Hi' ) . '.csv';
+   			$suggested_filename = 'subscriber_export.' . date( 'Y-m-d' ) . '_' . date( 'Hi' ) . '.csv';
 
  			// Specifying these headers will force the export file to be downloaded, not displayed
  			header( 'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ), true );
@@ -1878,11 +1894,11 @@ class Post_Notif_Admin {
  				)
  			);    
 				
- 			if ( !empty( $_REQUEST['orderby'] ) ) {					 
+ 			if ( ! empty( $_REQUEST['orderby'] ) ) {					 
  				if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
 					  
  					// This IS a valid, sortable column
- 					if ( $_REQUEST['orderby'] != 'categories' ) {
+ 					if ( 'categories' != $_REQUEST['orderby'] ) {
  						$orderby = $_REQUEST['orderby'];		 
  					}
  					else {
@@ -1910,8 +1926,8 @@ class Post_Notif_Admin {
  				// No orderby specified
  				$orderby = 'first_name';
  			}
- 			if ( !empty( $_REQUEST['order'] ) ) {
- 				if ( $_REQUEST['order'] == 'desc' ) {
+ 			if ( ! empty( $_REQUEST['order'] ) ) {
+ 				if ( 'desc' == $_REQUEST['order'] ) {
  					$order = 'desc';
  				}
  				else {
@@ -1930,7 +1946,7 @@ class Post_Notif_Admin {
  			//		Add their ID to IN clause
  			//				
  			foreach ( $_POST as $exp_subscribers_field_name => $exp_subscribers_value ) {
- 				if ( !(strncmp($exp_subscribers_field_name, $exp_subscribers_checkbox_prefix, strlen( $exp_subscribers_checkbox_prefix ) ) ) ) {
+ 				if ( ! ( strncmp( $exp_subscribers_field_name, $exp_subscribers_checkbox_prefix, strlen( $exp_subscribers_checkbox_prefix ) ) ) ) {
 						  
  					// This is a Subscriber checkbox
  					if ( isset( $exp_subscribers_field_name ) ) {
@@ -1950,45 +1966,45 @@ class Post_Notif_Admin {
  			$subscribers_arr = $wpdb->get_results(
  				$wpdb->prepare(
  					"
-   					SELECT 
-   						id
-   						,email_addr 
-   						,first_name
-   					FROM $post_notif_subscriber_tbl
-   					WHERE id IN ( $id_clause_string )
-   					ORDER BY $orderby $order
-   				"
-   				,$subscriber_arr
-   			)
-   			,ARRAY_A
-   		);
-   		
-   		// Remove submitted action from URL
-   		$new_url = esc_url_raw( remove_query_arg( array ( 'action' ), $_SERVER['REQUEST_URI'] ) );
-   		
-   		// Add new query args so that exported subscriber count is displayed on page following file save
-   		$new_url = esc_url_raw( add_query_arg( array ( 'doaction' => 1, 'action' => 'exported', 'exportcount' => count( $subscribers_arr ) ), $new_url ) );
-   		  		
-   		// Reroute to new URL
-   		header( 'refresh:1; URL="' . $new_url . '"' );  			  
-   		
-   		// Get each subscriber's categories
-   		// NOTE: 0 means All and unconfirmed subscribers have NO categories
-   		$subscriber_cats_arr = array();
-   		foreach ( $subscribers_arr as $sub_key => $sub_val ) {
-   			$selected_cats_arr = $wpdb->get_results( 
-   				"
-   					SELECT cat_id 
-   					FROM $post_notif_sub_cat_tbl
-   					WHERE id = " . $sub_val['id']
-   					. " ORDER BY cat_id
-   				"
+   						SELECT 
+   							id
+   							,email_addr 
+   							,first_name
+   						FROM $post_notif_subscriber_tbl
+   						WHERE id IN ( $id_clause_string )
+   						ORDER BY $orderby $order
+   					"
+   					,$subscriber_arr
+   				)
+   				,ARRAY_A
    			);
+   		
+   			// Remove submitted action from URL
+   			$new_url = esc_url_raw( remove_query_arg( array ( 'action' ), $_SERVER['REQUEST_URI'] ) );
+   		
+   			// Add new query args so that exported subscriber count is displayed on page following file save
+   			$new_url = esc_url_raw( add_query_arg( array ( 'doaction' => 1, 'action' => 'exported', 'exportcount' => count( $subscribers_arr ) ), $new_url ) );
+   		  		
+   			// Reroute to new URL
+   			header( 'refresh:1; URL="' . $new_url . '"' );  			  
+   		
+   			// Get each subscriber's categories
+   			// NOTE: 0 means All and unconfirmed subscribers have NO categories
+   			$subscriber_cats_arr = array();
+   			foreach ( $subscribers_arr as $sub_key => $sub_val ) {
+   				$selected_cats_arr = $wpdb->get_results( 
+   					"
+   						SELECT cat_id 
+   						FROM $post_notif_sub_cat_tbl
+   						WHERE id = " . $sub_val['id']
+   						. " ORDER BY cat_id
+   					"
+   				);
    		   			
-   			foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
-   				$subscribers_arr[$sub_key][] = $cat_val->cat_id;
+   				foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
+   					$subscribers_arr[$sub_key][] = $cat_val->cat_id;
+   				}
    			}
-   		}
  			
  			// Create a file pointer to the output stream
   			$file_pointer = fopen('php://output', 'w');
@@ -2062,7 +2078,7 @@ class Post_Notif_Admin {
 		// 	Delete their category rows from preferences table
 		// 	Delete their row from subscribers table
 		foreach ( $form_post as $del_subscribers_field_name => $del_subscribers_value ) {
-			if ( !(strncmp($del_subscribers_field_name, $del_subscribers_checkbox_prefix, strlen( $del_subscribers_checkbox_prefix ) ) ) ) {
+			if ( ! ( strncmp( $del_subscribers_field_name, $del_subscribers_checkbox_prefix, strlen( $del_subscribers_checkbox_prefix ) ) ) ) {
 						  
 				// This is a Subscriber checkbox
 				if ( isset( $del_subscribers_field_name ) ) {
@@ -2120,7 +2136,9 @@ class Post_Notif_Admin {
 				,'to_delete' => 1
 			)    			
 		);
-		return $undo_delete_count;		
+		
+		return $undo_delete_count;
+		
 	}
 	
 	/**
@@ -2150,7 +2168,8 @@ class Post_Notif_Admin {
 			)    			
 		);
 		
-		return $undo_delete_count;		
+		return $undo_delete_count;	
+		
 	}	
  
 	/**
@@ -2196,15 +2215,15 @@ class Post_Notif_Admin {
 		// Retrieve (subset of columns from) subscriber's row
 		$subscriber_row = $wpdb->get_row(
 			"
-   			SELECT 
-   				email_addr 
-   				,first_name
-   				,authcode
-   			FROM $post_notif_subscriber_tbl
-   			WHERE id = $sub_id
-   		"
-   		,ARRAY_A
-   	);
+   				SELECT 
+   					email_addr 
+   					,first_name
+   					,authcode
+   				FROM $post_notif_subscriber_tbl
+   				WHERE id = $sub_id
+   			"
+   			,ARRAY_A
+   		);
 
 		// Send confirmation email
 		Post_Notif_Misc::send_confirmation_email( $subscriber_row );
@@ -2245,7 +2264,7 @@ class Post_Notif_Admin {
 		// 	Update subscriber row with CONFIRMED = 0 and new AUTHCODE
 		//		Send new subscription confirmation email
 		foreach ( $form_post as $rec_subscribers_field_name => $rec_subscribers_value ) {
-			if ( !(strncmp($rec_subscribers_field_name, $rec_subscribers_checkbox_prefix, strlen( $rec_subscribers_checkbox_prefix ) ) ) ) {
+			if ( ! ( strncmp( $rec_subscribers_field_name, $rec_subscribers_checkbox_prefix, strlen( $rec_subscribers_checkbox_prefix ) ) ) ) {
 						  
 				// This is a Subscriber checkbox
 				if ( isset( $rec_subscribers_field_name ) ) {
@@ -2331,19 +2350,19 @@ class Post_Notif_Admin {
     	);
 
  		// NOTE: Third parameter indicates whether column data is already sorted 
-    	$sortable_columns_arr = array(
+ 		$sortable_columns_arr = array(
     		'post_id' => array(
     			'post_id'
     			,false
     		)
-         ,'notif_sent_dttm' => array(
-         	'notif_sent_dttm'
-         	,false
-         )
-      );
+    		,'notif_sent_dttm' => array(
+    			'notif_sent_dttm'
+    			,false
+    		)
+    	);
 				
-		if ( !empty( $_REQUEST['orderby'] ) ) {
-			if ( array_key_exists ( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
+		if ( ! empty( $_REQUEST['orderby'] ) ) {
+			if ( array_key_exists( $_REQUEST['orderby'], $sortable_columns_arr ) ) {
 	
 				// This IS a valid, sortable column
 				$orderby = $_REQUEST['orderby'];
@@ -2358,7 +2377,7 @@ class Post_Notif_Admin {
 			// No orderby specified				  
 			$orderby = 'notif_sent_dttm';		  
 		}
-		if ( !empty( $_REQUEST['order'] ) ) {
+		if ( ! empty( $_REQUEST['order'] ) ) {
 			if ( $_REQUEST['order'] == 'asc' ) {
 				$order = 'asc';
 			}
@@ -2376,28 +2395,28 @@ class Post_Notif_Admin {
 		
 		// Get post notifs sent
 		
-      // Display warning message if Sent By ID cannot be tied to a user
+		// Display warning message if Sent By ID cannot be tied to a user
 		$post_notifs_sent_arr = $wpdb->get_results(
 			"
-   			SELECT post_id
-   				,notif_sent_dttm 
-   				,sent_by
-   				,IFNULL(user_login, CONCAT('*** Can''t find user ID ', sent_by)) AS sent_by_login
-   			FROM $post_notif_post_tbl   			
-   			LEFT OUTER JOIN $users_tbl
-   				ON ($post_notif_post_tbl.sent_by = $users_tbl.ID)
-   			ORDER BY $orderby $order
-   		"
-   		,ARRAY_A
-   	);
+   				SELECT post_id
+   					,notif_sent_dttm 
+   					,sent_by
+   					,IFNULL(user_login, CONCAT('*** Can''t find user ID ', sent_by)) AS sent_by_login
+   				FROM $post_notif_post_tbl   			
+   				LEFT OUTER JOIN $users_tbl
+   					ON ($post_notif_post_tbl.sent_by = $users_tbl.ID)
+   				ORDER BY $orderby $order
+   			"
+   			,ARRAY_A
+   		);
  	
-   	// Get post titles, authors' names, and post notif senders' names
-   	foreach ( $post_notifs_sent_arr as $notif_key => $notif_val ) {
-   		$post_object = get_post( $notif_val['post_id'] );
-   		$post_notifs_sent_arr[$notif_key]['post_title'] = $post_object->post_title;
+   		// Get post titles, authors' names, and post notif senders' names
+   		foreach ( $post_notifs_sent_arr as $notif_key => $notif_val ) {
+   			$post_object = get_post( $notif_val['post_id'] );
+   			$post_notifs_sent_arr[$notif_key]['post_title'] = $post_object->post_title;
    		
     		$post_author_data = get_userdata( $post_object->post_author );
-   		$post_notifs_sent_arr[$notif_key]['author'] = $post_author_data->user_login;
+    		$post_notifs_sent_arr[$notif_key]['author'] = $post_author_data->user_login;
     	}
   	
 		// Build page	  

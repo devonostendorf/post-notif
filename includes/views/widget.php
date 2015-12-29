@@ -5,11 +5,11 @@
  *
  * This markup generates the public-facing widget.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes/views
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes/views
  */
 
 if ( ! empty ($instance['title'] )) {
@@ -18,15 +18,11 @@ if ( ! empty ($instance['title'] )) {
 ?>
 	<form id="id_frmSubscribe">
 		<span id="id_spnSuccessMsg"></span>
-		<label id="id_lblCallToAction"><?php echo $instance['call_to_action']; ?></label>
+		<label id="id_lblCallToAction"><?php echo esc_html( $instance['call_to_action'] ); ?></label>
 		<br />
-<?php
-echo '<input type="text" id="id_txtFirstName" name="txtFirstName" size="20" maxlength="50" placeholder="' . $instance['first_name_placeholder'] . '" />';
-?>		
+		<input type="text" id="id_txtFirstName" name="txtFirstName" size="20" maxlength="50" placeholder="<?php echo esc_attr( $instance['first_name_placeholder'] ); ?>" />
 		<br />
-<?php		
-echo '<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="30" maxlength="100" placeholder="' . $instance['email_addr_placeholder'] . '" required/>';
-?>		
+		<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="30" maxlength="100" placeholder="<?php echo esc_attr( $instance['email_addr_placeholder'] ); ?>" required/>	
 		<ul>
 			<input type="button" id="id_btnSubmit" name="btnSubmit" value="<?php echo esc_attr( $instance['button_label'] ); ?>" />
 		</ul>

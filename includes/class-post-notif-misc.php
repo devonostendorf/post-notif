@@ -4,11 +4,11 @@
  * A collection of miscellaneous functions that need to be accessible to 
  *	multiple classes.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.2
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.2
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
 
 /**
@@ -18,10 +18,10 @@
  *		1) Authcode generation
  *		2) Subscription confirmation email send
  *
- * @since      1.0.2
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.2
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_Misc {
 	
@@ -29,7 +29,7 @@ class Post_Notif_Misc {
 	 * Generate a new authcode.
 	 *
 	 * @since	1.0.2
-	 *	@return	string	Newly-generated authcode
+	 * @return	string	Newly-generated authcode
 	 */
 	public static function generate_authcode() {
 
@@ -109,15 +109,15 @@ class Post_Notif_Misc {
 		$conf_email_subject = html_entity_decode( $conf_email_subject, ENT_QUOTES, 'UTF-8' );
 
 		$conf_email_body = $post_notif_options_arr['sub_conf_eml_body'];
-		$conf_email_body = str_replace( '@@firstname', ( $subscriber_arr['first_name'] != '' ) ? $subscriber_arr['first_name'] : __( 'there', 'post-notif' ), $conf_email_body );
+		$conf_email_body = str_replace( '@@firstname', ( '[Unknown]' != $subscriber_arr['first_name'] ) ? $subscriber_arr['first_name'] : '', $conf_email_body );
 		$conf_email_body = str_replace( '@@blogname', get_bloginfo( 'name' ), $conf_email_body );
 
 		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
 		//		will be unable to see and/or click the confirm URL link within their email
 
-   	// Include or omit trailing "/", in URL, based on blog's current permalink settings
-   	$permalink_structure = get_option( 'permalink_structure', '' );
-   	if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+		// Include or omit trailing "/", in URL, based on blog's current permalink settings
+		$permalink_structure = get_option( 'permalink_structure', '' );
+		if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
 			$conf_url = get_site_url() . '/post_notif/confirm/?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
 		}
 		else {

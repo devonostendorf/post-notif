@@ -3,11 +3,11 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/public
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/public
  */
 
 /**
@@ -16,10 +16,10 @@
  * Defines the plugin name, version, and enqueues the public-facing
  *	JavaScript.
  *
- * @since      1.0.0
- * @package    Post_Notif
- * @subpackage Post_Notif/public
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.0
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/public
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_Public {
 
@@ -98,20 +98,20 @@ class Post_Notif_Public {
 	 *
 	 * @since	1.0.0
 	 * @param	array	$all_widgets	All widgets.
-	 *	@return	array	All widgets.
+	 * @return	array	All widgets.
 	 */
 	public function hide_post_notif_widgets( $all_widgets ) {
 
 		foreach ( $all_widgets as $sidebar_key => $sidebar ) {
-			if ( $sidebar_key != 'wp_inactive_widgets' ) {
+			if ( 'wp_inactive_widgets' != $sidebar_key ) {
 				if ( count( $sidebar ) ) {
 						  
 					// Sidebar contains widgets, so iterate through them, looking for 
 					//		Post Notif and Recent Posts widgets
 					foreach ( $sidebar as $widget_index => $widget ) {
-						if ( ( strpos( $widget, 'post-notif' ) !== false ) 
-						OR ( strpos( $widget, 'recent-posts' ) !== false ) ) {
-							unset( $all_widgets[$sidebar_key][$widget_index] );
+						if ( ( false !== strpos( $widget, 'post-notif' ) ) 
+						|| ( false !== strpos( $widget, 'recent-posts' ) ) ) {
+							unset( $all_widgets[ $sidebar_key ][ $widget_index ] );
 						}
 					}
 				}
@@ -197,7 +197,7 @@ class Post_Notif_Public {
 	 */
 	private function add_filter_for_subscription_confirmation() {
 			
-		add_filter( 'the_posts', array ( $this, 'create_subscription_confirmed_page' ) );
+		add_filter( 'the_posts', array( $this, 'create_subscription_confirmed_page' ) );
 	 
 	}
 	
@@ -234,20 +234,20 @@ class Post_Notif_Public {
 		$subscriber = $wpdb->get_row(
 			$wpdb->prepare(
 				"
-   				SELECT 
-   					id
-   					,email_addr 
-   					,first_name
-   					,authcode
-   				FROM $post_notif_subscriber_tbl
-   				WHERE email_addr = %s
-   				AND authcode = %s
-   				AND confirmed = 0
-   			"
+   					SELECT 
+   						id
+   						,email_addr 
+   						,first_name
+   						,authcode
+   					FROM $post_notif_subscriber_tbl
+   					WHERE email_addr = %s
+   					AND authcode = %s
+   					AND confirmed = 0
+   				"
 				,$email_addr
 				,$authcode
-   		)
-   	);
+			)
+		);
 
 		if ( $subscriber ) {
   		  
@@ -280,47 +280,47 @@ class Post_Notif_Public {
 			//		subscription is confirmed
 			if ( array_key_exists( 'send_eml_to_sub_after_conf', $post_notif_options_arr ) ) {
 		
-   			//	Compose email
+				//	Compose email
    		   		
-   			// Replace variables in both the subject and body of the email to subscriber
+				// Replace variables in both the subject and body of the email to subscriber
    		
-   			$after_conf_email_subject = $post_notif_options_arr['eml_to_sub_after_conf_subj'];
-   			$after_conf_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_subject );
+				$after_conf_email_subject = $post_notif_options_arr['eml_to_sub_after_conf_subj'];
+				$after_conf_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_subject );
  
-   			// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
-   			$after_conf_email_subject = html_entity_decode(  $after_conf_email_subject, ENT_QUOTES, 'UTF-8' );
+				// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
+				$after_conf_email_subject = html_entity_decode( $after_conf_email_subject, ENT_QUOTES, 'UTF-8' );
    			
-   			$after_conf_email_body = $post_notif_options_arr['eml_to_sub_after_conf_body'];
-   			$after_conf_email_body = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_body );
-   			$after_conf_email_body = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $after_conf_email_body );
+				$after_conf_email_body = $post_notif_options_arr['eml_to_sub_after_conf_body'];
+				$after_conf_email_body = str_replace( '@@blogname', get_bloginfo('name'), $after_conf_email_body );
+				$after_conf_email_body = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $after_conf_email_body );
 
 				// Set sender name and email address
 				$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
 					. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
   		
-   			// Specify HTML-formatted email
-   			$headers[] = 'Content-Type: text/html; charset=UTF-8';
+				// Specify HTML-formatted email
+				$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-   			//	Physically send email
+				//	Physically send email
    				
-   			// Tailor links (change prefs, unsubscribe) to subscriber
+				// Tailor links (change prefs, unsubscribe) to subscriber
   				// Include or omit trailing "/", in URLs, based on blog's current permalink settings
-   			$permalink_structure = get_option( 'permalink_structure', '' );
-   			if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
-   				$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   			}
-   			else {
-    				$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   				$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-   			}
+  				$permalink_structure = get_option( 'permalink_structure', '' );
+  				if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
+  					$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+  					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+  				}
+  				else {
+    					$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+    					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+    			}
 
-   			$after_conf_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : __( 'there', 'post-notif' ), $after_conf_email_body );
-   			$after_conf_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $after_conf_email_body );
+    			$after_conf_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : '', $after_conf_email_body );
+    			$after_conf_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $after_conf_email_body );
     			$after_conf_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $after_conf_email_body );
     				
-   			$mail_sent = wp_mail( $subscriber->email_addr, $after_conf_email_subject, $after_conf_email_body, $headers );   			
-   		}
+    			$mail_sent = wp_mail( $subscriber->email_addr, $after_conf_email_subject, $after_conf_email_body, $headers );   			
+    		}
 				  
 			// Retrieve options to populate page
 			
@@ -389,8 +389,8 @@ class Post_Notif_Public {
 
  		global $wpdb;
 
-   	// Tack prefix on to table names
-   	$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+ 		// Tack prefix on to table names
+ 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
 		$email_addr = $params_arr['email_addr'];
 		$authcode = $params_arr['authcode'];
@@ -411,7 +411,7 @@ class Post_Notif_Public {
   			$category_selected_arr[] = $cat_row->cat_id;
   		}
    	
-   	$sub_prefs_greeting = $params_arr['page_greeting'];
+  		$sub_prefs_greeting = $params_arr['page_greeting'];
    	
 		// Retrieve options to populate page
    	
@@ -431,7 +431,7 @@ class Post_Notif_Public {
   		
   		return $post_notif_sub_prefs_pg;	
 
-   }
+  	}
     
 	/**
 	 * Detect manage preferences URL.
@@ -455,7 +455,7 @@ class Post_Notif_Public {
 	 */
 	private function add_filter_for_manage_preferences() {
 			  
-		add_filter('the_posts', array ( $this, 'create_manage_preferences_page' ) );
+		add_filter( 'the_posts', array( $this, 'create_manage_preferences_page' ) );
 		
 	}
 	
@@ -502,9 +502,9 @@ class Post_Notif_Public {
 		global $wpdb;
 		global $wp_query;
 
-   	// Tack prefix on to table names
-   	$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
-   	$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
 		// Get parms passed in URL
 
@@ -524,7 +524,7 @@ class Post_Notif_Public {
 				,$authcode
 			)
 		);   	   	
-   	if ( $subscriber_id != null ) {
+		if ( null != $subscriber_id ) {
 			  			
 			// This IS a valid authcode
 			
@@ -563,7 +563,7 @@ class Post_Notif_Public {
 	 */
 	private function add_filter_for_update_preferences() {
 
-		add_filter('the_posts', array ( $this, 'create_update_preferences_page' ) );
+		add_filter( 'the_posts', array( $this, 'create_update_preferences_page' ) );
 		
 	}
 	
@@ -619,7 +619,7 @@ class Post_Notif_Public {
 			)
 			,ARRAY_A
 		);		
-		if ( $subscriber_row != null ) {
+		if ( null != $subscriber_row ) {
 			  
 			// This IS a valid authcode
    	
@@ -646,7 +646,7 @@ class Post_Notif_Public {
 			// 	Insert category into preferences table
 			$category_selected_arr = array();
 			foreach ( $_POST as $post_notif_field_name => $post_notif_value ) {
-				if ( !(strncmp($post_notif_field_name, $post_notif_cat_checkbox_prefix, strlen( $post_notif_cat_checkbox_prefix ) ) ) ) {
+				if ( ! ( strncmp( $post_notif_field_name, $post_notif_cat_checkbox_prefix, strlen( $post_notif_cat_checkbox_prefix ) ) ) ) {
 						  
 					// This is a Category ID checkbox
 					if ( isset( $post_notif_field_name ) ) {
@@ -659,7 +659,7 @@ class Post_Notif_Public {
 								,'cat_id' => $post_notif_value
 							)
 						);
-						if ( $post_notif_value == 0 ) {
+						if ( 0 == $post_notif_value ) {
 								  
 							// This is "All" pseudo-category, so only add a single row in prefs tbl
 							break;		  
@@ -673,9 +673,9 @@ class Post_Notif_Public {
 			//		filter out the "@" in the email addr which in turn caused rewrite 
 			//		rule to fail, resulting in page not found
 			
-   		// Include or omit trailing "/", in URL, based on blog's current permalink settings
-   		$permalink_structure = get_option( 'permalink_structure', '' );
-   		if ( empty( $permalink_structure ) || ( ( substr( $permalink_structure, -1) ) == '/' ) ) {
+			// Include or omit trailing "/", in URL, based on blog's current permalink settings
+			$permalink_structure = get_option( 'permalink_structure', '' );
+			if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
 				header( 'Location: ' . site_url() . '/post_notif/update_prefs/?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
 			}
 			else {
@@ -693,12 +693,12 @@ class Post_Notif_Public {
 	 * @access	private
 	 * @return	bool	Is this an unsubscribe URL?
 	 */	
-   private function detect_unsubscribe_url() {
+	private function detect_unsubscribe_url() {
 		  
-   	// If this is an unsubscribe URL return true
+		// If this is an unsubscribe URL return true
 		return false !== strpos( $_SERVER['REQUEST_URI'], '/post_notif/unsubscribe' );		
 
-   }
+	}
    
 	/**
 	 * Add hook to fire when unsubscribe URL is detected.
@@ -708,7 +708,7 @@ class Post_Notif_Public {
 	 */	
 	private function add_filter_for_unsubscribe() {
 
-		add_filter( 'the_posts', array ( $this, 'create_unsubscribe_page' ) );
+		add_filter( 'the_posts', array( $this, 'create_unsubscribe_page' ) );
 			  		 
 	}
 	
@@ -725,9 +725,9 @@ class Post_Notif_Public {
 		global $wpdb;
 		global $wp_query;
 		 
-   	// Tack prefix on to table names
-   	$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
-   	$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
 		// Get parms passed in URL
 
@@ -747,7 +747,7 @@ class Post_Notif_Public {
 				,$authcode
 			)
 		);
-   	if ( $subscriber_id != null ) {
+		if ( null != $subscriber_id ) {
    		  
    		// This IS a valid authcode
 			  
@@ -769,7 +769,7 @@ class Post_Notif_Public {
 			);
 
 			// Create fake page
-   		return $this->create_fake_page( $posts, 'render_unsubscribe_page', $params_arr );
+			return $this->create_fake_page( $posts, 'render_unsubscribe_page', $params_arr );
 		}
 		
 	}   
@@ -783,13 +783,13 @@ class Post_Notif_Public {
 	 * @param	array	$params_arr	The parameters for DB operations and page title/greeting.
 	 * @return	string	The HTML to render current (pseudo) page.
 	 */
-   private function render_unsubscribe_page( $params_arr ) {
+	private function render_unsubscribe_page( $params_arr ) {
 		
-   	global $wpdb;
+		global $wpdb;
 
-   	// Tack prefix on to table names
-   	$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
-   	$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
  
 		$email_addr = $params_arr['email_addr'];
 		$authcode = $params_arr['authcode'];
@@ -811,16 +811,16 @@ class Post_Notif_Public {
   			)    			
   		);
     	
-   	$unsub_greeting = $params_arr['page_greeting'];
+  		$unsub_greeting = $params_arr['page_greeting'];
   		   		
-   	// Generate unsubscribed page contents
-   	$post_notif_unsub_pg = '';
-   	ob_start();
-   	include( plugin_dir_path( __FILE__ ) . 'views/post-notif-public-display-unsub.php' );
-   	$post_notif_unsub_pg .= ob_get_clean();
+  		// Generate unsubscribed page contents
+  		$post_notif_unsub_pg = '';
+  		ob_start();
+  		include( plugin_dir_path( __FILE__ ) . 'views/post-notif-public-display-unsub.php' );
+  		$post_notif_unsub_pg .= ob_get_clean();
    		
-   	return $post_notif_unsub_pg;	  	  
+  		return $post_notif_unsub_pg;	  	  
    	
-   }
+   	}
 
 }	

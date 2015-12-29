@@ -89,6 +89,8 @@ class Post_Notif {
 	 * - Post_Notif_Public. Defines all hooks for the public side of the site.
 	 * - Post_Notif_Widget. Defines all widget functionality.
 	 * - Post_Notif_List_Table. Defines enhanced WP List Table functionality.
+	 * - Post_Notif_Misc. Defines miscellaneous functions for use by other classes.
+	 * - Post_Notif_Updater. Ensures plugin-specific options and tables are current.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.

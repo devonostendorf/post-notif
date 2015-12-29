@@ -3,11 +3,11 @@
 /**
  * Ensures plugin-specific options and tables are current.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.4
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.4
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
 
 /**
@@ -17,15 +17,15 @@
  *	during plugin activation and following an upgrade to a new version of the 
  *	plugin.
  *
- * @since      1.0.4
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since      	1.0.4
+ * @package    	Post_Notif
+ * @subpackage 	Post_Notif/includes
+ * @author     	Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_Updater {
 		  	
 	/**
-	 * The ID of this plugin.
+	 * This plugin's current custom database version.
 	 *
 	 * @since	1.0.4
 	 * @access	private
@@ -34,7 +34,7 @@ class Post_Notif_Updater {
 	private $post_notif_db_version;
 	
 	/**
-	 * The ID of this plugin.
+	 * This plugin's installed custom database version.
 	 *
 	 * @since	1.0.4
 	 * @access	private
@@ -92,7 +92,7 @@ class Post_Notif_Updater {
 			,'sub_conf_eml_subj' => '@@blogname: Confirmation needed for subscription request'
 			,'sub_conf_eml_body' => "Hi @@firstname,<br />\n<br />\nPlease click the link below to confirm your subscription to posts on @@blogname:<br />\n<br />\n@@confurl<br />\n<br />\n@@signature"
 			,'eml_to_sub_after_conf_subj' => 'Your subscription to @@blogname has been confirmed!'
-			,'eml_to_sub_after_conf_body' => "Hi @@firstname,<br />\n<br />\nThanks for subscribing to the posts on @@blogname.<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
+			,'eml_to_sub_after_conf_body' => "Hi @@firstname,<br />\n<br />\nThanks for subscribing to the posts on @@blogname.<br />\n<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
 			,'post_notif_eml_subj' => 'New post on @@blogname: @@posttitle'
 			,'post_notif_eml_body' => "Hi @@firstname,<br />\n<br />\nHere's the direct link to the post:<br />@@permalink<br />\n<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
 			,'@@signature' => 'Thanks,<br />[ENTER NAME HERE]'
@@ -120,8 +120,8 @@ class Post_Notif_Updater {
 		//		avoiding overwriting any that an admin has chosen to customize)
 		$curr_post_notif_settings_arr = get_option( 'post_notif_settings', array() );
 		foreach ( $post_notif_settings_arr as $setting_key => $setting_val ) {
-			if ( !array_key_exists( $setting_key, $curr_post_notif_settings_arr) ) {
-				$curr_post_notif_settings_arr[$setting_key] = $setting_val;
+			if ( ! array_key_exists( $setting_key, $curr_post_notif_settings_arr) ) {
+				$curr_post_notif_settings_arr[ $setting_key ] = $setting_val;
 			}				  
 		}
 		// Replace add_option() call with update_option() as the latter will also 
@@ -165,8 +165,8 @@ class Post_Notif_Updater {
 			if ( $options_index ) {
 				foreach ( $post_notif_widget_defaults_arr as $default_key => $default_val ) {
 					$trimmed_key = substr( $default_key, 0, strlen( $default_key ) - 8 ); 
-					if ( !array_key_exists( $trimmed_key, $curr_widget_post_notif_arr[$options_index] ) ) {
-						$curr_widget_post_notif_arr[$options_index][$trimmed_key] = $default_val;
+					if ( ! array_key_exists( $trimmed_key, $curr_widget_post_notif_arr[ $options_index ] ) ) {
+						$curr_widget_post_notif_arr[ $options_index ][ $trimmed_key ] = $default_val;
 					}				  
 				}
 				update_option( 'widget_post-notif', $curr_widget_post_notif_arr );

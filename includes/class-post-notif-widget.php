@@ -6,11 +6,11 @@
  *	(https://github.com/tommcfarlin/WordPress-Widget-Boilerplate) written by Tom 
  *	McFarlin (http://tommcfarlin.com).
  *
- * @link			https://devonostendorf.com/projects/#post-notif
+ * @link		https://devonostendorf.com/projects/#post-notif
  * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
  
  // Prevent direct file access
@@ -24,21 +24,21 @@ if ( ! defined ( 'ABSPATH' ) ) {
  * Defines both the admin and public-facing functionality of the Post Notif
  * widget.
  *
- * @since      1.0.0
- * @package    Post_Notif
- * @subpackage Post_Notif/admin
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.0
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/admin
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_Widget extends WP_Widget {
 
 	/**
-    * Unique identifier for the widget.
-    *
+     * Unique identifier for the widget.
+     *
 	 * @since	1.0.0
 	 * @access	protected
-    * @var		string	Unique identifier for the widget.
+     * @var		string	Unique identifier for the widget.
     */
-   protected $widget_slug = 'post-notif';
+    protected $widget_slug = 'post-notif';
 
 	/**
 	 * Initialize the class, specify the classname and description, instantiate
@@ -82,17 +82,17 @@ class Post_Notif_Widget extends WP_Widget {
 	 * @since	1.0.0
 	 * @return	string	The widget's slug.
 	 */
-   public function get_widget_slug() {
+	public function get_widget_slug() {
    		  
-   	return $this->widget_slug;
+		return $this->widget_slug;
         
-   }
+	}
 
 	/**
 	 * Outputs the content of the widget.
 	 *
 	 * @since	1.0.0
-	 *	@param	array	$args	The array of form elements
+	 * @param	array	$args	The array of form elements
 	 * @param	array	$instance	The current instance of the widget
 	 */
 	public function widget( $args, $instance ) {
@@ -100,7 +100,7 @@ class Post_Notif_Widget extends WP_Widget {
 		// Check if there is a cached output
 		$cache = wp_cache_get( $this->get_widget_slug(), 'widget' );
 
-		if ( !is_array( $cache ) ) {
+		if ( ! is_array( $cache ) ) {
 			$cache = array();
 		}
 
@@ -145,7 +145,7 @@ class Post_Notif_Widget extends WP_Widget {
 	 * @since	1.0.0
 	 * @param	array	$new_instance	The new instance of values to be generated via the update.
 	 * @param	array	$old_instance	The previous instance of values before the update.
-	 *	@return	array	The values, entered into widget fields by user, to be saved. 
+	 * @return	array	The values, entered into widget fields by user, to be saved. 
 	 */
 	public function update( $new_instance, $old_instance ) {
 
@@ -160,7 +160,7 @@ class Post_Notif_Widget extends WP_Widget {
 		$this->flush_widget_cache();
 		
 		$alloptions = wp_cache_get( 'alloptions', 'options' );
-		if ( isset( $alloptions[$this->get_widget_slug()] ) ) {
+		if ( isset( $alloptions[ $this->get_widget_slug() ] ) ) {
 			delete_option( $this->get_widget_slug() );
 		}
 		
@@ -242,6 +242,8 @@ class Post_Notif_Widget extends WP_Widget {
 	
 	/**
 	 * Handle AJAX event sent when "Sign me up!" button (in widget) is pressed.
+	 *
+	 * @since	1.0.0
 	 */
 	public function post_notif_widget_ajax_handler() {
 		  
@@ -256,10 +258,10 @@ class Post_Notif_Widget extends WP_Widget {
 		$email_addr =  substr( trim( $_POST['form_data']['email_addr'] ), 0, 100 );
     
 		// Confirm that email addr is valid
-		if ( $email_addr == '' ) {
+		if ( '' == $email_addr ) {
 			$error = $post_notif_settings_arr['widget_error_email_addr_blank'];
 		} 
-		elseif ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $email_addr ) ) {
+		elseif ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i', $email_addr ) ) {
 			$error = $post_notif_settings_arr['widget_error_email_addr_invalid'];
 		} 
    
@@ -312,8 +314,7 @@ class Post_Notif_Widget extends WP_Widget {
 				wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_success_message'] ) );    		
 			}
 		}
-		else
-		{
+		else {
 				  
 			// Error in form validation
 			wp_send_json( array( 'success' => false, 'message' => $error ) );
@@ -322,7 +323,7 @@ class Post_Notif_Widget extends WP_Widget {
 		// All ajax handlers should die when finished
     	wp_die(); 
     	
-   }
+    }
 
 } // end class
 add_action( 'widgets_init', create_function( '', 'register_widget("Post_Notif_Widget");' ) );

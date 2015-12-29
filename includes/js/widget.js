@@ -1,5 +1,6 @@
 (function( $ ) {
 	'use strict';
+	
 	$(function() {		
 	 	$("#id_btnSubmit").click(function(e) { 
 	 		var first_name = document.getElementById("id_txtFirstName").value;
@@ -55,5 +56,6 @@
 	 			}
 	 		});
 	 	});
-	});	 
+	});
+	
 })( jQuery );

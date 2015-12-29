@@ -5,14 +5,14 @@
  *	(http://www.mattvanandel.com) extremely helpful Custom List Table Example 
  *	(https://wordpress.org/plugins/custom-list-table-example/).
  *					
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
 
-if ( !class_exists( 'Post_Notif_WP_List_Table' ) ) {
+if ( ! class_exists( 'Post_Notif_WP_List_Table' ) ) {
 		  
     // Include clone of WP core List Table (as of WP 4.1.1)
     require_once( plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-post-notif-wp-list-table.php' );
@@ -23,12 +23,12 @@ if ( !class_exists( 'Post_Notif_WP_List_Table' ) ) {
  *
  * Defines the available actions, actual table data, as well as the methods to 
  *	generate a List Table with specified headers, sortable columns, prescribed 
- * pagination, and any defined single and bulk actions.
+ * 	pagination, and any defined single and bulk actions.
  *
- * @since      1.0.0
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.0
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
 
@@ -91,7 +91,7 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
 	 * @since	1.0.0
 	 * @param 	array	$item	A singular item (one full row's worth of data).
 	 * @param	string	$column_name	The name/slug of the column to be processed.
-	 *	@return	string	Column HTML for display
+	 * @return	string	Column HTML for display
 	 */
 	public function column_default( $item, $column_name ) {
       		    			
@@ -112,14 +112,20 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
     					) {
 
     					// This column DOES need a single action link, for current action
-    					$actions[ $single_action_arr_key ] = sprintf( 
-    						'<a href="%s&action=%s&%s=%s">%s</a>'
+						$action_url = sprintf( 
+    						'%s&action=%s&%s=%s'
     						,$this->clean_uri
     						,$single_action_arr_key
     						,$this->_args['singular']
     						,$item['id']
-    						,$single_action_arr_val['label']
     					);
+    					
+    					// Generate nonce
+    					$action_url = wp_nonce_url( $action_url, 'post_notif_' . $single_action_arr_key
+    						. '_' . $item['id'] );
+    					
+    					// Finalize URL
+    					$actions[ $single_action_arr_key ] = '<a href="' . $action_url . '">' . $single_action_arr_val['label'] . '</a>';
     				}
     			}
     		}
@@ -139,17 +145,17 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
 	 *
 	 * @since	1.0.0
 	 * @param 	array	$item	A singular item (one full row's worth of data).
-	 *	@return	string	Checkbox column HTML for display
+	 * @return	string	Checkbox column HTML for display
 	 */
-   public function column_cb( $item ) {
+	public function column_cb( $item ) {
    		  
-   	return sprintf(
-   		'<input type="checkbox" name="chkKey_%1$s" value="%2$s" />'
-   		,$item['id']
-   		,$item['id']
-        );
+		return sprintf(
+			'<input type="checkbox" name="chkKey_%1$s" value="%2$s" />'
+			,$item['id']
+			,$item['id']
+		);
       
-   }
+	}
 
  	/**
 	 * Get an associative array ( option_name => option_title ) with the list
@@ -157,83 +163,83 @@ class Post_Notif_List_Table extends Post_Notif_WP_List_Table {
 	 *
 	 * @since	1.0.0
 	 * @access	protected
-	 *	@return	array	Set of available bulk actions
+	 * @return	array	Set of available bulk actions
 	 */
-   protected function get_bulk_actions() {
+	protected function get_bulk_actions() {
 
-   	$actions = array();
+		$actions = array();
     	if ( is_array( $this->available_actions_arr ) ) {
     		foreach( $this->available_actions_arr['actions'] as $single_action_arr_key => $single_action_arr_val ) {
 
     			// Iterate through available actions, defined as "bulk_ok", adding them to actions array
-    			if ( $single_action_arr_val['bulk_ok'] == true )  {
-    				$actions[$single_action_arr_key] = $single_action_arr_val['label'];
+    			if ( true == $single_action_arr_val['bulk_ok'] )  {
+    				$actions[ $single_action_arr_key ] = $single_action_arr_val['label'];
     			}
     		}
     	}
     	
     	return $actions;
     	
-   }
+    }
 
  	/**
 	 * Prepares the list of items for displaying.
 	 *
 	 * @since	1.0.0
 	 */
-   public function prepare_items() {       
+	public function prepare_items() {       
         
-      // Define column headers (displayed, hidden, and sortable)
-      $columns = $this->table_data_arr['columns_arr'];
-      $hidden = $this->table_data_arr['hidden_columns_arr'];
-      $sortable = $this->table_data_arr['sortable_columns_arr'];
+		// Define column headers (displayed, hidden, and sortable)
+		$columns = $this->table_data_arr['columns_arr'];
+		$hidden = $this->table_data_arr['hidden_columns_arr'];
+		$sortable = $this->table_data_arr['sortable_columns_arr'];
                 
-      // Build array of column headers
-      $this->_column_headers = array($columns, $hidden, $sortable);                       
+		// Build array of column headers
+		$this->_column_headers = array( $columns, $hidden, $sortable );                       
         
-      // Define dataset
+		// Define dataset
 		$data = $this->table_data_arr['table_contents_arr'];
                                                 
 		// Handle pagination
-      $total_items = count($data);
+		$total_items = count( $data );
       
-      // Set per page
-      $per_page = $this->table_data_arr['rows_per_page'];
+		// Set per page
+		$per_page = $this->table_data_arr['rows_per_page'];
       
-      // Set current page
-      $current_page = $this->get_pagenum();
+		// Set current page
+		$current_page = $this->get_pagenum();
       
-      // Define pagination array
-      $pagination_arr = array(
-      	'total_items' => $total_items
-      );
+		// Define pagination array
+		$pagination_arr = array(
+			'total_items' => $total_items
+		);
       
-      if ( $per_page != 0 ) {
+		if ( 0 != $per_page ) {
         
-         // Trim up dataset to pass Post_Notif_WP_List_Table class only the current page
-         $data = array_slice( $data,( ( $current_page - 1 ) * $per_page ), $per_page );
-         $pagination_arr['per_page'] = $per_page;	  
-         $pagination_arr['total_pages'] = ceil( $total_items / $per_page );
-      }
-      else {
+			// Trim up dataset to pass Post_Notif_WP_List_Table class only the current page
+			$data = array_slice( $data, ( ( $current_page - 1 ) * $per_page ), $per_page );
+			$pagination_arr['per_page'] = $per_page;	  
+			$pagination_arr['total_pages'] = ceil( $total_items / $per_page );
+		}
+		else {
       	
-      	// Display ALL rows on a single page (effectively NO pagination)
-      	$pagination_arr['total_pages'] = 1;
-   	}
-   	$this->set_pagination_args( $pagination_arr );
+			// Display ALL rows on a single page (effectively NO pagination)
+			$pagination_arr['total_pages'] = 1;
+		}
+		$this->set_pagination_args( $pagination_arr );
          
-   	$this->items = $data;
+		$this->items = $data;
    	
-   }
+	}
     
  	/**
 	 * Message to be displayed when there are no items
 	 *
 	 * @since	1.0.0
 	 */
-   public function no_items() {
+	public function no_items() {
 
-   	printf( __( 'No %s found.', 'post-notif' ), $this->_args['plural'] );
+		printf( __( 'No %s found.', 'post-notif' ), $this->_args['plural'] );
 		
 	}
 	
