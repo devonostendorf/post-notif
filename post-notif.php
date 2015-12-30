@@ -14,21 +14,21 @@
  *	The widget functionality was built based on the equally tremendous WordPress
  *	Widget Boilerplate, also written by Tom McFarlin.
  *
- * @link					 https://devonostendorf.com/projects/#post-notif
- * @since             1.0.0
- * @package           Post_Notif
+ * @link				https://devonostendorf.com/projects/#post-notif
+ * @since				1.0.0
+ * @package				Post_Notif
  *
  * @wordpress-plugin
- * Plugin Name:       Post Notif
- * Plugin URI:        https://devonostendorf.com/projects/#post-notif
- * Description:       Notify subscribers when you publish new posts.
- * Version:           1.0.4
- * Author:            Devon Ostendorf <devon@devonostendorf.com>
- * Author URI:        https://devonostendorf.com/
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       post-notif
- * Domain Path:       /languages
+ * Plugin Name:			Post Notif
+ * Plugin URI:			https://devonostendorf.com/projects/#post-notif
+ * Description:			Notify subscribers when you publish new posts.
+ * Version:				1.0.5
+ * Author:				Devon Ostendorf <devon@devonostendorf.com>
+ * Author URI:			https://devonostendorf.com/
+ * License:				GPL-2.0+
+ * License URI:			http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:			post-notif
+ * Domain Path:			/languages
  */
 
 // If this file is called directly, abort.

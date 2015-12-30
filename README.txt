@@ -3,8 +3,8 @@ Contributors: DevonOstendorf
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
-Tested up to: 4.2
-Stable tag: 1.0.4
+Tested up to: 4.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,7 +35,8 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Unsubscribe confirmation page greeting
 	
 * Configurable widget messages:
-	* Blank and invalid email address errors 	
+	* Blank and invalid email address errors
+	* Widget processing message 	
 	* Already subscribed info message	
 	* Successful subscription request message	
 		
@@ -44,6 +45,9 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Call to action
 	* Submit button label
 	* First name and email placeholders
+	
+* Configurable category settings:
+	* Make all or a subset of system categories available to subscribers or turn off categories entirely
 	
 * Admin and editor tools:
 	* View subscribers (and the post categories they've subscribed to)
@@ -263,6 +267,25 @@ gene@gene.com,[Unknown],2<br />
 
 Note that Bill is an unconfirmed subscriber so he has no categories selected.
 
+= How do I turn off categories? =
+
+Go to the Settings page (Settings >> Post Notif):
+
+1. Uncheck every category under "Categories available to subscribers" (in Category Settings section)
+
+2. You probably also want to remove references to the "update prefs" URL (by default it is defined as "If you'd like to change the categories you're subscribed to, click here:@@prefsurl") from:
+	* Email sent after subscription is confirmed body
+	* Post notification email body
+	
+3. You probably also want to blank out:
+	* Subscription preferences selection instructions
+	* Current subscription preferences page greeting
+	* Subscription preferences updated page greeting
+	
+4. Press the Save Changes button
+
+You can later turn category functionality back on by doing the reverse of these steps.
+
 == Screenshots ==
 
 1. Activating the plugin
@@ -281,32 +304,53 @@ Note that Bill is an unconfirmed subscriber so he has no categories selected.
 
 == Changelog ==
 
+= 1.0.5 =
+Release Date: December 29, 2015
+
+* NEW: Added configurable AJAX message to inform subscriber that widget is processing
+* NEW: Added functionality to options page so admin can define set of categories from which subscriber can choose
+* NEW: Added undo (subscriber) delete functionality to "Manage Subscribers" page
+* CHANGED: Modified dynamic HTML throughout the code, sanitizing it with "esc()" functions and added missing nonces
+
 = 1.0.4 =
-* Reworked plugin options and custom table update handling
-* Added import subscriber functionality
-* Added export subscriber functionality
-* Added functionality to optionally send email after subscription is confirmed
+Release Date: July 14, 2015
+
+* CHANGED: Reworked plugin options and custom table update handling
+* NEW: Added import subscriber functionality
+* NEW: Added export subscriber functionality
+* NEW: Added functionality to optionally send email after subscription is confirmed
 
 = 1.0.3 =
-* Made the Post Notif admin menu position configurable to avoid clashes with other plugins that were resulting in "invisible" Post Notif admin menu
-* Fixed issue with Post Notif custom URLs causing "Page not found" errors for installs using (non-default) permalink settings with no trailing "/" 
+Release Date: June 5, 2015
+
+* CHANGED: Made the Post Notif admin menu position configurable to avoid clashes with other plugins that were resulting in "invisible" Post Notif admin menu
+* FIXED: Fixed issue with Post Notif custom URLs causing "Page not found" errors for installs using (non-default) permalink settings with no trailing "/" 
 
 = 1.0.2 =
-* Confirmed compatibility with WordPress 4.2 (though Post Notif 1.0.1 is compatible as well)
-* Fixed issue with View Post Notifs Sent page showing nothing for installs with table prefix other than "wp"
-* Added widget-related messages as configurable settings (Settings >> Post Notif)
-* Added widget input field placeholders as configurable settings (Appearance >> Widgets >> Post Notif)
-* Added "Resend Confirmation" as both a single and bulk action on "Manage Subscribers" (formerly "Delete Subscribers") page
-* Updated screenshots to accurately reflect current functionality
+Release Date: April 26, 2015
+
+* CHANGED: Confirmed compatibility with WordPress 4.2 (though Post Notif 1.0.1 is compatible as well)
+* FIXED: Fixed issue with View Post Notifs Sent page showing nothing for installs with table prefix other than "wp"
+* NEW: Added widget-related messages as configurable settings (Settings >> Post Notif)
+* NEW: Added widget input field placeholders as configurable settings (Appearance >> Widgets >> Post Notif)
+* NEW: Added "Resend Confirmation" as both a single and bulk action on "Manage Subscribers" (formerly "Delete Subscribers") page
+* CHANGED: Updated screenshots to accurately reflect current functionality
 
 = 1.0.1 =
-* Updated installation steps in README.txt for clarity
-* Added code to prevent attributes (category, author, and post date/time) and functionality (add comment) from appearing on subscriber preferences pages
+Release Date: April 13, 2015
+
+* CHANGED: Updated installation steps in README.txt for clarity
+* CHANGED: Added code to prevent attributes (category, author, and post date/time) and functionality (add comment) from appearing on subscriber preferences pages
 
 = 1.0.0 =
+Release Date: April 8, 2015
+
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Added configurable "processing" AJAX message to widget.  Added ability to define set of categories available to subscribers.  Added undo (subscriber) delete functionality to "Manage Subscribers" page.  Sanitized dynamic HTML via "esc()" functions.  Added missing nonces.
 
 = 1.0.4 =
 Fixed issue with plugin options and custom table updates requiring manual plugin deactivate/re-activate

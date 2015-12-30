@@ -6,11 +6,11 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
 
 /**
@@ -22,10 +22,10 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since      1.0.0
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
- * @author     Devon Ostendorf <devon@devonostendorf.com>
+ * @since		1.0.0
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
+ * @author		Devon Ostendorf <devon@devonostendorf.com>
  */
 class Post_Notif {
 
@@ -69,7 +69,7 @@ class Post_Notif {
 	public function __construct() {
 
 		$this->plugin_name = 'post-notif';
-		$this->version = '1.0.4';
+		$this->version = '1.0.5';
 
 		$this->load_dependencies();
 		$this->set_locale();
