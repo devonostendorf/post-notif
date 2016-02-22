@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
 Tested up to: 4.4
-Stable tag: 1.0.5
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -304,7 +304,11 @@ You can later turn category functionality back on by doing the reverse of these 
 
 == Changelog ==
 
-= 1.0.5 =
+= 1.0.6 =
+Release Date: February 21, 2016
+
+* NEW: Added Spanish (es_ES) translation by [Enrique Maza](http://sevalepensar.com) and translation nag functionality
+
 Release Date: December 29, 2015
 
 * NEW: Added configurable AJAX message to inform subscriber that widget is processing
@@ -349,6 +353,9 @@ Release Date: April 8, 2015
 
 == Upgrade Notice ==
 
+= 1.0.6 =
+Added Spanish translation.  Added (dismissible) translation nag screen to solicit translation help from all admins whose site uses a language for which Post Notif does not yet have an official translation.
+
 = 1.0.5 =
 Added configurable "processing" AJAX message to widget.  Added ability to define set of categories available to subscribers.  Added undo (subscriber) delete functionality to "Manage Subscribers" page.  Sanitized dynamic HTML via "esc()" functions.  Added missing nonces.
 
@@ -372,3 +379,4 @@ Special thanks to:
 * [Tom McFarlin](http://tommcfarlin.com) for creating the [WordPress Plugin](https://github.com/DevinVinson/WordPress-Plugin-Boilerplate/ "WordPress Plugin Boilerplate") and [Widget](https://github.com/tommcfarlin/WordPress-Widget-Boilerplate/ "WordPress Widget Boilerplate") Boilerplates
 * [Matt Van Andel](http://www.mattvanandel.com) for the [Custom List Table Example plugin](https://wordpress.org/plugins/custom-list-table-example/)
 * All of the people courageous enough to risk sounding stupid by asking the same questions I had about how things work in WordPress!
+* [Enrique Maza](http://sevalepensar.com) for the Spanish (es_ES) translation
