@@ -307,7 +307,8 @@ You can later turn category functionality back on by doing the reverse of these 
 = 1.0.6 =
 Release Date: February 21, 2016
 
-* NEW: Added Spanish (es_ES) translation by [Enrique Maza](http://sevalepensar.com) and translation nag functionality
+* NEW: Added Spanish (es_ES) translation by [Enrique Maza](http://sevalepensar.com)
+* NEW: Added translation nag functionality based on [Clorith's example](http://www.clorith.net/blog/encourage-community-translations-wordpress-org-plugins/)
 
 = 1.0.5 =
 Release Date: December 29, 2015
