@@ -91,6 +91,78 @@ class Post_Notif_Admin {
 		$post_notif_updater->apply_updates_if_needed();
 		
 	}
+
+	/**
+	 * Determine whether Post Notif has a translation for this site's current language.
+	 *
+	 * @since	1.0.6
+	 */	
+	public function translation_check() {
+	
+		// Get the current language locale
+		$language = get_locale();
+		
+		// Check if the nag screen has been disabled for this language
+		if ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) {
+		
+			// Nag screen, for current language, has NOT been dismissed 
+			$plugin_i18n = new Post_Notif_i18n();
+			if ( $plugin_i18n->is_loaded() ) {
+
+				// BUT, a translation file, for current language, DOES exist
+				// Disable nag screen for current language
+				update_option( 'post_notif_language_detector_' . $language, true, true );
+				return;
+			}
+			else {
+		
+				// Display nag screen until admin dismisses it OR translation, for current language, is installed
+				$this->display_translation_nag_screen($language);
+			}					
+		}			  
+	}
+	
+	/**
+	 * Display the translation nag screen, soliciting translation help.
+	 *
+	 * @since	1.0.6
+	 * @param	string	$language	The site's current language.
+	 */
+	private function display_translation_nag_screen( $language ) {
+
+		// Add script, to handle nag dismissal, to page footer
+		add_action( 'admin_footer', array( $this, 'add_translation_nag_screen_dismissal_script' ) );
+		
+		// We need the translation data from core to display human readable locale names
+		require_once( ABSPATH . 'wp-admin/includes/translation-install.php' );
+		$translations = wp_get_available_translations();
+		$plugin = get_plugin_data( dirname( plugin_dir_path( __FILE__ ) ) . '/post-notif.php' );
+		include( plugin_dir_path( __FILE__ ) . 'partials/post-notif-admin-view-translation-nag.php' );
+		
+	}
+
+	/**
+	 * Add JavaScript, to handle translation nag screen dismissal, to page footer.
+	 *
+	 * @since	1.0.6
+	 */
+	public function add_translation_nag_screen_dismissal_script() {
+		
+		include( plugin_dir_path( __FILE__ ) . 'js/post-notif-admin-translation-nag.js' );
+		
+	}
+	
+	/**
+	 * Disable translation nag screen for current language.
+	 *
+	 * @since	1.0.6
+	 */	
+	 public function translation_nag_screen_ajax_handler() {
+
+	 	 // Disable nag screen for current language
+	 	 update_option( 'post_notif_language_detector_' . get_locale(), true );
+	 	 wp_die();
+	 }
 	
 		
 	// Functions related to adding Post Notif meta box to Edit Post page
@@ -110,7 +182,7 @@ class Post_Notif_Admin {
 		);
 		
 	}
-	
+		
 	/**
 	 * Render meta box on Edit Post page.
 	 *

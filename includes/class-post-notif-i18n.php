@@ -6,11 +6,11 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
- * @subpackage Post_Notif/includes
+ * @package		Post_Notif
+ * @subpackage	Post_Notif/includes
  */
 
 /**
@@ -34,6 +34,27 @@ class Post_Notif_i18n {
 	 * @var		string	$domain	The domain identifier for this plugin.
 	 */
 	private $domain;
+	
+	/**
+	 * Does a translation exist for the current language?
+	 *
+	 * @since	1.0.6
+	 * @access	private
+	 * @var		string	$loaded	Whether a translation exists for the current language.
+	 */
+	private static $loaded = false;
+	
+	/**
+	 * Get boolean indicating whether a translation exists for the current language.
+	 *
+	 * @since	1.0.6
+	 * @return	boolean	Does translation exist for the current language?
+	 */
+	public function is_loaded() {
+		
+		return self::$loaded;
+		
+	}
 
 	/**
 	 * Load the plugin text domain for translation.
@@ -42,6 +63,7 @@ class Post_Notif_i18n {
 	 */
 	public function load_plugin_textdomain() {
 
+		self::$loaded = 
 		load_plugin_textdomain(
 			$this->domain
 			,false

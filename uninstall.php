@@ -3,10 +3,10 @@
 /**
  * Fired when the plugin is uninstalled.
  *
- * @link			https://devonostendorf.com/projects/#post-notif
- * @since      1.0.0
+ * @link		https://devonostendorf.com/projects/#post-notif
+ * @since		1.0.0
  *
- * @package    Post_Notif
+ * @package		Post_Notif
  */
 
 // If uninstall not called from WordPress, then exit.
@@ -42,6 +42,9 @@ if ( !is_multisite() ) {
 		delete_option( $option_name );
 	}
 	
+	// Delete language detector
+	delete_option( 'post_notif_language_detector_' . get_locale() );
+	
 	// Delete custom tables
 	foreach ( $custom_table_arr as $custom_table_name)
 	{
@@ -65,6 +68,9 @@ else {
       {
       	delete_option( $option_name );
       }
+	
+     // Delete language detector
+      delete_option( 'post_notif_language_detector_' . get_locale() );
 	
       // Delete custom tables
       foreach ( $custom_table_arr as $custom_table_name)

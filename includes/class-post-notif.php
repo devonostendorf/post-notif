@@ -198,6 +198,11 @@ class Post_Notif {
 		
 		// Subscriber export functionality (requires getting ahead of WordPress header generation)
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'process_multiple_subscriber_export' );
+		
+		// Language-specific translation check functionality
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'translation_check' );
+		$this->loader->add_action( 'wp_ajax_language_nag_dismiss', $plugin_admin, 'translation_nag_screen_ajax_handler' );
+
 	}
 
 	/**
