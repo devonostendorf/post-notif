@@ -309,6 +309,7 @@ Release Date: February 21, 2016
 
 * NEW: Added Spanish (es_ES) translation by [Enrique Maza](http://sevalepensar.com) and translation nag functionality
 
+= 1.0.5 =
 Release Date: December 29, 2015
 
 * NEW: Added configurable AJAX message to inform subscriber that widget is processing
