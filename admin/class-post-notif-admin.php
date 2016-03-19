@@ -102,8 +102,8 @@ class Post_Notif_Admin {
 		// Get the current language locale
 		$language = get_locale();
 		
-		// Check if the nag screen has been disabled for this language (or if current language is US English)
-		if ( ( 'en_US' !== $language ) && ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) ) {
+		// Check if the nag screen has been disabled for this language (or if current language is US or UK English)
+		if ( ( 'en_US' !== $language ) && ( 'en_UK' !== $language ) && ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) ) {
 		
 			// Nag screen, for current language, has NOT been dismissed 
 			$plugin_i18n = new Post_Notif_i18n();
@@ -1094,7 +1094,7 @@ class Post_Notif_Admin {
 		// Build page	  
 	
     	$class_settings_arr = array(
-    		'singular' => __( 'subscriber', 'post-notif' )
+    		'singular' => 'subscriber'
     		,'plural' => __( 'subscribers', 'post-notif' )
     		,'ajax' => false
     		,'available_actions_arr' => $available_actions_arr
@@ -1888,7 +1888,7 @@ class Post_Notif_Admin {
 		// Build page	  
 	
     	$class_settings_arr = array(
-    		'singular' => __( 'subscriber', 'post-notif' )
+    		'singular' => 'subscriber'
     		,'plural' => __( 'subscribers', 'post-notif' )
     		,'ajax' => false
     		,'available_actions_arr' => $available_actions_arr
