@@ -4,7 +4,7 @@
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.4   
-**Stable tag:** 1.0.6   
+**Stable tag:** 1.0.7   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -306,6 +306,12 @@ You can later turn category functionality back on by doing the reverse of these 
 
 ## Changelog ##
 
+### 1.0.7 ###
+Release Date: March 19, 2016
+
+* FIXED: Fixed translation-related bug and revised translation nag functionality
+* NEW: Added minified JavaScript files
+
 ### 1.0.6 ###
 Release Date: February 21, 2016
 
@@ -354,6 +360,9 @@ Release Date: April 13, 2015
 * Initial release
 
 ## Upgrade Notice ##
+
+### 1.0.7 ###
+Fixed translation-related bug and revised translation nag functionality.  Added minified JavaScript files.
 
 ### 1.0.6 ###
 Added Spanish translation.  Added (dismissible) translation nag screen to solicit translation help from all admins whose site uses a language for which Post Notif does not yet have an official translation.
