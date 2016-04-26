@@ -119,7 +119,7 @@ class Post_Notif_Admin {
 				// Display nag screen until admin dismisses it OR translation, for current language, is installed
 				$this->display_translation_nag_screen($language);
 			}					
-		}			  
+		}	
 	}
 	
 	/**
@@ -376,29 +376,22 @@ class Post_Notif_Admin {
 				// Specify HTML-formatted email
 				$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-				//	Physically send emails
+				// Generate generic subscriber URL base
+				$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
+
+				// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
 				foreach ( $subscribers_arr as $subscriber ) {
    				
-					// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
-					// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-					//		will be unable to see and/or click the URL links within their email
-
-					// Include or omit trailing "/", in URLs, based on blog's current permalink settings
-					$permalink_structure = get_option( 'permalink_structure', '' );
-					if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
-						$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-						$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-					}
-					else {
-    					$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-    					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-    				}
+					$subscriber_url = $subscriber_url_template . '?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+					$prefs_url = str_replace( 'ACTION_PLACEHOLDER', 'manage_prefs', $subscriber_url );
+					$unsubscribe_url = str_replace( 'ACTION_PLACEHOLDER', 'unsubscribe', $subscriber_url );
 
     				$post_notif_email_body = $post_notif_email_body_template;
     				$post_notif_email_body = str_replace( '@@firstname', ( '[Unknown]' != $subscriber->first_name ) ? $subscriber->first_name : '', $post_notif_email_body );
     				$post_notif_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $post_notif_email_body );
     				$post_notif_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $post_notif_email_body );
     				
+    				// Physically send email
     				$mail_sent = wp_mail( $subscriber->email_addr, $post_notif_email_subject, $post_notif_email_body, $headers );   			
     			}
 

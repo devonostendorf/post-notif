@@ -16,7 +16,8 @@
  *
  * Defines functions to handle:
  *		1) Authcode generation
- *		2) Subscription confirmation email send
+ *		2) Subscriber base URL generation
+ *		3) Subscription confirmation email send
  *
  * @since		1.0.2
  * @package		Post_Notif
@@ -86,6 +87,50 @@ class Post_Notif_Misc {
 		return $authcode;
 	}
 
+	/**
+	 * Generate generic subscriber URL base.
+	 *
+	 * @since	1.0.8
+	 * @return	string	Newly-generated URL base
+	 */
+	public static function generate_subscriber_url_base() {
+		
+		// Build subscriber URL base starting with the site's URL
+		$url = get_site_url();
+
+		if ( array_key_exists( 'custom_permalink_with_category_concat', get_option( 'post_notif_settings' ) ) ) {
+			
+			// Admin has indicated in Post Notif settings that they are using %category% concatenated with something
+			//		in their custom permalinks			
+			$category_base = get_option( 'category_base', '' );
+			if ( empty( $category_base ) ) {
+				
+				// NO category base defined
+				$url .= '/category';
+			}
+			else {
+				
+				// Category base IS defined
+				$url .= '/' . $category_base;
+			}
+		}
+
+		// Add boilerplate placeholder
+		$url .= '/post_notif/ACTION_PLACEHOLDER';
+
+		// Determine whether trailing "/" is required
+		$permalink_structure = get_option( 'permalink_structure', '' );
+		
+		if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
+					
+			// Include trailing "/", in URLs, based on blog's current permalink structure
+			$url .= '/';
+		}
+		
+		return $url;
+
+	}
+		
  	/**
 	 * Send subscription confirmation email to a subscriber.
 	 *
@@ -112,17 +157,12 @@ class Post_Notif_Misc {
 		$conf_email_body = str_replace( '@@firstname', ( '[Unknown]' != $subscriber_arr['first_name'] ) ? $subscriber_arr['first_name'] : '', $conf_email_body );
 		$conf_email_body = str_replace( '@@blogname', get_bloginfo( 'name' ), $conf_email_body );
 
-		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-		//		will be unable to see and/or click the confirm URL link within their email
+		// Generate generic subscriber URL base
+		$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
 
-		// Include or omit trailing "/", in URL, based on blog's current permalink settings
-		$permalink_structure = get_option( 'permalink_structure', '' );
-		if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
-			$conf_url = get_site_url() . '/post_notif/confirm/?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
-		}
-		else {
-			$conf_url = get_site_url() . '/post_notif/confirm?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
-		}
+		// Tailor confirm link for current subscriber
+		$subscriber_url = $subscriber_url_template . '?email_addr=' . $subscriber_arr['email_addr'] . '&authcode=' . $subscriber_arr['authcode'];
+		$conf_url = str_replace( 'ACTION_PLACEHOLDER', 'confirm', $subscriber_url );
 		$conf_email_body = str_replace( '@@confurl', '<a href="' . $conf_url . '">' . $conf_url . '</a>', $conf_email_body );
 
 		$conf_email_body = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $conf_email_body );
@@ -136,7 +176,8 @@ class Post_Notif_Misc {
 		// Specify HTML-formatted email
 		$headers[] = 'Content-Type: text/html; charset=UTF-8';
    
-		wp_mail( $subscriber_arr['email_addr'], $conf_email_subject, $conf_email_body, $headers );   
+		//	Physically send email
+   		$mail_sent = wp_mail( $subscriber_arr['email_addr'], $conf_email_subject, $conf_email_body, $headers );   
 			  
 	}
 

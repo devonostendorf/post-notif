@@ -301,25 +301,20 @@ class Post_Notif_Public {
 				// Specify HTML-formatted email
 				$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-				//	Physically send email
-   				
-				// Tailor links (change prefs, unsubscribe) to subscriber
-  				// Include or omit trailing "/", in URLs, based on blog's current permalink settings
-  				$permalink_structure = get_option( 'permalink_structure', '' );
-  				if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
-  					$prefs_url = get_site_url() . '/post_notif/manage_prefs/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-  					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe/?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-  				}
-  				else {
-    					$prefs_url = get_site_url() . '/post_notif/manage_prefs?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-    					$unsubscribe_url = get_site_url() . '/post_notif/unsubscribe?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
-    			}
+				// Generate generic subscriber URL base
+				$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
+
+				// Tailor links (change prefs, unsubscribe) for current subscriber
+				$subscriber_url = $subscriber_url_template . '?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
+				$prefs_url = str_replace( 'ACTION_PLACEHOLDER', 'manage_prefs', $subscriber_url );
+				$unsubscribe_url = str_replace( 'ACTION_PLACEHOLDER', 'unsubscribe', $subscriber_url );
 
     			$after_conf_email_body = str_replace( '@@firstname', ($subscriber->first_name != '[Unknown]') ? $subscriber->first_name : '', $after_conf_email_body );
     			$after_conf_email_body = str_replace( '@@prefsurl', '<a href="' . $prefs_url . '">' . $prefs_url . '</a>', $after_conf_email_body );
     			$after_conf_email_body = str_replace( '@@unsubscribeurl', '<a href="' . $unsubscribe_url . '">' . $unsubscribe_url . '</a>', $after_conf_email_body );
     				
-    			$mail_sent = wp_mail( $subscriber->email_addr, $after_conf_email_subject, $after_conf_email_body, $headers );   			
+				//	Physically send email
+   				$mail_sent = wp_mail( $subscriber->email_addr, $after_conf_email_subject, $after_conf_email_body, $headers );   			
     		}
 				  
 			// Retrieve options to populate page
@@ -673,14 +668,13 @@ class Post_Notif_Public {
 			//		filter out the "@" in the email addr which in turn caused rewrite 
 			//		rule to fail, resulting in page not found
 			
-			// Include or omit trailing "/", in URL, based on blog's current permalink settings
-			$permalink_structure = get_option( 'permalink_structure', '' );
-			if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
-				header( 'Location: ' . site_url() . '/post_notif/update_prefs/?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
-			}
-			else {
-				header( 'Location: ' . site_url() . '/post_notif/update_prefs?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'] );
-			}
+			// Generate generic subscriber URL base
+			$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
+			
+			// Tailor update prefs URL for current subscriber
+			$subscriber_url = $subscriber_url_template . '?email_addr=' . $subscriber_row['email_addr'] . '&authcode=' . $subscriber_row['authcode'];
+			$prefs_url = str_replace( 'ACTION_PLACEHOLDER', 'update_prefs', $subscriber_url );
+			header( 'Location: ' . $prefs_url );
 			exit;
 		}
 		

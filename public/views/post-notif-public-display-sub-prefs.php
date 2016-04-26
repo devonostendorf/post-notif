@@ -88,13 +88,12 @@ if ( '-1' != $available_categories ) {
 	echo '<br />';
 }
 
-// Include or omit trailing "/", in URL, based on blog's current permalink settings
-$permalink_structure = get_option( 'permalink_structure', '' );
-if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
-	echo '<a href="' . site_url() . '/post_notif/unsubscribe/?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode ) . '">' . $unsub_link_label . '</a>';
-}
-else {
-	echo '<a href="' . site_url() . '/post_notif/unsubscribe?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode ) . '">' . $unsub_link_label . '</a>';
-}
+// Generate generic subscriber URL base
+$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
+
+// Tailor unsubscribe URL for current subscriber
+$subscriber_url = $subscriber_url_template . '?email_addr=' . esc_attr( $email_addr ) . '&authcode=' . esc_attr( $authcode );
+$prefs_url = str_replace( 'ACTION_PLACEHOLDER', 'unsubscribe', $subscriber_url );
+echo '<a href="' . $prefs_url . '">' . $unsub_link_label . '</a>';
 $this->get_sidebar_minus_post_notif_recent_posts_widgets(); 
 ?>

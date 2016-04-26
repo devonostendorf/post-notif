@@ -106,6 +106,21 @@
 							<br />
 						</td>
 					</tr>
+					<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'If using "Custom Structure" permalink:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+							<label for="custom_permalink_with_category_concat">
+            					<input type="checkbox" name="post_notif_settings[custom_permalink_with_category_concat]" id="custom_permalink_with_category_concat" value="1" <?php echo ( ( array_key_exists( 'custom_permalink_with_category_concat', $options ) ) ? 'checked' : '' ); ?> />
+            					<?php esc_html_e( '%category% is concatenated with something', 'post-notif' ); ?>
+            				</label>
+            				<br />
+            				<p class="description">
+            					<?php esc_html_e( 'This is not common.', 'post-notif' ); ?>
+            				</p>
+            			</td>
+            		</tr>					
 				</table>
 				<h2 class="title"><?php esc_html_e( 'Page Settings', 'post-notif' ); ?></h2>
 				<table class="form-table">
