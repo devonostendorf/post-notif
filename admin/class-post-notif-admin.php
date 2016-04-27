@@ -349,8 +349,13 @@ class Post_Notif_Admin {
    		
    				// Replace variables in both the post notif email subject and body 
    		
+   				// Get post title, excerpt, and author's name
    				$post_attribs = get_post( $post_id ); 
    				$post_title = $post_attribs->post_title;
+				$post_excerpt = $post_attribs->post_excerpt;
+				
+   				$post_author_data = get_userdata( $post_attribs->post_author );
+   				$post_author = $post_author_data->display_name;
    		
    				// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
    				//		will be unable to see and/or click the URL links within their email
@@ -359,14 +364,17 @@ class Post_Notif_Admin {
    				$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
    				$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
    				$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
- 
+    			$post_notif_email_subject = str_replace( '@@postauthor', $post_author, $post_notif_email_subject );
+
    				// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
    				$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
    			
    				$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
    				$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@postexcerpt', $post_excerpt, $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
 
 				// Set sender name and email address
