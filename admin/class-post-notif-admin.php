@@ -99,27 +99,36 @@ class Post_Notif_Admin {
 	 */	
 	public function translation_check() {
 	
-		// Get the current language locale
-		$language = get_locale();
+		// Skip translation check if core update is in progress (or was just completed)
+		// NOTE: The "about" page is where funny business with get_locale() occurs such that inaccurate errors
+		//		are generated if this translation check is NOT skipped.  Displaying the nag on the "update-core"
+		//		page is just ugly and annoying!
+		$current_screen = get_current_screen();
+		if ( ( "update-core" !== $current_screen->id ) && ( "about" !== $current_screen->id ) ) {
 		
-		// Check if the nag screen has been disabled for this language (or if current language is US or UK English)
-		if ( ( 'en_US' !== $language ) && ( 'en_UK' !== $language ) && ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) ) {
+			// Get the current language locale
+			$language = get_locale();
 		
-			// Nag screen, for current language, has NOT been dismissed 
-			$plugin_i18n = new Post_Notif_i18n();
-			if ( $plugin_i18n->is_loaded() ) {
+			// Check if the nag screen has been disabled for this language (or if current language is US or UK English)
+			if ( ( 'en_US' !== $language ) && ( 'en_UK' !== $language )
+				&& ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) ) {
+			
+				// Nag screen, for current language, has NOT been dismissed 
+				$plugin_i18n = new Post_Notif_i18n();
+				if ( $plugin_i18n->is_loaded() ) {
 
-				// BUT, a translation file, for current language, DOES exist
-				// Disable nag screen for current language
-				update_option( 'post_notif_language_detector_' . $language, true, true );
-				return;
-			}
-			else {
+					// BUT, a translation file, for current language, DOES exist
+					// Disable nag screen for current language
+					update_option( 'post_notif_language_detector_' . $language, true, true );
+					return;
+				}
+				else {
 		
-				// Display nag screen until admin dismisses it OR translation, for current language, is installed
-				$this->display_translation_nag_screen($language);
-			}					
-		}	
+					// Display nag screen until admin dismisses it OR translation, for current language, is installed
+					$this->display_translation_nag_screen( $language );
+				}					
+			}	
+		}
 	}
 	
 	/**
