@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
 Tested up to: 4.5
-Stable tag: 1.0.7
+Stable tag: 1.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -389,6 +389,13 @@ You can later turn category functionality back on by doing the reverse of these 
 
 == Changelog ==
 
+= 1.0.8 =
+Release Date: April 30, 2016
+
+* FIXED: Fixed handling of custom permalinks
+* NEW: Added new variables for use in Post Notif settings, plus full explanation of each
+* FIXED: Fixed issue with translation check generating errors during core update process
+
 = 1.0.7 =
 Release Date: March 19, 2016
 
@@ -445,6 +452,9 @@ Release Date: April 8, 2015
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.8 =
+Fixed handling of custom permalinks.  Added new variables for use in Post Notif settings, plus full explanation of each.  Fixed issue with translation check generating errors during core update process.
 
 = 1.0.7 =
 Fixed translation-related bug and revised translation nag functionality.  Added minified JavaScript files.

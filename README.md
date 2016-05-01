@@ -3,8 +3,8 @@
 **Donate link:** https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU   
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
-**Tested up to:** 4.4   
-**Stable tag:** 1.0.7   
+**Tested up to:** 4.5   
+**Stable tag:** 1.0.8   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -286,6 +286,91 @@ Go to the Settings page (Settings >> Post Notif):
 
 You can later turn category functionality back on by doing the reverse of these steps.
 
+### What variables are available for use in the Post Notif Settings configuration and where can they be used? ###
+
+1. @@blogname
+	* Description: Your site's title (as defined in Settings >> General >> Site Title)
+	
+	* Can be used in:
+		* Post notification email subject
+		* Post notification email body
+		* Subscription confirmation email subject
+		* Subscription confirmation email body
+		* Email sent after subscription is confirmed subject
+		* Email sent after subscription is confirmed body
+		* Subscription confirmed page title
+		* Subscription confirmed page greeting
+		* Subscription preferences selection instructions
+		* Unsubscribe link label
+		* Current subscription preferences page title
+		* Current subscription preferences page greeting
+		* Subscription preferences updated page title
+		* Subscription preferences updated page greeting
+		* Unsubscribe confirmation page title
+		* Unsubscribe confirmation page greeting
+
+2. @@posttitle
+	* Description: Post's title
+	
+	* Can be used in:
+		* Post notification email subject
+		* Post notification email body
+	
+3. @@permalink
+	* Description: Post's permalink
+	
+	* Can be used in:
+		* Post notification email body
+	
+4. @@signature
+	* Description: Optional signature string [as defined in Settings >> Post Notif >> Email Settings >> @@signature])
+
+	* Can be used in:	
+		* Post notification email body
+		* Subscription confirmation email body
+		* Email sent after subscription is confirmed body
+		
+5. @@firstname
+	* Description: Subscriber's first name or blank (if not defined)
+	
+	* Can be used in:	
+		* Post notification email body
+		* Subscription confirmation email body
+		* Email sent after subscription is confirmed body
+	
+6. @@confurl
+	* Description: Subscriber's unique confirmation URL
+	
+	* Can be used in:	
+		* Subscription confirmation email body
+	
+7. @@prefsurl
+	* Description: Subscriber's unique subscription preferences URL
+	
+	* Can be used in:	
+		* Post notification email body
+		* Email sent after subscription is confirmed body
+	
+8. @@unsubscribeurl
+	* Description: Subscriber's unique [one-click] unsubscribe URL
+	
+	* Can be used in:	
+		* Post notification email body
+		* Email sent after subscription is confirmed body
+	
+9. @@postauthor
+	* Description: Post's author's name
+	
+	* Can be used in:	
+		* Post notification email subject
+		* Post notification email body
+
+10. @@postexcerpt
+	* Description: Post's excerpt content
+	
+	* Can be used in:	
+		* Post notification email body
+
 ## Screenshots ##
 
 **NOTE:** #1 - 7 depict admin functionality while #8 - 13 show subscriber screenshots: 
@@ -305,6 +390,13 @@ You can later turn category functionality back on by doing the reverse of these 
 13. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
 
 ## Changelog ##
+
+### 1.0.8 ###
+Release Date: April 30, 2016
+
+* FIXED: Fixed handling of custom permalinks
+* NEW: Added new variables for use in Post Notif settings, plus full explanation of each
+* FIXED: Fixed issue with translation check generating errors during core update process
 
 ### 1.0.7 ###
 Release Date: March 19, 2016
@@ -360,6 +452,9 @@ Release Date: April 13, 2015
 * Initial release
 
 ## Upgrade Notice ##
+
+### 1.0.8 ###
+Fixed handling of custom permalinks.  Added new variables for use in Post Notif settings, plus full explanation of each.  Fixed issue with translation check generating errors during core update process.
 
 ### 1.0.7 ###
 Fixed translation-related bug and revised translation nag functionality.  Added minified JavaScript files.
