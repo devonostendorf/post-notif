@@ -228,7 +228,7 @@ class Post_Notif_Admin {
 				// Already sent, display RESEND Post Notif button and last sent date
 				echo '<input type="button" name="btnSendNotif" id="id_btnSendNotif" value="' . esc_attr__( 'RESEND', 'post-notif' ) . '" />';
 				echo '<span id="id_spnPostNotifLastSent">&nbsp;&nbsp;' . esc_html__( 'Last sent:' , 'post-notif' ) . '&nbsp;' . date( "F j, Y", strtotime( $notif_sent_dttm ) )
-					. " at "
+					. " @ "
 					. date( "g:i:s A", strtotime( $notif_sent_dttm ) )
 					. "</span>"
 				;

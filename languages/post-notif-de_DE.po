@@ -1,595 +1,579 @@
+# Translation of Stable (latest release) in German
+# This file is distributed under the same license as the Stable (latest release) package.
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Notif 1.0.9\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-22 17:03:49+00:00\n"
-"PO-Revision-Date: 2016-05-23 20:54:49+00:00\n"
-"Last-Translator: Zeta3 <Zeta3@sevalepensar.com>\n"
-"Language-Team: Devon Ostendorf <devon@devonostendorf.com>\n"
-"Language: Spanish (Spain)\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
+"PO-Revision-Date: 2016-05-11 13:49+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: _:1;gettext:1;dgettext:2;ngettext:1,2;dngettext:2,3;"
-"__:1;_e:1;_c:1;_n:1,2;_n_noop:1,2;_nc:1,2;__ngettext:1,2;__ngettext_noop:1,2;"
-"_x:1,2c;_ex:1,2c;_nx:1,2,4c;_nx_noop:1,2,3c;_n_js:1,2;_nx_js:1,2,3c;"
-"esc_attr__:1;esc_html__:1;esc_attr_e:1;esc_html_e:1;esc_attr_x:1,2c;"
-"esc_html_x:1,2c;comments_number_link:2,3;t:1;st:1;trans:1;transChoice:1,2\n"
-"X-Poedit-Basepath: .\n"
-"X-Generator: Loco - https://localise.biz/\n"
-"X-Poedit-SearchPath-0: ..\n"
-"X-Loco-Target-Locale: es_ES"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.6.10\n"
+"POT-Creation-Date: \n"
+"Last-Translator: Ruediger Walter <rue.walter@posteo.de>\n"
+"Language-Team: Ruediger Walter <rue.walter@posteo.de>\n"
+"Language: de_DE\n"
 
 #: admin/class-post-notif-admin.php:223
 msgid "Send"
-msgstr "Enviar"
+msgstr "Senden"
 
 #: admin/class-post-notif-admin.php:229
 msgid "RESEND"
-msgstr "REENVIAR"
+msgstr "NEUVERSAND"
 
 #: admin/class-post-notif-admin.php:230
 msgid "Last sent:"
-msgstr "Ultima vez que se envió:"
+msgstr "Zuletzt versendet:"
 
 #: admin/class-post-notif-admin.php:238
 msgid "Post has not yet been published."
-msgstr "La entrada no se ha publicado aún."
+msgstr "Beitrag wurde noch nicht veröffentlicht."
 
 #: admin/class-post-notif-admin.php:264
 msgid "Processing..."
-msgstr "Procesando..."
+msgstr "Wird bearbeitet..."
 
 #: admin/class-post-notif-admin.php:429
 msgid "Post notification has been sent for this post!"
-msgstr "¡La notificación de esta publicación se ha enviado!"
+msgstr "Benachrichtigung wurde für diesen Beitrag versendet!"
 
 #: admin/class-post-notif-admin.php:432
 msgid "Post notification FAILED for this post!"
-msgstr "¡El envío de la notificación de esta publicación ha FALLADO!"
+msgstr "Benachrichtigung ist für diesen Beitrag FEHLGESCHLAGEN!"
 
 #: admin/class-post-notif-admin.php:453
 msgid "Post Notif Settings"
-msgstr "Ajustes de Post Notif "
+msgstr "Post-Notif-Einstellungen"
 
 #: admin/class-post-notif-admin.php:517 admin/class-post-notif-admin.php:518
 msgid "Import Subscribers"
-msgstr "Importar Suscriptores"
+msgstr "Importiere  Abonnenten"
 
 #: admin/class-post-notif-admin.php:526 admin/class-post-notif-admin.php:527
 msgid "Staged Subscribers"
-msgstr "Suscriptores en Espera"
+msgstr "Zurückgestellte Abonnenten"
 
 #: admin/class-post-notif-admin.php:535 admin/class-post-notif-admin.php:536
 msgid "Manage Subscribers"
-msgstr "Administrar Suscriptores"
+msgstr "Bearbeite Abonnenten"
 
 #: admin/class-post-notif-admin.php:544 admin/class-post-notif-admin.php:545
 msgid "View Subscribers"
-msgstr "Ver Suscriptores"
+msgstr "Zeige Abonnenten"
 
 #: admin/class-post-notif-admin.php:553 admin/class-post-notif-admin.php:554
 msgid "View Post Notifs Sent"
-msgstr "Ver Notificaciones Enviadas"
+msgstr "Zeige versendete Mitteilungen"
 
 #: admin/class-post-notif-admin.php:665
 msgid "Blank email address."
-msgstr "Dirección email en blanco."
+msgstr "Leere Email-Adresse."
 
 #: admin/class-post-notif-admin.php:675
 msgid "Email address truncated (more than 100 chars)."
-msgstr "Dirección email truncada (más de 100 caracteres)."
+msgstr "Emailadresse gekürzt (mehr als 100 Zeichen)."
 
 #: admin/class-post-notif-admin.php:681
 msgid " Invalid email address."
-msgstr "Dirección email inválida."
+msgstr "Ungültige Email-Adresse."
 
 #: admin/class-post-notif-admin.php:690 admin/class-post-notif-admin.php:704
 #: includes/class-post-notif-widget.php:297
 msgid "[Unknown]"
-msgstr "[Desconocido]"
+msgstr "[Unbekannt]"
 
 #: admin/class-post-notif-admin.php:715
 msgid " First name truncated (more than 50 chars)."
-msgstr "Primer nombre truncado (más de 50 caracteres)."
+msgstr "Name gekürzt (mehr als 50 Zeichen)"
 
 #: admin/class-post-notif-admin.php:739
 msgid " Non-numeric category "
-msgstr "Categoría no-numérica"
+msgstr "Nicht-numerische Kategorie-ID"
 
 #: admin/class-post-notif-admin.php:747
 msgid " Invalid category "
-msgstr "Categoría inválida"
+msgstr "Ungültige Kategorie"
 
 #: admin/class-post-notif-admin.php:761
 msgid "Staged (pending creation)"
-msgstr "En Espera (pendientes de creación)"
+msgstr "Zurückgestellt (Erstellung ausstehend)"
 
 #: admin/class-post-notif-admin.php:829
 msgid "Create"
-msgstr "Crear"
+msgstr "Erstelle"
 
 #: admin/class-post-notif-admin.php:841 admin/class-post-notif-admin.php:1579
 msgid "Delete"
-msgstr "Borrar"
+msgstr "Löschen"
 
 #: admin/class-post-notif-admin.php:867
 msgid "Created"
-msgstr "Creados"
+msgstr "Erstellt"
 
 #: admin/class-post-notif-admin.php:868
 msgid "Staged"
-msgstr "En Espera"
+msgstr "Zurückgestellt"
 
 #: admin/class-post-notif-admin.php:869
 msgid "Warning"
-msgstr "Aviso"
+msgstr "Warnung"
 
 #: admin/class-post-notif-admin.php:870 admin/class-post-notif-admin.php:1187
 #: admin/class-post-notif-admin.php:1362
 msgid "Duplicate email address"
-msgstr "Dirección (email) duplicada"
+msgstr "Email-Adresse doppelt vorhanden"
 
 #: admin/class-post-notif-admin.php:871
 msgid "Import error"
-msgstr "Error al importar"
+msgstr "Import-Fehler"
 
 #: admin/class-post-notif-admin.php:872
 msgid "System error"
-msgstr "Error de sistema"
+msgstr "Systemfehler"
 
 #: admin/class-post-notif-admin.php:962 admin/class-post-notif-admin.php:1758
 msgid "First Name"
-msgstr "Primer Nombre"
+msgstr "Name"
 
 #: admin/class-post-notif-admin.php:963 admin/class-post-notif-admin.php:1759
 msgid "Email Address"
-msgstr "Dirección email"
+msgstr "Email-Adresse"
 
 #: admin/class-post-notif-admin.php:964
 msgid "Status"
-msgstr "Estado"
+msgstr "Status"
 
 #: admin/class-post-notif-admin.php:965
 msgid "Message"
-msgstr "Mensaje"
+msgstr "Nachricht"
 
 #: admin/class-post-notif-admin.php:966 admin/class-post-notif-admin.php:1762
 msgid "Categories"
-msgstr "Categorias"
+msgstr "Kategorien"
 
 #: admin/class-post-notif-admin.php:1088 admin/class-post-notif-admin.php:1882
 #: admin/views/post-notif-admin-display-options.php:286
 #: public/views/post-notif-public-display-sub-prefs.php:34
 msgid "All"
-msgstr "Todas"
+msgstr "Alle"
 
 #: admin/class-post-notif-admin.php:1108 admin/class-post-notif-admin.php:1902
 msgid "subscribers"
-msgstr "suscritos"
+msgstr "Abonnenten"
 
 #: admin/class-post-notif-admin.php:1246 admin/class-post-notif-admin.php:1421
 msgid "Successfully created"
-msgstr "La creación fué exitosa"
+msgstr "Erfolgreich erstellt"
 
 #: admin/class-post-notif-admin.php:1269 admin/class-post-notif-admin.php:1443
 msgid "System error - try again later"
-msgstr "Error del sistema -pruebe nuevamente más tarde"
+msgstr "Systemfehler - versuche es später noch einmal"
 
 #: admin/class-post-notif-admin.php:1574
 msgid "Export"
-msgstr "Exportar"
+msgstr "Exportieren"
 
 #: admin/class-post-notif-admin.php:1584
 msgid "Resend Confirmation"
-msgstr "Reenviar Confirmación"
+msgstr "Erneute Bestätigungsabfrage senden"
 
 #: admin/class-post-notif-admin.php:1760
 msgid "Confirmed?"
-msgstr "¿Confirmado?"
+msgstr "Bestätigt?"
 
 #: admin/class-post-notif-admin.php:1761
 msgid "Date Subscribed"
-msgstr "Fecha de Suscripción"
+msgstr "Erstellungs-Datum"
 
 #: admin/class-post-notif-admin.php:1890
 msgid "Yes"
-msgstr "Sí"
+msgstr "Ja"
 
 #: admin/class-post-notif-admin.php:1890
 msgid "No"
-msgstr "No"
+msgstr "Nein"
 
 #: admin/class-post-notif-admin.php:2427
 msgid "Post ID"
-msgstr "ID de la Entrada"
+msgstr "Beitrags-ID"
 
 #: admin/class-post-notif-admin.php:2428
 msgid "Post Title"
-msgstr "Título de la Entrada"
+msgstr "Beitragstitel"
 
 #: admin/class-post-notif-admin.php:2429
 msgid "Author"
-msgstr "Autor"
+msgstr "Verfasser"
 
 #: admin/class-post-notif-admin.php:2430
 msgid "Sent Date/Time"
-msgstr "Fecha/Hora de Envio"
+msgstr "Versand-Datum und -Zeit"
 
 #: admin/class-post-notif-admin.php:2431
 msgid "Sent By"
-msgstr "Enviada Por"
+msgstr "Versendet von"
 
 #: admin/class-post-notif-admin.php:2507
 msgid "notification"
-msgstr "notificación"
+msgstr "Benachrichtigung"
 
 #: admin/class-post-notif-admin.php:2508
 msgid "notifications"
-msgstr "notificaciones"
+msgstr "Benachrichtigungen"
 
 #: admin/views/post-notif-admin-display-options.php:21
 msgid "Email Settings"
-msgstr "Parámetros del email"
+msgstr "Email-Einstellungen"
 
 #: admin/views/post-notif-admin-display-options.php:25
 msgid "Email sender name:"
-msgstr "Nombre de quien envia el email:"
+msgstr "Name des Email-Versenders:"
 
 #: admin/views/post-notif-admin-display-options.php:33
 msgid "Email sender email address:"
-msgstr "Dirección email del remitente:"
+msgstr "Email-Adresse des Versenders:"
 
 #: admin/views/post-notif-admin-display-options.php:50
 msgid "Subscription confirmation email subject:"
-msgstr "Asunto para el email de confirmación de suscripción:"
+msgstr "Betreff der Bestätigungs-Email:"
 
 #: admin/views/post-notif-admin-display-options.php:58
 msgid "Subscription confirmation email body:"
-msgstr "Texto del email de confirmación de suscripción:"
+msgstr " Inhalt der Bestätigungs-Email:"
 
 #: admin/views/post-notif-admin-display-options.php:66
 msgid "After subscription is confirmed:"
-msgstr "Después de que la suscripción está confirmada:"
+msgstr "Nachdem das Abonnement bestätigt wurde:"
 
 #: admin/views/post-notif-admin-display-options.php:71
 msgid "Send email to subscriber?"
-msgstr "¿Enviar email al suscriptor?"
+msgstr "Versende Email an Abonnenten?"
 
 #: admin/views/post-notif-admin-display-options.php:78
 msgid "Email sent after subscription is confirmed subject:"
-msgstr "Email enviado después de confirmarse la suscripción (asunto):"
+msgstr "Betreff der Email nach Bestätigung des Abonnements:"
 
 #: admin/views/post-notif-admin-display-options.php:86
 msgid "Email sent after subscription is confirmed body:"
-msgstr "Email enviado después de confirmarse la suscripción (cuerpo):"
+msgstr "Inhalt der Email nach Bestätigung des Abonnements:"
 
 #: admin/views/post-notif-admin-display-options.php:94
 msgid "Post notification email subject:"
-msgstr "Asunto para el email de notificación de publicación:"
+msgstr "Betreff der Benachrichtigungs-Email über neuen Beitrag: "
 
 #: admin/views/post-notif-admin-display-options.php:102
 msgid "Post notification email body:"
-msgstr "Texto del email de notificación de publicación:"
+msgstr "Inhalt der Benachrichtigungs-Email über neuen Beitrag:"
 
 #: admin/views/post-notif-admin-display-options.php:111
 msgid "If using \"Custom Structure\" permalink:"
-msgstr "Si se utiliza enlace permanente \"Estructura personalizada\":"
+msgstr "Wenn Du \"Custom Structure\" Permalink verwendest:"
 
 #: admin/views/post-notif-admin-display-options.php:116
 msgid "%category% is concatenated with something"
-msgstr "%category% se concatena con algo"
+msgstr "%category% ist mit etwas verknüpft"
 
 #: admin/views/post-notif-admin-display-options.php:120
 msgid "This is not common."
-msgstr "Esto no es común."
+msgstr "Dies ist nicht üblich."
 
 #: admin/views/post-notif-admin-display-options.php:125
 msgid "Page Settings"
-msgstr "Ajustes de Página"
+msgstr "Seiten-Einstellungen"
 
 #: admin/views/post-notif-admin-display-options.php:129
 msgid "Subscription confirmed page title:"
-msgstr "Título de la página que confirma la suscripción:"
+msgstr "Titel der Abonnement-Bestätigungs-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:138
 msgid "Subscription confirmed page greeting:"
-msgstr "Saludo en la página que confirma la suscripción:"
+msgstr "Einleitungstext der Abonnement-Bestätigungs-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:147
 msgid "Subscription preferences selection instructions:"
-msgstr "Instrucciones para la selección de preferencias de suscripción:"
+msgstr "Auswahl-Anweisungen für Abonnement-Einstellungen:"
 
 #: admin/views/post-notif-admin-display-options.php:156
 msgid "Current subscription preferences page title:"
-msgstr "Título de la página de preferencias vigentes de suscripción:"
+msgstr "Titel der aktuellen Abonnement-Einstellungen-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:165
 msgid "Current subscription preferences page greeting:"
-msgstr "Saludo de la página de preferencias de suscripción:"
+msgstr "Einleitungstext der aktuellen Abonnement-Einstellungen-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:174
 msgid "Subscription preferences updated page title:"
-msgstr "Título de página de las preferencias actualizadas de suscripción:"
+msgstr "Titel der Abonnement-Einstellungen-verändert-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:183
 msgid "Subscription preferences updated page greeting:"
-msgstr "Saludo en página de preferencias actualizadas de suscripción:"
+msgstr "Einleitungstext der Abonnement-Einstellungen-verändert-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:192
 msgid "Unsubscribe link label:"
-msgstr "Rótulo del enlace para darse de baja:"
+msgstr "Überschrift des Kündigungs-Links:"
 
 #: admin/views/post-notif-admin-display-options.php:201
 msgid "Unsubscribe confirmation page title:"
-msgstr "Título de página de confirmación de baja:"
+msgstr "Titel der Kündigungsbestätigungs-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:210
 msgid "Unsubscribe confirmation page greeting:"
-msgstr "Saludo en página de confirmación de baja:"
+msgstr "Einleitungstext der Kündigungsbestätigungs-Seite:"
 
 #: admin/views/post-notif-admin-display-options.php:218
 msgid "Widget Messages"
-msgstr "Mensajes del Widget"
+msgstr "Widget-Meldungen"
 
 #: admin/views/post-notif-admin-display-options.php:222
 msgid "Error (blank email address):"
-msgstr "Error (dirección email en blanco):"
+msgstr "Fehler (leere Email-Adresse):"
 
 #: admin/views/post-notif-admin-display-options.php:231
 msgid "Error (invalid email address):"
-msgstr "Error (dirección emal inválida):"
+msgstr "Fehler (ungültige Email-Adresse):"
 
 #: admin/views/post-notif-admin-display-options.php:240
 msgid "Message (processing):"
-msgstr "Mensaje (procesando):"
+msgstr "Meldung (in Bearbeitung):"
 
 #: admin/views/post-notif-admin-display-options.php:249
 msgid "Message (already subscribed):"
-msgstr "Mensaje (ya está suscrito):"
+msgstr "Meldung (bereits abonniert):"
 
 #: admin/views/post-notif-admin-display-options.php:258
 msgid "Message (successful subscription request):"
-msgstr "Mensaje (solicitud de suscripción exitosa):"
+msgstr "Meldung (Abonnement-Anforderung erfolgreich):"
 
 #: admin/views/post-notif-admin-display-options.php:266
 msgid "Category Settings"
-msgstr "Configuración de las Categorías"
+msgstr "Kategorie-Einstellungen"
 
 #: admin/views/post-notif-admin-display-options.php:270
 msgid "Categories available to subscribers:"
-msgstr "Categorías disponibles a suscriptores:"
+msgstr "Für Abonnenten zugängliche Kategorien:"
 
 #: admin/views/post-notif-admin-display-options.php:317
 msgid "Admin Menu Settings"
-msgstr "Configuración de Menú de Admin"
+msgstr "Administrator-Menü-Einstellungen"
 
 #: admin/views/post-notif-admin-display-options.php:321
 msgid "Position in menu:"
-msgstr "Posición en el menú:"
+msgstr "Position im Menü:"
 
 #: admin/views/post-notif-admin-display-options.php:327
 msgid ""
 "If you cannot see the Post Notif admin menu, change this to another number "
 "of the form \"3.xyz\"."
 msgstr ""
-"Si no puede ver el menú de admin de Post Notif, modifique este número a otro "
-"con formato \"3.xyz\"."
+"Wenn Du das Post-Notif-Administrator-Menü nicht siehst, trage hier eine "
+"andere Nummer im Format \"3.xyz\" ein."
 
 #: admin/views/post-notif-admin-import-subs.php:23
 msgid "Import from file:"
-msgstr "Importar de un archivo:"
+msgstr "Importiere aus Datei:"
 
 #: admin/views/post-notif-admin-import-subs.php:32
 msgid "Import directly:"
-msgstr "Importar directamente:"
+msgstr "Importiere direkt:"
 
 #: admin/views/post-notif-admin-import-subs.php:37
 msgid "NOTES:"
-msgstr "NOTAS:"
+msgstr "ANMERKUNGEN:"
 
 #: admin/views/post-notif-admin-import-subs.php:40
 msgid ""
 "1. Data entered into \"Import directly\" field is NOT preserved; do NOT type "
 "in data directly (copy-and-paste from a file you've saved somewhere)."
 msgstr ""
-"1. Los datos introducidos al campo \"Importar directamente\" NO se preservan; "
-"no escriba sus datos directamente (copielos-y-peguelos de un archivo que "
-"tenga guardado en algún lugar)."
+"1. Daten im \"Importiere direkt\"-Feld werden nicht gespeichert, wenn Du "
+"diese Seite verlässt; Bearbeite und speichere größere Datensätze immer erst "
+"in einer eigenen Datei, bevor Du sie in dieses Feld kopierst."
 
 #: admin/views/post-notif-admin-import-subs.php:43
 msgid ""
 "2. Data entered into \"Import directly\" field will only be processed if NO "
 "file is selected."
 msgstr ""
-"2. Los datos ingresados al campo \"Importar directamente\" solo serán "
-"procesados si NO hay un archivo seleccionado."
+"2. Daten im \"Importiere direkt\"-Feld werden nur bearbeitet, wenn KEINE "
+"Datei ausgewählt ist."
 
 #: admin/views/post-notif-admin-import-subs.php:46
 msgid "3. See FAQ for row format (required and optional fields)."
 msgstr ""
-"3. Vea el FAQ para ver el formato de columna (campos requeridos y "
-"opcionales)."
+"3. Zeilenformat:  Adresse (erforderlich), Name (optional), Kategorien-ID(s) "
+"(optional, hierfür Name erforderlich), durch Kommas getrennt (siehe auch "
+"FAQ); Z.B.    abc@def.xy   oder   abc@def.xy,Name   oder   abc@def.xy,"
+"Name,1,2,3"
 
 #: admin/views/post-notif-admin-import-subs.php:49
-msgid "4. For best results, limit your imports to batches of less than 100 rows."
+msgid ""
+"4. For best results, limit your imports to batches of less than 100 rows."
 msgstr ""
-"4. Para mejores resultados, limite sus importaciones a grupos con menos de "
-"100 filas."
+"4. Um das beste Ergebnis zu erreichen, beschränke die Importe auf Pakete von "
+"weniger als 100 Zeilen."
 
 #: admin/views/post-notif-admin-import-subs.php:55
 msgid "Skip staging of clean rows?"
-msgstr "¿Saltarse la presentación de los registros limpios?"
+msgstr "Übergehe Rückstellung leerer Zeilen?"
 
 #: admin/views/post-notif-admin-import-subs.php:63
 msgid "Import"
-msgstr "Importar"
+msgstr "Daten importieren"
 
 #: admin/views/post-notif-admin-view-staged-subs.php:18
-#, c-format
 msgid "Staged subscriber created."
 msgid_plural "%s staged subscribers created."
-msgstr[0] "Se creó el suscriptor en espera."
-msgstr[1] "Se crearon %s suscriptores en espera."
+msgstr[0] "Zurückgestellter Abonnent wurde erstellt."
+msgstr[1] "%s zurückgestellte Abonnenten wurden erstellt."
 
 #: admin/views/post-notif-admin-view-staged-subs.php:24
-#, c-format
 msgid "Staged subscriber deleted."
 msgid_plural "%s staged subscribers deleted."
-msgstr[0] "Se eliminó el suscriptor en espera."
-msgstr[1] "Se eliminaron %s suscriptores en espera."
+msgstr[0] "Zurückgestellter Abonnent wurde gelöscht."
+msgstr[1] "%s zurückgestellte Abonnenten wurden gelöscht."
 
 #: admin/views/post-notif-admin-view-subs.php:19
-#, c-format
 msgid "Subscriber exported."
 msgid_plural "%s subscribers exported."
-msgstr[0] "Se exportó el suscriptor."
-msgstr[1] "Se exportaron %s suscriptores."
+msgstr[0] "Abonnent wurde exportiert."
+msgstr[1] "%s Abonnenten wurden exportiert."
 
 #: admin/views/post-notif-admin-view-subs.php:25
-#, c-format
 msgid "Subscriber deleted."
 msgid_plural "%s subscribers deleted."
-msgstr[0] "Suscriptor eliminado (borrado)."
-msgstr[1] "Se eliminaron %s suscriptores."
+msgstr[0] "Abonnent wurde gelöscht."
+msgstr[1] "%s Abonnenten wurden gelöscht."
 
 #: admin/views/post-notif-admin-view-subs.php:25
 msgid "Undo"
-msgstr "Deshacer"
+msgstr "Widerrufen"
 
 #: admin/views/post-notif-admin-view-subs.php:31
-#, c-format
 msgid "Deletion of subscriber has been undone."
 msgid_plural "Deletion of %s subscribers has been undone."
-msgstr[0] "Se deshizo la eliminación del suscriptor."
-msgstr[1] "Se deshizo la eliminación de %s suscriptores."
+msgstr[0] "Löschung des Abonnenten wurde rückgängig gemacht."
+msgstr[1] "Löschung von %s Abonnenten wurde rückgängig gemacht."
 
 #: admin/views/post-notif-admin-view-subs.php:37
-#, c-format
 msgid "Confirmation email re-sent to subscriber."
 msgid_plural "Confirmation emails re-sent to %s subscribers."
-msgstr[0] "El email de confirmación se ha reenviado al suscriptor."
-msgstr[1] "Emails de confirmación reenviados a %s  suscriptores."
+msgstr[0] "Bestätigungs-Email wurde erneut an Abonnenten versandt"
+msgstr[1] "Bestätigungs-Emails wurden erneut an %s Abonnenten versandt"
 
 #: includes/class-post-notif-list-table.php:242
-#, c-format
 msgid "No %s found."
-msgstr "No se encontraron %s."
+msgstr "Kein %s gefunden."
 
 #: includes/class-post-notif-widget.php:60
 msgid "Allow users to subscribe to post notifications."
-msgstr "Permitir que usuarios se subscriban a notificaciones."
+msgstr "Ermögliche Nutzern, Beitrags-Benachrichtigungen zu abonnieren."
 
 #: includes/class-post-notif-wp-list-table.php:141
 msgid "List View"
-msgstr "Vista tipo lista"
+msgstr "Listenansicht"
 
 #: includes/class-post-notif-wp-list-table.php:142
 msgid "Excerpt View"
-msgstr "Vista con extractos"
+msgstr "Textauszugs-Ansicht"
 
 #: includes/class-post-notif-wp-list-table.php:298
 msgid "No items found."
-msgstr "No se encontraron items."
+msgstr "Keine Elemente gefunden."
 
 #: includes/class-post-notif-wp-list-table.php:424
 msgid "Select bulk action"
-msgstr "Seleccionar acción en lote"
+msgstr "Aktion wählen"
 
 #: includes/class-post-notif-wp-list-table.php:426
 msgid "Bulk Actions"
-msgstr "Acciones en Lote"
+msgstr "Aktionen"
 
 #: includes/class-post-notif-wp-list-table.php:438
 msgid "Apply"
-msgstr "Aplicar"
+msgstr "Anwenden"
 
 #: includes/class-post-notif-wp-list-table.php:526
 msgid "Filter by date"
-msgstr "Filtrar por fecha"
+msgstr "﻿Nach Datum filtern"
 
 #: includes/class-post-notif-wp-list-table.php:528
 msgid "All dates"
-msgstr "Todas las fechas"
+msgstr "Alle Daten"
 
 #. translators: 1: month name, 2: 4-digit year
 #: includes/class-post-notif-wp-list-table.php:541
-#, c-format
 msgid "%1$s %2$d"
 msgstr "%1$s %2$d"
 
 #: includes/class-post-notif-wp-list-table.php:588
-#, c-format
 msgid "%s pending"
-msgstr "%s pendientes"
+msgstr "%s ausstehend"
 
 #: includes/class-post-notif-wp-list-table.php:667
 #: includes/class-post-notif-wp-list-table.php:1089
-#, c-format
 msgid "1 item"
 msgid_plural "%s items"
-msgstr[0] "1 item"
-msgstr[1] "%s items"
+msgstr[0] "Ein Element"
+msgstr[1] "%s Elemente"
 
 #: includes/class-post-notif-wp-list-table.php:686
 msgid "Go to the first page"
-msgstr "Ir a la primera página"
+msgstr "Zur ersten Seite gehen"
 
 #: includes/class-post-notif-wp-list-table.php:693
 msgid "Go to the previous page"
-msgstr "Ir a la página anterior"
+msgstr "Zur vorherigen Seite gehen"
 
 #: includes/class-post-notif-wp-list-table.php:702
 msgid "Select Page"
-msgstr "Seleccionar una página"
+msgstr "Seite auswählen"
 
 #: includes/class-post-notif-wp-list-table.php:703
 msgid "Current page"
-msgstr "Página actual"
+msgstr "Aktuelle Seite"
 
 #: includes/class-post-notif-wp-list-table.php:709
-#, c-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
-msgstr "%1$s de %2$s"
+msgstr "%1$s von %2$s"
 
 #: includes/class-post-notif-wp-list-table.php:713
 msgid "Go to the next page"
-msgstr "Ir a la página siguiente"
+msgstr "Zur nächsten Seite gehen "
 
 #: includes/class-post-notif-wp-list-table.php:720
 msgid "Go to the last page"
-msgstr "Ir a la última página"
+msgstr "Zur letzten Seite gehen "
 
 #: includes/class-post-notif-wp-list-table.php:857
 msgid "Select All"
-msgstr "Seleccionar todo"
+msgstr "Alle auswählen"
 
 #: includes/views/admin.php:16
 msgid "Title:"
-msgstr "Título:"
+msgstr "Titel:"
 
 #: includes/views/admin.php:20
 msgid "Call to Action:"
-msgstr "Llamado a la Acción:"
+msgstr "Auszuführende Aktion:"
 
 #: includes/views/admin.php:24
 msgid "Button Label:"
-msgstr "Rótulo del Botón:"
+msgstr "Button-Aufschrift:"
 
 #: includes/views/admin.php:28
 msgid "First Name Placeholder:"
-msgstr "Mensaje a Mostrar en la Casilla de Primer Nombre:"
+msgstr "Platzhalter für Namen:"
 
 #: includes/views/admin.php:32
 msgid "Email Address Placeholder:"
-msgstr "Mensaje a Mostrar en la Casilla del Email:"
+msgstr "Platzhalter für Email-Adresse:"
 
 #: public/views/post-notif-public-display-sub-prefs.php:86
 msgid "Update"
-msgstr "Actualiza"
+msgstr "Speichern"
 
 #. Plugin Name of the plugin/theme
 msgid "Post Notif"
@@ -601,7 +585,7 @@ msgstr "https://devonostendorf.com/projects/#post-notif"
 
 #. Description of the plugin/theme
 msgid "Notify subscribers when you publish new posts."
-msgstr "Notifica a suscriptores cuando se publica una nueva entrada."
+msgstr "Benachrichtige Abonnenten über neuveröffentlichte Beiträge"
 
 #. Author of the plugin/theme
 msgid "Devon Ostendorf <devon@devonostendorf.com>"
