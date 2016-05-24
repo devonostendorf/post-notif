@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
 Tested up to: 4.5
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -389,6 +389,12 @@ You can later turn category functionality back on by doing the reverse of these 
 
 == Changelog ==
 
+= 1.0.9 =
+Release Date: May 23, 2016
+
+* NEW: Added German translations (de_DE and de_DE_formal) by Ruediger Walter
+* FIXED: Added missing 1.0.8 strings to Spanish translation
+
 = 1.0.8 =
 Release Date: April 30, 2016
 
@@ -453,6 +459,9 @@ Release Date: April 8, 2015
 
 == Upgrade Notice ==
 
+= 1.0.9 =
+Added German translations.  Added missing 1.0.8 strings to Spanish translation.
+
 = 1.0.8 =
 Fixed handling of custom permalinks.  Added new variables for use in Post Notif settings, plus full explanation of each.  Fixed issue with translation check generating errors during core update process.
 
@@ -486,3 +495,4 @@ Special thanks to:
 * [Matt Van Andel](http://www.mattvanandel.com) for the [Custom List Table Example plugin](https://wordpress.org/plugins/custom-list-table-example/)
 * All of the people courageous enough to risk sounding stupid by asking the same questions I had about how things work in WordPress!
 * [Enrique Maza](http://sevalepensar.com) for the Spanish (es_ES) translation
+* Ruediger Walter for the German (de_DE and de_DE_formal) translations
