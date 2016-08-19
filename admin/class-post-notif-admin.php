@@ -382,6 +382,7 @@ class Post_Notif_Admin {
    				$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
+   				$post_notif_email_body_template = str_replace( '@@permalinkurl', $post_permalink, $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@postexcerpt', $post_excerpt, $post_notif_email_body_template );
    				$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );

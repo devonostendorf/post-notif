@@ -317,12 +317,18 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Post notification email body
 	
 3. @@permalink
-	* Description: Post's permalink
+	* Description: Post's permalink as a clickable link
 	
 	* Can be used in:
 		* Post notification email body
 	
-4. @@signature
+4. @@permalinkurl
+	* Description: Post's permalink (only the URL)
+	
+	* Can be used in:
+		* Post notification email body
+	
+5. @@signature
 	* Description: Optional signature string [as defined in Settings >> Post Notif >> Email Settings >> @@signature])
 
 	* Can be used in:	
@@ -330,7 +336,7 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Subscription confirmation email body
 		* Email sent after subscription is confirmed body
 		
-5. @@firstname
+6. @@firstname
 	* Description: Subscriber's first name or blank (if not defined)
 	
 	* Can be used in:	
@@ -338,34 +344,34 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Subscription confirmation email body
 		* Email sent after subscription is confirmed body
 	
-6. @@confurl
+7. @@confurl
 	* Description: Subscriber's unique confirmation URL
 	
 	* Can be used in:	
 		* Subscription confirmation email body
 	
-7. @@prefsurl
+8. @@prefsurl
 	* Description: Subscriber's unique subscription preferences URL
 	
 	* Can be used in:	
 		* Post notification email body
 		* Email sent after subscription is confirmed body
 	
-8. @@unsubscribeurl
+9. @@unsubscribeurl
 	* Description: Subscriber's unique [one-click] unsubscribe URL
 	
 	* Can be used in:	
 		* Post notification email body
 		* Email sent after subscription is confirmed body
 	
-9. @@postauthor
+10. @@postauthor
 	* Description: Post's author's name
 	
 	* Can be used in:	
 		* Post notification email subject
 		* Post notification email body
 
-10. @@postexcerpt
+11. @@postexcerpt
 	* Description: Post's excerpt content
 	
 	* Can be used in:	
