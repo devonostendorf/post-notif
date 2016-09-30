@@ -16,8 +16,9 @@
  *
  * Defines functions to handle:
  *		1) Authcode generation
- *		2) Subscriber base URL generation
- *		3) Subscription confirmation email send
+ *		2) Post excerpt generation
+ *		3) Subscriber base URL generation
+ *		4) Subscription confirmation email send
  *
  * @since		1.0.2
  * @package		Post_Notif
@@ -85,6 +86,61 @@ class Post_Notif_Misc {
 			End - (modified) Kohana code
 		*/
 		return $authcode;
+	}
+	
+ 	/**
+	 * Generate (or retrieve) post excerpt of type specified.
+	 *
+	 * @since	1.1.0
+	 * @param	int				$post_id	Post ID to retrieve.
+	 * @param	string			$excerpt_type	Type of excerpt ('auto', 'manual, or 'teaser') to produce.
+	 * @return	string	The excerpt, retrieved or generated for the specified post.
+	 */
+	public static function generate_excerpt( $post_id, $excerpt_type ) {
+	
+		$post_attribs = get_post( $post_id ); 
+		$post_content = $post_attribs->post_content;
+		
+		switch ( $excerpt_type ) {			
+			case 'auto':
+				
+				// NOTE: Thanks to Withers Davis (http://uplifted.net/programming/wordpress-get-the-excerpt-automatically-using-the-post-id-outside-of-the-loop/)
+				//		for a clever algorithm
+				
+				// Standard WordPress core auto excerpts consist of a post's first 55 words
+				$word_count_in_excerpt = 55;
+				
+				$post_content_stripped = strip_tags( strip_shortcodes( $post_content ) );
+				
+				// Populate word array with first 55 words and the rest of the content as the 56th "word"
+				$word_arr = explode( ' ', $post_content_stripped, $word_count_in_excerpt + 1 );
+				if ( count( $word_arr ) > $word_count_in_excerpt ) {
+						
+					// Clear anything beyond 55 words from the array
+					array_pop( $word_arr );
+				
+					// Add ellipsis as a new element on the end of the array to indicate content has been truncated
+					array_push( $word_arr, '...');
+				}	
+				
+				// Recreate excerpt string from array				
+				return implode( ' ', $word_arr );
+				
+			case 'manual':
+				return strip_tags( strip_shortcodes( $post_attribs->post_excerpt ) );
+				
+			case 'teaser':
+				$more_found_loc = strpos( $post_content, '<!--more-->' );
+				if ( false !== $more_found_loc ) {
+					
+					// "More" tag found, return content preceding it
+					return strip_tags( strip_shortcodes( substr( $post_content, 0, $more_found_loc ) ) );
+				}
+		}
+		
+		// No excerpt found or bad type passed
+		return '';
+		
 	}
 
 	/**
