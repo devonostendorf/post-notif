@@ -599,8 +599,8 @@ class Post_Notif_Admin {
 		$post_notif_sub_stage_cat_tbl = $wpdb->prefix.'post_notif_sub_cat_stage';
 		
 		
-		// Read import file, if populated				  
-		if ( ( ! empty( $_FILES ) ) && ( isset( $_FILES[ 'btnSubscriberFile' ] ) ) ) {
+		// Read import file, if populated		
+		if ( ( ! empty( $_FILES ) ) && ( ! empty( $_FILES['btnSubscriberFile']['tmp_name'] ) ) ) {
 				  
 			$file_contents = trim( file_get_contents( $_FILES['btnSubscriberFile']['tmp_name'] ) );
 			if ( ! empty( $file_contents ) ) {
