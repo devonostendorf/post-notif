@@ -20,6 +20,8 @@ $option_arr = array(
 	,'post_notif_widget_defaults'
 	,'post_notif_db_version'
 	,'widget_post-notif'
+	,'post_notif_count_to_send'
+	,'post_notif_count_sent'
 );
 
 // Define set of plugin-specific custom tables

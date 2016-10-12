@@ -176,6 +176,7 @@ class Post_Notif {
 
 		$plugin_admin = new Post_Notif_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 	
 		// Perform check for options and/or table updates
@@ -184,8 +185,10 @@ class Post_Notif {
 		// Send notif (from Edit Post page) functionality
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'add_post_notif_meta_box' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'send_post_notif_enqueue' );
+   		$this->loader->add_action( 'wp_ajax_init_post_notif_send', $plugin_admin, 'init_post_notif_send' );
+   		$this->loader->add_action( 'wp_ajax_get_post_notif_send_status', $plugin_admin, 'get_post_notif_send_status' );
 		$this->loader->add_action( 'wp_ajax_post_notif_send', $plugin_admin, 'send_post_notif_ajax_handler' );
-		
+				
 		// Add submenu to Settings menu 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_post_notif_options_page' );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_post_notif_settings' );

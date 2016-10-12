@@ -52,8 +52,29 @@ class Post_Notif_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-
+						
 	}
+
+	/**
+	 * Register the stylesheets for the admin area.
+	 *
+	 * @since    1.1.0
+	 */
+	public function enqueue_styles() {
+
+		/**
+		 * An instance of this class should be passed to the run() function
+		 * defined in Post_Notif_Admin_Loader as all of the hooks are defined
+		 * in that particular class.
+		 *
+		 * The Post_Notif_Admin_Loader will then create the relationship
+		 * between the defined hooks and the functions defined in this
+		 * class.
+		 */
+		 
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/jquery-ui-1_12_1_cupertino_progressbar_only.min.css', array(), $this->version, 'all' );
+		
+	}	
 
 	/**
 	 * Register the JavaScript for the admin area.
@@ -73,6 +94,9 @@ class Post_Notif_Admin {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-notif-admin.min.js', array( 'jquery' ), $this->version, false );
+		 
+		// Include this to use jQuery UI Progressbar
+		wp_enqueue_script( 'jquery-ui-progressbar', $this->version, false );
 		
 	}
 	
@@ -217,6 +241,10 @@ class Post_Notif_Admin {
 					,$post->ID
 				)		
 			);
+
+			// Add progress bar and label to page
+			echo '<div id="id_divSendPostNotifProgressBar"><span id="id_spnSendPostNotifProgressBarLabel"></span></div>';
+			
 			if ( null == $notif_sent_dttm ) {
 		
 				// Display Send Post Notif button
@@ -250,10 +278,10 @@ class Post_Notif_Admin {
 	public function send_post_notif_enqueue( $hook ) {
 	
 		if ( 'post.php' != $hook ) {
-				  
+
 			return;
 		}
-		   
+
 		$post_notif_send_nonce = wp_create_nonce( 'post_notif_send' );
 		wp_localize_script(
 			$this->plugin_name
@@ -266,6 +294,57 @@ class Post_Notif_Admin {
 		);  
 
 	}
+
+	/**
+	 * Initializes Post Notif send process when called by JavaScript (fired when "Send Notif" button is pressed).
+	 *
+	 * @since	1.1.0
+	 * @return	int	Always exits with a value of -1
+	 */	
+	public function init_post_notif_send() {
+  			
+		// Process is actually starting, initialize process tracking option values
+		update_option( 'post_notif_count_to_send', 0 );
+   		update_option( 'post_notif_count_sent', 0 );
+   		exit( '-1' );
+		
+	}
+	
+	/**
+	 * Calculates Post Notif send process percent complete when called by JavaScript (fired when "Send Notif" button is pressed).
+	 *
+	 * @since	1.1.0
+	 * @return	int	Exits with calculated process percent complete or -1 (if process complete or not running)
+	 */	
+	public function get_post_notif_send_status() {
+
+   		if ( FALSE !== get_option( 'post_notif_count_sent' ) ) {
+   	
+   			$post_notif_count_sent = floatval( get_option( 'post_notif_count_sent' ) );
+   			$post_notif_count_to_send =  floatval( get_option( 'post_notif_count_to_send' ) );
+   			
+   			if ( ( 0 == $post_notif_count_sent ) && ( 0 == $post_notif_count_to_send ) ) {
+   				
+   				// This is the first call to the function - avoid divide by zero!
+   				exit( 0 );
+   			}
+   			
+   			// Calculate processing percent complete
+   			$process_pct =  $post_notif_count_sent / $post_notif_count_to_send; 		
+   			
+   			if ( 1 == $process_pct ) {   				
+   				exit ( '-1' );
+   			}
+   			
+  			exit( $process_pct );   	
+   		} 
+   		else {
+   			
+   			// This has been called outside of a processing cycle
+   			exit( '-1' );
+   		}
+
+   	}
 	
 	/**
 	 * Handle AJAX event sent when "Send Notif" button (in meta box on Edit Post page) is pressed.
@@ -338,7 +417,7 @@ class Post_Notif_Admin {
 					$sub_cat_tbl_join = '';
 					$cat_id_clause = '';
 				}
-
+				
     			// Find subscribers to this/these ^^^ category/s
     			$subscribers_arr = $wpdb->get_results(
     				"
@@ -353,7 +432,13 @@ class Post_Notif_Admin {
    						ORDER BY $post_notif_subscriber_tbl.id
    					"
    				);
-   		   		
+   							
+   				if ( count( $subscribers_arr ) > 0 ) {
+   					
+   					// Stow number of post notifs to send
+   					update_option( 'post_notif_count_to_send', count( $subscribers_arr ) );  				
+   				}
+   				 				   		   		
    				//	Compose emails
    		
    				// Replace variables in both the post notif email subject and body 
@@ -399,6 +484,8 @@ class Post_Notif_Admin {
 				// Generate generic subscriber URL base
 				$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
 
+    			$post_notif_count_sent = 0;
+
 				// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
 				foreach ( $subscribers_arr as $subscriber ) {
    				
@@ -413,6 +500,8 @@ class Post_Notif_Admin {
     				
     				// Physically send email
     				$mail_sent = wp_mail( $subscriber->email_addr, $post_notif_email_subject, $post_notif_email_body, $headers );   			
+
+     				update_option( 'post_notif_count_sent', $post_notif_count_sent++ );
     			}
 
     			$notif_row_inserted = $wpdb->insert(
@@ -429,19 +518,24 @@ class Post_Notif_Admin {
    			}
 
    			if ( $notif_row_inserted ) {
-   				$post_notif_sent_msg = __( 'Post notification has been sent for this post!', 'post-notif' );
+   				$post_notif_sent_msg = sprintf( _n( 'One post notification has been sent for this post!', '%s total post notifications have been sent for this post!', $post_notif_count_sent, 'post-notif' ), number_format_i18n( $post_notif_count_sent ) );
    			}
    			else {
-   				$post_notif_sent_msg = __( 'Post notification FAILED for this post!', 'post-notif' );
+   				$post_notif_sent_msg = __( 'Post notification FAILED to complete successfully for this post!', 'post-notif' );
    			}
+		
+   			// Clean up process tracking option values
+   			delete_option( 'post_notif_count_to_send' );
+   			delete_option( 'post_notif_count_sent' );
+   		
    			wp_send_json( array( 'message' => $post_notif_sent_msg ) );
    		}
-   	
+    			
 		// All ajax handlers should die when finished
     	wp_die(); 
    	
     }
-   
+   	
 	
 	// Functions related to adding Post Notif submenu to Settings menu
 	
