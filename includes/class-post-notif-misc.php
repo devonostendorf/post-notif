@@ -18,7 +18,9 @@
  *		1) Authcode generation
  *		2) Post excerpt generation
  *		3) Subscriber base URL generation
- *		4) Subscription confirmation email send
+ *		4) Local timezone offset from UTC calculation
+ *		5) Subscription confirmation email send
+ *		6) UTC to local timezone datetime conversion
  *
  * @since		1.0.2
  * @package		Post_Notif
@@ -186,7 +188,22 @@ class Post_Notif_Misc {
 		return $url;
 
 	}
+
+ 	/**
+	 * Calculate local timezone's offset from UTC.
+	 *
+	 * @since	1.1.0
+	 * @return	int	The offset, in seconds, between UTC timezone and blog's local timezone.
+	 */
+	public static function offset_from_UTC() {
+
+		// This needs to be today's date to properly account for Daylight Saving Time
+		$today = new DateTime( date( 'Y-m-d' ), new DateTimeZone( get_option( 'timezone_string', 'UTC' ) ) );
 		
+		return $today->getOffset();
+		
+	}
+	
  	/**
 	 * Send subscription confirmation email to a subscriber.
 	 *
@@ -237,4 +254,21 @@ class Post_Notif_Misc {
 			  
 	}
 
+ 	/**
+	 * Convert UTC datetime to local timezone.
+	 *
+	 * @since	1.1.0
+	 * @param	string			$utc_datetime	Datetime in UTC timezone
+	 * @return	string	The date, converted to blog's local timezone and formatted to 'October 20, 2016 @ 8:49 AM' format.
+	 */
+	public static function UTC_to_local_datetime( $utc_datetime ) {
+		
+		$local_datetime = new DateTime( $utc_datetime );
+		
+		$local_datetime->setTimezone( new DateTimeZone( get_option( 'timezone_string', 'UTC' ) ) );
+		
+		return $local_datetime->format('F j, Y @ g:i:s A') . "\n";	
+		
+	}
+	
 }
