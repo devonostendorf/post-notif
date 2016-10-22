@@ -19,6 +19,12 @@
 				<strong><?php echo sprintf( esc_html( _n( 'Subscriber exported.', '%s subscribers exported.', $subscribers_exported, 'post-notif' ) ), number_format_i18n( $subscribers_exported ) ); ?></strong>
 			</p>
 		</div>
+<?php elseif ( $subscribers_confirmed ) : ?>
+		<div class="updated fade">
+			<p>
+				<strong><?php echo sprintf( esc_html( _n( 'Subscriber confirmed.', '%s subscribers confirmed.', $subscribers_confirmed, 'post-notif' ) ), number_format_i18n( $subscribers_confirmed ) ); ?></strong>
+			</p>
+		</div>
 <?php elseif ( $subscribers_deleted ) : ?>
 		<div class="updated fade">
 			<p>

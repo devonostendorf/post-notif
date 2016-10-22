@@ -1849,6 +1849,17 @@ class Post_Notif_Admin {
 					,'single_ok' => false
 					,'bulk_ok' => true
 				)
+				,'confirm' => array(
+					'label' => __( 'Confirm', 'post-notif' )
+					,'single_ok' => true
+					,'single_conditional' => array(
+						'conditional_field' => 'confirmed'
+						,'field_values' => array(
+							'No'
+						)
+					)
+					,'bulk_ok' => true
+				)
 				,'delete' => array(
 					'label' => __( 'Delete', 'post-notif' )
 					,'single_ok' => true
@@ -1892,6 +1903,7 @@ class Post_Notif_Admin {
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
 		$subscribers_exported = 0;
+		$subscribers_confirmed = 0;
 		$subscribers_deleted = 0;
 		$subscribers_resent_confirmation = 0;
 		$subscribers_undeleted = 0;
@@ -1945,6 +1957,22 @@ class Post_Notif_Admin {
 				// Display subscriber export count passed from process_multiple_subscriber_export()
 				$subscribers_exported = $_REQUEST['exportcount'];
 				$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber', 'exported', 'exportcount' ), $_SERVER['REQUEST_URI'] ) );
+				break;
+ 			case 'confirm':	  
+				
+ 				// Confirm selected subscribers
+			
+				if ( $affected_subscriber ) {
+				  
+					// Confirm single subscriber
+					$subscribers_confirmed = $this->process_single_subscriber_confirm( $affected_subscriber );
+					$form_action = esc_url_raw( remove_query_arg( array ( 'action', 'subscriber' ), $_SERVER['REQUEST_URI'] ) );
+				}
+				else {
+				  			 
+					// Confirm multiple (selected) subscribers via bulk action
+					$subscribers_confirmed = $this->process_multiple_subscriber_confirm( $_POST );
+				}
 				break;
 			case 'delete':
 					  
@@ -2378,6 +2406,139 @@ class Post_Notif_Admin {
  			exit;
  		}
  	}
+	
+	/**
+	 * Perform single subscriber (force-)confirm.
+	 *
+	 * @since	1.1.0
+	 * @access	private
+	 * @param	int	$sub_id	ID of subscriber to confirm.
+	 * @return	int	Number of confirmations performed.
+	 */	
+	private function process_single_subscriber_confirm( $sub_id ) {
+
+		global $wpdb;
+	  
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+		
+		// Update user's subscriber row so they will now receive post notifs
+		$results = $wpdb->update( 
+			$post_notif_subscriber_tbl
+			,array( 
+				'confirmed' => 1
+				,'last_modified' => date( "Y-m-d H:i:s" )
+			)
+			,array( 
+				'id' => $sub_id
+			)    			
+		);
+
+		// Auto assign them to receive All categories (cat_id = 0)
+		$num_subs_confirmed = $wpdb->insert(
+			$post_notif_sub_cat_tbl
+			,array( 
+				'id' => $sub_id
+				,'cat_id' => 0
+			)
+		);
+
+		if ( $num_subs_confirmed ) {
+				  
+			return $num_subs_confirmed;
+		}
+		else {
+				  
+		  return 0;
+		}
+
+	}
+ 
+	/**
+	 * Perform multiple subscriber (force-)confirm.
+	 *
+	 * @since	1.1.0
+	 * @access	private
+	 * @param	array	$form_post	The collection of global query vars.
+	 * @return	int	Number of confirmations performed.
+	 */	
+	private function process_multiple_subscriber_confirm( $form_post ) {
+			  			  
+		global $wpdb;
+
+		// Tack prefix on to table names
+		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
+		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
+
+		// Define checkbox prefix
+		$conf_subscribers_checkbox_prefix = 'chkKey_';
+		$subscribers_confirmed = 0;
+		
+		// For each selected subscriber on submitted form:
+		// 	Update their row in subscribers table 
+		// 	Insert a new row into the category table
+		foreach ( $form_post as $conf_subscribers_field_name => $conf_subscribers_value ) {
+			if ( ! ( strncmp( $conf_subscribers_field_name, $conf_subscribers_checkbox_prefix, strlen( $conf_subscribers_checkbox_prefix ) ) ) ) {
+						  
+				// This is a Subscriber checkbox
+				if ( isset( $conf_subscribers_field_name ) ) {
+
+					// Checkbox IS selected
+
+					// Confirm subscriber unless already confirmed
+					$user_not_confirmed = $wpdb->get_var(
+						$wpdb->prepare(
+							"
+								SELECT COUNT(id)
+								FROM $post_notif_subscriber_tbl
+								WHERE id = %d
+								AND confirmed = 0
+							"
+							,$conf_subscribers_value
+						)
+					);
+	
+					if ( $user_not_confirmed ) {
+						
+						// User has NOT yet been confirmed
+
+						// Update user's subscriber row so they will now receive post notifs
+						$results = $wpdb->update( 
+							$post_notif_subscriber_tbl
+							,array( 
+								'confirmed' => 1
+								,'last_modified' => date( "Y-m-d H:i:s" )
+							)
+							,array( 
+								'id' => $conf_subscribers_value
+							)    			
+						);
+
+						// Auto assign them to receive All categories (cat_id = 0)
+						$num_subs_confirmed = $wpdb->insert(
+							$post_notif_sub_cat_tbl
+							,array( 
+								'id' => $conf_subscribers_value
+								,'cat_id' => 0
+							)
+						);
+										
+						if ( $num_subs_confirmed )
+						{
+							  
+							// OK, wise-guy, I know you're saying there should never be more than
+							//		one subscriber per id!
+							$subscribers_confirmed += $num_subs_confirmed;
+						}
+					}
+				}					  
+			}
+		}
+		
+		return $subscribers_confirmed;
+
+	}
 	
 	/**
 	 * Perform single subscriber (soft-)delete.
