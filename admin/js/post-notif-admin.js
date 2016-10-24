@@ -221,7 +221,50 @@
 	 		});	 			
 	 	});
 	});
+
+	$(function() {
+	 	$("#id_btnPostNotifTestSend").click(function(e) { 
+	 		var post_id = $('#id_hdnPostID').val();
+	 		var recipients = $('#id_emlPostNotifTestSendRecipients').val();
+	 			
+ 			// Set Test Post Notif status message span to contain processing message
+	 		jQuery("#id_spnTestPostNotifStatus").text(post_notif_test_send_ajax_obj.processing_msg);	 			 		
 	 		
+	 		$.post(post_notif_test_send_ajax_obj.ajax_url, {
+	 			_ajax_nonce: post_notif_test_send_ajax_obj.nonce,
+	 			action: "test_post_notif_send",
+	 			post_id: post_id,
+	 			recipients: recipients,
+	 		}, function(data) {
+
+	 			var sentEmailAddrMessage = '';
+	 			var invalidEmailAddrMessage = '';
+	 			
+	 			if (data.sent_email_arr.length > 0) {
+	 				
+	 				// There are valid email addresses which had emails sent to them
+	 				sentEmailAddrMessage = '<strong>' + data.successfully_sent_label + '</strong><br />';
+	 				data.sent_email_arr.forEach(function(item){
+	 					sentEmailAddrMessage = sentEmailAddrMessage + item + '<br />';
+	 				});	
+	 				sentEmailAddrMessage = sentEmailAddrMessage + '<br /><br />';
+	 			}
+	 			
+	 			if (data.invalid_email_arr.length > 0) {
+	 				
+	 				// There are invalid email addresses
+	 				invalidEmailAddrMessage = '<strong>' + data.invalid_email_address_label + '</strong><br />';
+	 				data.invalid_email_arr.forEach(function(item){
+	 					invalidEmailAddrMessage = invalidEmailAddrMessage + item + '<br />';
+	 				});	
+	 			}
+
+	 			// Update Test Post Notif status message span with appropriate message (including additional HTML)
+	 			jQuery("#id_spnTestPostNotifStatus").html(data.process_complete_message + '<br /><br />' + sentEmailAddrMessage + invalidEmailAddrMessage);	 			
+	 		});	 			
+	 	});
+	});
+	
 	$(function() {
 		$('#available_categories\\[0\\]').click(function(event) {
 			if (this.checked) {

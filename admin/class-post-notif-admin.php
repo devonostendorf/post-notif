@@ -215,7 +215,7 @@ class Post_Notif_Admin {
 		);
 		
 	}
-		
+	
 	/**
 	 * Render meta box on Edit Post page.
 	 *
@@ -489,47 +489,10 @@ class Post_Notif_Admin {
 			update_option( 'post_notif_count_to_send_post_id_' . $post_id, count( $subscribers_arr ) );
 		}
    				 				   		   		
-		//	Compose emails
-   		
-		// Replace variables in both the post notif email subject and body 
-   		
-		// Get post title and author's name
-		$post_attribs = get_post( $post_id ); 
-		$post_title = $post_attribs->post_title;
-   				
-		$post_author_data = get_userdata( $post_attribs->post_author );
-		$post_author = $post_author_data->display_name;
-   		
-		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-		//		will be unable to see and/or click the URL links within their email
-		$post_permalink = get_permalink( $post_id );
+		// Compose emails
 
-		$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
-		$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
-		$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
-		$post_notif_email_subject = str_replace( '@@postauthor', $post_author, $post_notif_email_subject );
-
-		// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
-		$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
-   			
-		$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
-		$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@permalinkurl', $post_permalink, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postexcerptauto', Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postexcerptmanual', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postteaser', Post_Notif_Misc::generate_excerpt( $post_id, 'teaser' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@featuredimage', ( ( has_post_thumbnail( $post_id ) ) ? get_the_post_thumbnail( $post_id, 'thumbnail' ) : '' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
-
-		// Set sender name and email address
-		$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
-			. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
-  		
-		// Specify HTML-formatted email
-		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+		// Resolve non-personalized email variables 
+		list( $headers, $post_notif_email_subject, $post_notif_email_body_template ) = $this->resolve_post_notification_email_vars( $post_id );
 
 		// Generate generic subscriber URL base
 		$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
@@ -574,6 +537,61 @@ class Post_Notif_Admin {
 		
 	}
     
+ 	/**
+	 * Resolve post notification email subject and body generic variables.
+	 *
+	 * @since	1.1.0
+	 * @param	int		$post_id	Post to resolve variables for.
+	 * @return	string	Email headers, email subject, and email body template.
+	 */
+	private function resolve_post_notification_email_vars( $post_id ) {
+		
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
+
+		// Replace variables in both the post notif email subject and body 
+   		
+		// Get post title and author's name
+		$post_attribs = get_post( $post_id ); 
+		$post_title = $post_attribs->post_title;
+   				
+		$post_author_data = get_userdata( $post_attribs->post_author );
+		$post_author = $post_author_data->display_name;
+   		
+		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
+		//		will be unable to see and/or click the URL links within their email
+		$post_permalink = get_permalink( $post_id );
+
+		$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
+		$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
+		$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
+		$post_notif_email_subject = str_replace( '@@postauthor', $post_author, $post_notif_email_subject );
+
+		// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
+		$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
+   			
+		$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
+		$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@permalinkurl', $post_permalink, $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@postexcerptauto', Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@postexcerptmanual', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@postteaser', Post_Notif_Misc::generate_excerpt( $post_id, 'teaser' ), $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@featuredimage', ( ( has_post_thumbnail( $post_id ) ) ? get_the_post_thumbnail( $post_id, 'thumbnail' ) : '' ), $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
+
+		// Set sender name and email address
+		$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
+			. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
+  		
+		// Specify HTML-formatted email
+		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+		return (array ( $headers, $post_notif_email_subject, $post_notif_email_body_template ) );
+		
+	}
+	
 	/**
 	 * Schedule WP cron event to send post notifications for specified post.
 	 *
@@ -711,6 +729,84 @@ class Post_Notif_Admin {
 		
 		wp_send_json( array( 'message' => __( 'Post notification is no longer scheduled for this post!', 'post-notif' ), 'cancelled' => 0, 'update_last_sent' => 0 ) );
 				
+	}
+	
+ 	/**
+	 * Enqueue AJAX script that fires when "Test Send" button (in meta box on Edit Post page) is pressed.
+	 *
+	 * @since	1.1.0
+	 * @param	string	$hook	The current page name.
+	 * @return	null	If this is not post.php page
+	 */
+	public function test_post_notif_send_enqueue( $hook ) {
+
+		if ( 'post.php' != $hook ) {
+
+			return;
+		}
+		
+		$post_notif_test_send_nonce = wp_create_nonce( 'post_notif_test_send' );
+		wp_localize_script(
+			$this->plugin_name
+			,'post_notif_test_send_ajax_obj'
+			,array(
+				'ajax_url' => admin_url( 'admin-ajax.php' )
+				,'nonce' => $post_notif_test_send_nonce
+				,'processing_msg' => __( 'Processing...', 'post-notif' )
+			)
+		);  
+
+	}
+	
+	/**
+	 * Send test post notifications, for current post, to (valid) email addresses specified.
+	 *
+	 * @since	1.1.0
+	 */	
+	public function test_post_notif_send() {
+
+		// Confirm matching nonce
+		check_ajax_referer( 'post_notif_test_send' );
+
+		// Get current post ID
+		$post_id = $_POST['post_id'];
+
+		// Get recipients
+		$recipients = $_POST['recipients'];
+		
+		// Resolve comma-delimited recipient list
+		$recipients_arr = explode( ',', $recipients );
+		
+		$sent_email_arr = array();
+		$invalid_email_arr = array();
+				
+		// Resolve non-personalized email variables 
+		list( $headers, $post_notif_email_subject, $post_notif_email_body_template ) = $this->resolve_post_notification_email_vars( $post_id );
+		
+		foreach( $recipients_arr as $recipient_email_addr ) {
+			if ( ! ( empty( trim( $recipient_email_addr ) ) ) ) {
+				if ( preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $recipient_email_addr ) ) {
+			
+					// Address IS valid, physically send email
+					$mail_sent = wp_mail( $recipient_email_addr, $post_notif_email_subject, $post_notif_email_body_template, $headers );
+					$sent_email_arr[] = $recipient_email_addr;
+				}
+				else {
+				
+					// Address is NOT valid
+					$invalid_email_arr[] = $recipient_email_addr;
+				}
+			}
+		}
+		
+		wp_send_json( array(
+			'process_complete_message' => __( 'Processing...complete.', 'post-notif' )
+			,'successfully_sent_label' => __( 'Successfully sent to:', 'post-notif' )
+			,'sent_email_arr' => $sent_email_arr
+			,'invalid_email_address_label' => __( 'Skipped invalid email addresses:', 'post-notif' )
+			,'invalid_email_arr' => $invalid_email_arr 
+		) );
+		
 	}
    	
 	

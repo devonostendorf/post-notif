@@ -13,6 +13,7 @@
  */
 ?>
 	<input type="hidden" name="hdnPostID" id="id_hdnPostID" value="<?php echo esc_attr( $post->ID ); ?>" />
+	<fieldset>
 	<?php if ( $previously_sent ) : ?>
 		<span id="id_spnPostNotifLastSent"><?php esc_html_e( 'Last sent:', 'post-notif' ); ?>&nbsp;<?php echo Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm ); ?></span>	
 
@@ -122,11 +123,25 @@
 			<input type="button" name="btnPostNotifSend" id="id_btnPostNotifSend" value="<?php esc_attr_e( 'Send', 'post-notif' ); ?>"<?php echo ( $hide_buttons ? ' style="display: none" ' : ' ' ); ?> />				  
 		<?php endif; ?>
 	<?php endif; ?>	
-	<br />
-	<br />
-	<br />
-	<?php /* Add progress bar and label to page */ ?>
-	<div id="id_divSendPostNotifProgressBar"><span id="id_spnSendPostNotifProgressBarLabel"></span></div>
+		<br />
+		<br />
+		<br />
+		<?php /* Add progress bar and label to page */ ?>
+		<div id="id_divSendPostNotifProgressBar"><span id="id_spnSendPostNotifProgressBarLabel"></span></div>
 			
-	<?php /* Add status message to page */ ?> 
-	<span id="id_spnPostNotifStatus"><?php echo esc_html( $status_message ); ?></span>
+		<?php /* Add status message to page */ ?> 
+		<span id="id_spnPostNotifStatus"><?php echo esc_html( $status_message ); ?></span>
+	
+	</fieldset>
+	<br />
+	<br />
+	<?php /* Add Test Send section to page*/ ?>
+	<fieldset>
+		<legend style="font-weight: bold;"><?php esc_html_e( 'Test Send', 'post-notif' ); ?></legend>
+		<label><?php esc_html_e( 'Send to:', 'post-notif' ); ?>
+			<input type="email" name="emlPostNotifTestSendRecipients" id="id_emlPostNotifTestSendRecipients" />
+		</label>
+		<input type="button" name="btnPostNotifTestSend" id="id_btnPostNotifTestSend" value="<?php esc_attr_e( 'Test Send', 'post-notif' ); ?>" />
+		<br />
+		<span id="id_spnTestPostNotifStatus"></span>
+	</fieldset>
