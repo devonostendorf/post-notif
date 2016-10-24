@@ -960,6 +960,7 @@ class Post_Notif_Admin {
 		global $wpdb;
 		
 		$row_delimiter = chr( 13 );
+		$subscriber_arr = array();
 		
 		// Tack prefix on to table names 
 		$post_notif_subscriber_stage_tbl = $wpdb->prefix.'post_notif_subscriber_stage';
