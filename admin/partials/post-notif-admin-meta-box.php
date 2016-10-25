@@ -60,10 +60,10 @@
 			<br />
 		</span>
 		<span id="id_spnPostNotifSendSchedTimestamp" style="display: none">
-			<legend class="screen-reader-text">Datetime to schedule post notification to run at</legend>
+			<legend class="screen-reader-text"><?php esc_html_e( 'Datetime to schedule post notification to run at', 'post-notif' ); ?></legend>
 			<div>
 				<label>
-					<span class="screen-reader-text">Month</span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Month', 'post-notif' ); ?></span>
 					<select id="id_postNotifSchedMonth" name="postNotifSchedMonth">
 <?php
 	$current_datetime_arr = explode( ':', current_time( 'm:d:Y:H:i' ) );
@@ -77,19 +77,19 @@
 					</select>
 				</label> 
 				<label>
-					<span class="screen-reader-text">Day</span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Day', 'post-notif' ); ?></span>
 					<input type="text" id="id_postNotifSchedDay" name="postNotifSchedDay" value="<?php echo esc_attr( $current_datetime_arr[1] ); ?>" size="2" maxlength="2" autocomplete="off" />
 				</label>, 
 				<label>
-					<span class="screen-reader-text">Year</span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Year', 'post-notif' ); ?></span>
 					<input type="text" id="id_postNotifSchedYear" name="postNotifSchedYear" value="<?php echo esc_attr( $current_datetime_arr[2] ); ?>" size="4" maxlength="4" autocomplete="off" />
 				</label>@
 				<label>
-					<span class="screen-reader-text">Hour</span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Hour', 'post-notif' ); ?></span>
 					<input type="text" id="id_postNotifSchedHour" name="postNotifSchedHour" value="<?php echo esc_attr( $current_datetime_arr[3] ); ?>" size="2" maxlength="2" autocomplete="off" />
 				</label>:
 				<label>
-					<span class="screen-reader-text">Minute</span>
+					<span class="screen-reader-text"><?php esc_html_e( 'Minute', 'post-notif' ); ?></span>
 					<input type="text" id="id_postNotifSchedMinute" name="postNotifSchedMinute" value="<?php echo esc_attr( $current_datetime_arr[4] ); ?>" size="2" maxlength="2" autocomplete="off" />
 				</label>
 			</div>
