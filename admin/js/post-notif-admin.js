@@ -93,7 +93,7 @@
 	 		}
 	 		else {
 	 			
-	 			// Schedule to run later
+	 			// Schedule to run
 	 			
 	 			// Validate date/time fields
 	 			
@@ -117,16 +117,6 @@
 					return false;
 				}
 					 			
-	 			// Validate against current datetime to ensure scheduled datetime is in future
-	 			var currentDatetime = new Date();
-				if (scheduleDatetime <= currentDatetime) {
-					
-					// This is a past datetime
-					jQuery("#id_spnPostNotifStatus").text(post_notif_send_ajax_obj.past_date_msg);	
-					jQuery('#id_btnPostNotifSend').show();
-					return false;
-				}
-				
 	 			// Hide radio buttons
 	 			jQuery('#id_spnPostNotifSchedRadioButtons').hide();
 
@@ -142,19 +132,30 @@
 	 				post_id: post_id,
 	 				datetime_local: localDatetime,
 	 			}, function(data) {
-
-	 				// Hide schedule time input fields
-	 				jQuery("#id_spnPostNotifSendSchedTimestamp").hide();
 	 				
-	 				// Update and show Post Notif scheduled for message span with scheduled for timestamp
-	 				jQuery("#id_spnPostNotifScheduledFor").text(data.timestamp);
-	 				jQuery("#id_spnPostNotifScheduledFor").show();
+	 				if (data.valid_datetime) {
+	 					
+	 					// All's well
+	 					
+	 					// Hide schedule time input fields
+	 					jQuery("#id_spnPostNotifSendSchedTimestamp").hide();
 	 				
-	 				// Show Cancel button
-	 				jQuery('#id_btnPostNotifCancelSchedSend').show();
+	 					// Update and show Post Notif scheduled for message span with scheduled for timestamp
+	 					jQuery("#id_spnPostNotifScheduledFor").text(data.timestamp);
+	 					jQuery("#id_spnPostNotifScheduledFor").show();
+	 				
+	 					// Show Cancel button
+	 					jQuery('#id_btnPostNotifCancelSchedSend').show();
+	 				}
+	 				else {
+	 					 					
+	 					// Attempted to schedule in the past
+	 					jQuery('#id_spnPostNotifSchedRadioButtons').show();
+	 					jQuery('#id_btnPostNotifSend').show();
+	 				}
 	 					 			
 	 				// Set Post Notif status message span with appropriate message
-	 				jQuery("#id_spnPostNotifStatus").text(data.message);	 			
+	 				jQuery("#id_spnPostNotifStatus").text(data.message);
 	 			});	 			
 	 		}
 	 	});

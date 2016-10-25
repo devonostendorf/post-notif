@@ -197,8 +197,14 @@ class Post_Notif_Misc {
 	 */
 	public static function offset_from_UTC() {
 
+		$local_timezone = get_option( 'timezone_string', 'UTC' );
+
+		if ( empty( trim( $local_timezone ) ) ) {
+			$local_timezone = 'UTC';
+		}
+		
 		// This needs to be today's date to properly account for Daylight Saving Time
-		$today = new DateTime( date( 'Y-m-d' ), new DateTimeZone( get_option( 'timezone_string', 'UTC' ) ) );
+		$today = new DateTime( date( 'Y-m-d' ), new DateTimeZone( $local_timezone ) );
 		
 		return $today->getOffset();
 		
@@ -265,7 +271,13 @@ class Post_Notif_Misc {
 		
 		$local_datetime = new DateTime( $utc_datetime );
 		
-		$local_datetime->setTimezone( new DateTimeZone( get_option( 'timezone_string', 'UTC' ) ) );
+		$local_timezone = get_option( 'timezone_string', 'UTC' );
+		
+		if ( empty( trim( $local_timezone ) ) ) {
+			$local_timezone = 'UTC';
+		}
+		
+		$local_datetime->setTimezone( new DateTimeZone( $local_timezone ) );
 		
 		return $local_datetime->format('F j, Y @ g:i:s A') . "\n";	
 		

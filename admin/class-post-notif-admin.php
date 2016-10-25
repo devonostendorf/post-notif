@@ -298,7 +298,6 @@ class Post_Notif_Admin {
 				,'nonce' => $post_notif_send_nonce
 				,'processing_msg' => __( 'Processing...', 'post-notif' )
 				,'invalid_date_format_msg' => __( 'Invalid date and/or time! Please try again.', 'post-notif' )
-				,'past_date_msg' => __( 'Date cannot be in the past! Please try again.', 'post-notif' )
 			)
 		);  
 
@@ -575,6 +574,9 @@ class Post_Notif_Admin {
 		$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@postexcerptauto', Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@postexcerptmanual', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
+
+		// NOTE: @@postexcerpt is deprecated, use @@postexcerptmanual instead!
+   		$post_notif_email_body_template = str_replace( '@@postexcerpt', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@postteaser', Post_Notif_Misc::generate_excerpt( $post_id, 'teaser' ), $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@featuredimage', ( ( has_post_thumbnail( $post_id ) ) ? get_the_post_thumbnail( $post_id, 'thumbnail' ) : '' ), $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
@@ -613,23 +615,34 @@ class Post_Notif_Admin {
 
 			// Generate UNIX timestamp - local timezone
 			$timestamp_local = mktime( $datetime_local_arr[3], $datetime_local_arr[4], 0, $datetime_local_arr[0], $datetime_local_arr[1], $datetime_local_arr[2] );
-			
+		
 			// Convert to UTC for WP cron
 			$timestamp_utc = $timestamp_local - Post_Notif_Misc::offset_from_UTC();
+
+			// Get current (UTC) timestamp
+			$current_timestamp_utc = time();
+
+			if ( $current_timestamp_utc < $timestamp_utc )  {
 			
-			// Create datetimes for display to user (local) and storage in DB (UTC) 
-			$local_datetime = date( 'Y-m-d H:i:s', $timestamp_local );
-			$utc_datetime = date( 'Y-m-d H:i:s', $timestamp_utc );
+				// Create datetimes for display to user (local) and storage in DB (UTC) 
+				$local_datetime = date( 'Y-m-d H:i:s', $timestamp_local );
+				$utc_datetime = date( 'Y-m-d H:i:s', $timestamp_utc );
 			
-			wp_schedule_single_event( $timestamp_utc, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
-			wp_send_json( array( 'message' => __( 'Post notification has been scheduled for this post!', 'post-notif' ), 'timestamp' => __( 'Scheduled for:', 'post-notif' ) . ' ' . Post_Notif_Misc::UTC_to_local_datetime( $utc_datetime ) ) );	
+				wp_schedule_single_event( $timestamp_utc, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
+				wp_send_json( array( 'message' => __( 'Post notification has been scheduled for this post!', 'post-notif' ), 'timestamp' => __( 'Scheduled for:', 'post-notif' ) . ' ' . Post_Notif_Misc::UTC_to_local_datetime( $utc_datetime ), 'valid_datetime' => 1 ) );				
+			}
+			else {
+
+				// Cannot schedule process to be run in the past
+				wp_send_json( array( 'message' => __( 'Date cannot be in the past! Please try again.', 'post-notif' ), 'valid_datetime' => 0 ) );
+			}
 		}
 		else {
 		
 			// Already scheduled
 			$utc_datetime = date( 'Y-m-d H:i:s', $timestamp_utc );
 			$local_datetime = Post_Notif_Misc::UTC_to_local_datetime( $utc_datetime );
-			wp_send_json( array( 'message' => __( 'Post notification is ALREADY scheduled for this post!', 'post-notif' ), 'timestamp' => $local_datetime ) );
+			wp_send_json( array( 'message' => __( 'Post notification is ALREADY scheduled for this post!', 'post-notif' ), 'timestamp' => $local_datetime, 'valid_datetime' => 1 ) );
 		}
 
 	}
@@ -867,46 +880,20 @@ class Post_Notif_Admin {
 		// Admin can override default admin menu position of this menu
 		$post_notif_options_arr = get_option( 'post_notif_settings' );
 			
-		// NOTE: This will not have a selectable page associated with it (due to non-existent 'menu_only_no_selectable_item' capability)
+		// NOTE: This must have a slug (fourth parameter) matching the first submenu_page's slug, in order to suppress
+		//		display of a selectable page for multisite
 		add_menu_page(
-			'menu_only_no_selectable_item'
+			'Post Notif'
 			,'Post Notif'
-			,'menu_only_no_selectable_item'
-			,'post-notif-menu'
+			,'edit_others_posts'
+			,'post-notif-view-subs'
 			,null
 			,''
 			,$post_notif_options_arr['admin_menu_position']
 		);
-
-		add_submenu_page(
-			'post-notif-menu'
-			,__( 'Import Subscribers', 'post-notif' )
-			,__( 'Import Subscribers', 'post-notif' )
-			,'manage_options'	// ONLY admin role has this capability
-			,'post-notif-import-subs'
-			,array( $this, 'render_import_subscribers_page' )
-		);
-
-		add_submenu_page(
-			'post-notif-menu'
-			,__( 'Staged Subscribers', 'post-notif' )
-			,__( 'Staged Subscribers', 'post-notif' )
-			,'manage_options'	// ONLY admin role has this capability
-			,'post-notif-staged-subs'
-			,array( $this, 'define_staged_subscribers_page' )
-		);
-
-		add_submenu_page(
-			'post-notif-menu'
-			,__( 'Manage Subscribers', 'post-notif' )
-			,__( 'Manage Subscribers', 'post-notif' )
-			,'manage_options'	// ONLY admin role has this capability
-			,'post-notif-manage-subs'
-			,array( $this, 'define_manage_subscribers_page' )
-		);
 		
 		add_submenu_page(
-			'post-notif-menu'
+			'post-notif-view-subs'
 			,__( 'View Subscribers', 'post-notif' )
 			,__( 'View Subscribers', 'post-notif' )
 			,'edit_others_posts'	// admin and editor roles have this capability
@@ -915,12 +902,39 @@ class Post_Notif_Admin {
 		);
 
 		add_submenu_page(
-			'post-notif-menu'
+			'post-notif-view-subs'
 			,__( 'View Post Notifs Sent', 'post-notif' )
 			,__( 'View Post Notifs Sent', 'post-notif' )
 			,'edit_others_posts'	// admin and editor roles have this capability
 			,'post-notif-view-posts-sent'			
 			,array( $this, 'render_view_post_notifs_sent_page' )
+		);
+
+		add_submenu_page(
+			'post-notif-view-subs'
+			,__( 'Manage Subscribers', 'post-notif' )
+			,__( 'Manage Subscribers', 'post-notif' )
+			,'manage_options'	// ONLY admin role has this capability
+			,'post-notif-manage-subs'
+			,array( $this, 'define_manage_subscribers_page' )
+		);
+
+		add_submenu_page(
+			'post-notif-view-subs'
+			,__( 'Import Subscribers', 'post-notif' )
+			,__( 'Import Subscribers', 'post-notif' )
+			,'manage_options'	// ONLY admin role has this capability
+			,'post-notif-import-subs'
+			,array( $this, 'render_import_subscribers_page' )
+		);
+
+		add_submenu_page(
+			'post-notif-view-subs'
+			,__( 'Staged Subscribers', 'post-notif' )
+			,__( 'Staged Subscribers', 'post-notif' )
+			,'manage_options'	// ONLY admin role has this capability
+			,'post-notif-staged-subs'
+			,array( $this, 'define_staged_subscribers_page' )
 		);
 
 	}
@@ -2948,7 +2962,7 @@ class Post_Notif_Admin {
 		
 		// Tack prefix on to table names
 		$post_notif_post_tbl = $wpdb->prefix.'post_notif_post';
-		$users_tbl = $wpdb->prefix.'users';
+		$users_tbl = $wpdb->base_prefix.'users';
 		
 		// Define list table columns
 		
