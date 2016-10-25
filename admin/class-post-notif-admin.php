@@ -1577,8 +1577,8 @@ class Post_Notif_Admin {
     					,'email_addr' => $staged_subscriber_row->email_addr
     					,'first_name' => $staged_subscriber_row->first_name
     					,'confirmed' => 1
-    					,'last_modified' => date( "Y-m-d H:i:s" )
-    					,'date_subscribed' => date( "Y-m-d H:i:s" )
+    					,'last_modified' => gmdate( "Y-m-d H:i:s" )
+    					,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
     					,'authcode' => $authcode
     				) 
     			);
@@ -1752,8 +1752,8 @@ class Post_Notif_Admin {
 									,'email_addr' => $staged_subscriber_row->email_addr
 									,'first_name' => $staged_subscriber_row->first_name
 									,'confirmed' => 1
-									,'last_modified' => date( "Y-m-d H:i:s" )
-									,'date_subscribed' => date( "Y-m-d H:i:s" )
+									,'last_modified' => gmdate( "Y-m-d H:i:s" )
+									,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
 									,'authcode' => $authcode
 								) 
 							);
@@ -2286,7 +2286,8 @@ class Post_Notif_Admin {
   			$subscribers_arr[$sub_key]['categories'] = $cat_string;
   			
   			// Translate binary "Subscription Confirmed?" value to words
-  			$subscribers_arr[$sub_key]['confirmed'] =  ( ( $sub_val['confirmed'] == 1 ) ? __( 'Yes', 'post-notif' ) : __( 'No', 'post-notif' ) );  			
+  			$subscribers_arr[$sub_key]['confirmed'] =  ( ( $sub_val['confirmed'] == 1 ) ? __( 'Yes', 'post-notif' ) : __( 'No', 'post-notif' ) );
+  			$subscribers_arr[$sub_key]['date_subscribed'] =  Post_Notif_Misc::UTC_to_local_datetime( $sub_val['date_subscribed'] );
   		}	
 		if ( $sort_by_category ) {
 				  
@@ -2525,7 +2526,7 @@ class Post_Notif_Admin {
 			$post_notif_subscriber_tbl
 			,array( 
 				'confirmed' => 1
-				,'last_modified' => date( "Y-m-d H:i:s" )
+				,'last_modified' => gmdate( "Y-m-d H:i:s" )
 			)
 			,array( 
 				'id' => $sub_id
@@ -2605,7 +2606,7 @@ class Post_Notif_Admin {
 							$post_notif_subscriber_tbl
 							,array( 
 								'confirmed' => 1
-								,'last_modified' => date( "Y-m-d H:i:s" )
+								,'last_modified' => gmdate( "Y-m-d H:i:s" )
 							)
 							,array( 
 								'id' => $conf_subscribers_value
@@ -2654,7 +2655,7 @@ class Post_Notif_Admin {
 			$wpdb->prefix.'post_notif_subscriber'
 			,array( 
 				'to_delete' => 1
-				,'last_update_dttm' => date( "Y-m-d H:i:s" )
+				,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
 			)    			
 			,array( 
 				'id' => $sub_id
@@ -2698,7 +2699,7 @@ class Post_Notif_Admin {
 				if ( isset( $del_subscribers_field_name ) ) {
 										
 					// Soft-delete subscriber row
-					$last_updt_dttm = date( "Y-m-d H:i:s" );
+					$last_updt_dttm = gmdate( "Y-m-d H:i:s" );
 					$num_subs_deleted = $wpdb->update( 
 						$wpdb->prefix.'post_notif_subscriber'
 						,array( 
@@ -2743,7 +2744,7 @@ class Post_Notif_Admin {
 			$wpdb->prefix.'post_notif_subscriber'
 			,array( 
 				'to_delete' => 0
-				,'last_update_dttm' => date( "Y-m-d H:i:s" )
+				,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
 			)    			
 			,array( 
 				'id' => $sub_id
@@ -2774,7 +2775,7 @@ class Post_Notif_Admin {
 			$wpdb->prefix.'post_notif_subscriber'
 			,array( 
 				'to_delete' => 0
-				,'last_update_dttm' => date( "Y-m-d H:i:s" )
+				,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
 			)    			
 			,array( 
 				'to_delete' => 1
@@ -2819,7 +2820,7 @@ class Post_Notif_Admin {
 			,array( 
 				'confirmed' => 0
 				,'authcode' => $authcode
-				,'last_modified' => date( "Y-m-d H:i:s" )
+				,'last_modified' => gmdate( "Y-m-d H:i:s" )
 			)
 			,array( 
 				'id' => $sub_id
@@ -2902,7 +2903,7 @@ class Post_Notif_Admin {
 						,array( 
 							'confirmed' => 0
 							,'authcode' => $authcode
-							,'last_modified' => date( "Y-m-d H:i:s" )
+							,'last_modified' => gmdate( "Y-m-d H:i:s" )
 						)
 						,array( 
 							'id' => $rec_subscribers_value

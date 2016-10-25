@@ -296,11 +296,11 @@ class Post_Notif_Widget extends WP_Widget {
 						,'email_addr' => $email_addr
 						,'first_name' => ( $first_name != '') ? $first_name : __( '[Unknown]', 'post-notif' )
 						,'confirmed' => 0 
-						,'last_modified' => date( "Y-m-d H:i:s" )
-						,'date_subscribed' => date( "Y-m-d H:i:s" )
+						,'last_modified' => gmdate( "Y-m-d H:i:s" )
+						,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
 						,'authcode' => $authcode
 						,'to_delete' => 0
-						,'last_update_dttm' => date( "Y-m-d H:i:s" )
+						,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
 					) 
 				);
     
