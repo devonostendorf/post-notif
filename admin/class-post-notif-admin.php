@@ -323,8 +323,7 @@ class Post_Notif_Admin {
 			wp_send_json( array( 'status' => 1 ) );
 		}
 		
-		$post_notif_sent_msg = __( 'Post notification process, for this post, is already running!', 'post-notif' );
-   		wp_send_json( array( 'status' => '-1', 'message' => $post_notif_sent_msg ) );
+  		wp_send_json( array( 'status' => '-1', 'message' => __( 'Post notification process, for this post, is already running!', 'post-notif' ) ) );
 
 	}
 
@@ -401,7 +400,7 @@ class Post_Notif_Admin {
 		if ( $post_notifs_sent_success ) {
    			$post_notif_sent_msg = sprintf( _n( 'One post notification has been sent for this post!', '%s total post notifications have been sent for this post!', $post_notif_sent_count, 'post-notif' ), number_format_i18n( $post_notif_sent_count ) );
 		}
-		elseif ( $post_notif_sent_count == -1 ) {
+		elseif ( -1 == $post_notif_sent_count ) {
    			$post_notif_sent_msg = __( 'Post notification process, for this post, is already in process!', 'post-notif' );
 		}
 		else {
@@ -485,7 +484,6 @@ class Post_Notif_Admin {
 		if ( count( $subscribers_arr ) > 0 ) {
    					
 			// Stow number of post notifs to send
-			//update_option( 'post_notif_count_to_send', count( $subscribers_arr ) );
 			update_option( 'post_notif_count_to_send_post_id_' . $post_id, count( $subscribers_arr ) );
 		}
    				 				   		   		
@@ -686,9 +684,8 @@ class Post_Notif_Admin {
 	 * Unschedule WP cron event to send post notifications for specified post.
 	 *
 	 * @since	1.1.0
-	 * @param	int		$post_id	Post to execute unschedule post notification for.
 	 */
-	public function unschedule_post_notif_send( $post_id ) {
+	public function unschedule_post_notif_send() {
 				
 		// Confirm matching nonce
 		check_ajax_referer( 'post_notif_cancel_send' );
@@ -723,8 +720,7 @@ class Post_Notif_Admin {
 			)		
 		);
 		if ( null !== $notif_sent_dttm ) {
-			$update_last_sent_text = __( 'Last sent: ', 'post-notif' ) . Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm );
-			wp_send_json( array( 'message' => __( 'Post notification is no longer scheduled for this post!', 'post-notif' ), 'cancelled' => 0, 'update_last_sent' => 1, 'update_last_sent_text' => $update_last_sent_text ) );
+			wp_send_json( array( 'message' => __( 'Post notification is no longer scheduled for this post!', 'post-notif' ), 'cancelled' => 0, 'update_last_sent' => 1, 'update_last_sent_text' => __( 'Last sent: ', 'post-notif' ) . Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm ) ) );
 		}
 		
 		wp_send_json( array( 'message' => __( 'Post notification is no longer scheduled for this post!', 'post-notif' ), 'cancelled' => 0, 'update_last_sent' => 0 ) );
@@ -2201,7 +2197,7 @@ class Post_Notif_Admin {
 						$order = ( !empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
 						$result = strcmp( $a['categories'], $b['categories'] );
   					
-						return ( $order === 'asc' ) ? $result : -$result;
+						return ( 'asc' === $order ) ? $result : -$result;
 					}
 				}
 			}
@@ -2258,7 +2254,7 @@ class Post_Notif_Admin {
 		$category_arr = get_categories( $args );
 		$category_name_arr = array();
 		foreach ( $category_arr as $category ) {
-			$category_name_arr[$category->cat_ID] = $category->name;
+			$category_name_arr[ $category->cat_ID ] = $category->name;
 		}
 
 		$subscriber_cats_arr = array();
@@ -2275,7 +2271,7 @@ class Post_Notif_Admin {
    			$cat_string = '';
    			foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
    				if ( 0 != $cat_val->cat_id ) {
-   					$cat_string .= $category_name_arr[$cat_val->cat_id] . ', ';
+   					$cat_string .= $category_name_arr[ $cat_val->cat_id ] . ', ';
    				}
    				else {
    					$cat_string = __( 'All', 'post-notif' );	  
@@ -2283,11 +2279,11 @@ class Post_Notif_Admin {
    				}
    			}
    			$cat_string = rtrim ( $cat_string, ', ' );   	
-  			$subscribers_arr[$sub_key]['categories'] = $cat_string;
+  			$subscribers_arr[ $sub_key ]['categories'] = $cat_string;
   			
   			// Translate binary "Subscription Confirmed?" value to words
-  			$subscribers_arr[$sub_key]['confirmed'] =  ( ( $sub_val['confirmed'] == 1 ) ? __( 'Yes', 'post-notif' ) : __( 'No', 'post-notif' ) );
-  			$subscribers_arr[$sub_key]['date_subscribed'] =  Post_Notif_Misc::UTC_to_local_datetime( $sub_val['date_subscribed'] );
+  			$subscribers_arr[ $sub_key ]['confirmed'] =  ( ( 1 == $sub_val['confirmed'] ) ? __( 'Yes', 'post-notif' ) : __( 'No', 'post-notif' ) );
+  			$subscribers_arr[ $sub_key ]['date_subscribed'] =  Post_Notif_Misc::UTC_to_local_datetime( $sub_val['date_subscribed'] );
   		}	
 		if ( $sort_by_category ) {
 				  
@@ -2390,10 +2386,10 @@ class Post_Notif_Admin {
  						// Sort by category requires some special handling since category data is not
  						//		retrieved by original query
  						function usort_reorder( $a, $b ) {
- 							$order = ( !empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
+ 							$order = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
  							$result = strcmp( $a['categories'], $b['categories'] );
   					
- 							return ( $order === 'asc' ) ? $result : -$result;
+ 							return ( 'asc' === $order ) ? $result : -$result;
  						}
  					}
  				}
@@ -2484,7 +2480,7 @@ class Post_Notif_Admin {
    				);
    		   			
    				foreach ( $selected_cats_arr as $cat_key => $cat_val ) { 
-   					$subscribers_arr[$sub_key][] = $cat_val->cat_id;
+   					$subscribers_arr[ $sub_key ][] = $cat_val->cat_id;
    				}
    			}
  			
@@ -3036,12 +3032,12 @@ class Post_Notif_Admin {
    		// Get post titles, authors' names, and post notif senders' names
    		foreach ( $post_notifs_sent_arr as $notif_key => $notif_val ) {
    			$post_object = get_post( $notif_val['post_id'] );
-   			$post_notifs_sent_arr[$notif_key]['post_title'] = $post_object->post_title;
+   			$post_notifs_sent_arr[ $notif_key ]['post_title'] = $post_object->post_title;
    		
     		$post_author_data = get_userdata( $post_object->post_author );
-    		$post_notifs_sent_arr[$notif_key]['author'] = $post_author_data->user_login;
+    		$post_notifs_sent_arr[ $notif_key ]['author'] = $post_author_data->user_login;
     		
-    		$post_notifs_sent_arr[$notif_key]['notif_sent_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_sent_dttm'] );
+    		$post_notifs_sent_arr[ $notif_key ]['notif_sent_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_sent_dttm'] );
     	}
   	
 		// Build page	  
