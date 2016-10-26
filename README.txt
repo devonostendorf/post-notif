@@ -3,8 +3,8 @@ Contributors: DevonOstendorf
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
-Tested up to: 4.5
-Stable tag: 1.0.9
+Tested up to: 4.6
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Post notification email subject and body
 	* Email sent to subscriber after subscription is confirmed subject and body
 	* @@signature variable (for optional use in emails)
+	* Many additional email template variables (for optional use in emails)
 		
 * Configurable page settings:
 	* Subscription confirmed page title and page greeting 	
@@ -49,6 +50,11 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 * Configurable category settings:
 	* Make all or a subset of system categories available to subscribers or turn off categories entirely
 	
+* Configurable post notification send:
+	* Send now
+	* Schedule send (via WordPress cron)
+	* Test send
+	
 * Admin and editor tools:
 	* View subscribers (and the post categories they've subscribed to)
 	* View post notifications sent
@@ -57,6 +63,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Import subscribers (see FAQ for details on how import process works)
 	* Manage subscribers:
 		* Export
+		* Force confirm subscriber
 		* Delete
 		* Resend confirmation email
 		
@@ -90,15 +97,15 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 1. Activate the plugin in the Plugins admin menu (Plugins >> Installed Plugins)  
 2. Choose the one bullet item below that best represents your configuration and perform the steps specified for it:
 
-* If you are using permalink settings OTHER THAN the "Default" (Settings >> Permalinks >> Common Settings >> Default [radio button]), everything should work fine (the `.htaccess` file's regular expressions will handle the plugin's URLs)  
+* If you are using permalink settings OTHER THAN the "Plain" (Settings >> Permalinks >> Common Settings >> Plain [radio button]), everything should work fine (the `.htaccess` file's regular expressions will handle the plugin's URLs)  
 	1. Configure options (Settings >> Post Notif)  
 	2. Add and configure widget (Appearance >> Widgets)  
   
-* If you ARE using the "Default" permalink settings (Settings >> Permalinks >> Common Settings >> Default [radio button]) and don't mind changing your URL formatting, select another option under "Common Settings" and Save Changes.  If WordPress tells you that it is unable to automatically update your `.htaccess` file, due to permissions issues, manually make the changes it prescribes to your `.htaccess` file.  The Post Notif plugin should work fine now.  
+* If you ARE using the "Plain" permalink settings (Settings >> Permalinks >> Common Settings >> Plain [radio button]) and don't mind changing your URL formatting, select another option under "Common Settings" and Save Changes.  If WordPress tells you that it is unable to automatically update your `.htaccess` file, due to permissions issues, manually make the changes it prescribes to your `.htaccess` file.  The Post Notif plugin should work fine now.  
 	1. Configure options (Settings >> Post Notif)  
 	2. Add and configure widget (Appearance >> Widgets)  
   
-* If you are deliberately using the default permalink settings and want to keep it that way, you'll need to manually modify (or, if it does not exist, create) your `.htaccess` file in your site's root directory (where `wp-config.php` also resides), so that it contains:  
+* If you are deliberately using the plain permalink settings and want to keep it that way, you'll need to manually modify (or, if it does not exist, create) your `.htaccess` file in your site's root directory (where `wp-config.php` also resides), so that it contains:  
 	1. Add the following to `.htaccess`:
 	
 		`# BEGIN WordPress`  	
@@ -149,9 +156,11 @@ Follow the steps on the Installation page and then review the Screenshots (which
 
 The email sender email address (under Email Settings in the settings) must be an email address already configured to send email from your domain.
 
-= Why isn't there an option to schedule notifications? =
+= What's the Test Send functionality all about? =
+This allows you to test send (to one email address or a list of comma-delimited email addresses) the post notification for the current post, so you can see the email subject and body, complete with variables substituted, as it will appear to your subscribers when you send it for real.  Please note that personalized variables (e.g., @@firstname, @@confurl, @@prefsurl, and @@unsubscribeurl) will not be resolved in the test send email.
 
-Since WordPress Cron is not a true UNIX-style Cron daemon, I believe it is disingenuous to imply that a notification will definitely be sent out according to a schedule that relies on it.  Since WP Cron's effectiveness is highly dependent on a site's traffic, allowing authors to manually trigger notification, once they've published a post, is the functionality I've chosen to provide.
+= I've scheduled a post notification for a specific date/time, which has passed; why hasn't the post notification been sent? =
+As WordPress Cron is not a true UNIX-style Cron daemon, some activity (even just a public page view from an unknown user) needs to happen SOMEWHERE on the blog, AFTER the schedule datetime, for the post notification process to be triggered. 
 
 = Why aren't all my notifications being sent out? =
 
@@ -315,14 +324,44 @@ You can later turn category functionality back on by doing the reverse of these 
 	* Can be used in:
 		* Post notification email subject
 		* Post notification email body
+
+3. @@permalinkurl
+	* Description: Post's permalink URL
 	
-3. @@permalink
+	* Can be used in:
+		* Post notification email body
+	
+4. @@permalink
 	* Description: Post's permalink
 	
 	* Can be used in:
 		* Post notification email body
 	
-4. @@signature
+5. @@postexcerptauto
+	* Description: Post's first 55 words (standard WordPress core auto excerpt)
+	
+	* Can be used in:
+		* Post notification email body
+	
+6. @@postexcerptmanual
+	* Description: Post's manual [excerpt](https://codex.wordpress.org/Excerpt)
+	
+	* Can be used in:
+		* Post notification email body
+	
+7. @@postteaser
+	* Description: Post's content up to '<!--more-->'
+	
+	* Can be used in:
+		* Post notification email body
+	
+8. @@featuredimage
+	* Description: Post's featured image (post thumbnail)
+	
+	* Can be used in:
+		* Post notification email body
+	
+9. @@signature
 	* Description: Optional signature string [as defined in Settings >> Post Notif >> Email Settings >> @@signature])
 
 	* Can be used in:	
@@ -330,7 +369,7 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Subscription confirmation email body
 		* Email sent after subscription is confirmed body
 		
-5. @@firstname
+10. @@firstname
 	* Description: Subscriber's first name or blank (if not defined)
 	
 	* Can be used in:	
@@ -338,35 +377,36 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Subscription confirmation email body
 		* Email sent after subscription is confirmed body
 	
-6. @@confurl
+11. @@confurl
 	* Description: Subscriber's unique confirmation URL
 	
 	* Can be used in:	
 		* Subscription confirmation email body
 	
-7. @@prefsurl
+12. @@prefsurl
 	* Description: Subscriber's unique subscription preferences URL
 	
 	* Can be used in:	
 		* Post notification email body
 		* Email sent after subscription is confirmed body
 	
-8. @@unsubscribeurl
+13. @@unsubscribeurl
 	* Description: Subscriber's unique [one-click] unsubscribe URL
 	
 	* Can be used in:	
 		* Post notification email body
 		* Email sent after subscription is confirmed body
 	
-9. @@postauthor
+14. @@postauthor
 	* Description: Post's author's name
 	
 	* Can be used in:	
 		* Post notification email subject
 		* Post notification email body
 
-10. @@postexcerpt
+15. @@postexcerpt
 	* Description: Post's excerpt content
+	* NOTE: This has been deprecated; use @@postexcerptmanual instead!
 	
 	* Can be used in:	
 		* Post notification email body
@@ -388,6 +428,21 @@ You can later turn category functionality back on by doing the reverse of these 
 13. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
 
 == Changelog ==
+
+= 1.1.0 =
+Release Date: October 25, 2016
+
+* NEW: Added additional, more specific, post excerpt vars for post notif email template
+* NEW: Added @@permalinkurl, @@featuredimage vars for use in post notif email template
+* FIXED: Fixed issue where subscriber import directly from textarea generates file error
+* NEW: Added progress indicators to post notification send
+* NEW: Added scheduling for post notification send process
+* NEW: Added (force-)confirm subscriber (single and bulk) action to "Manage Subscribers" page
+* NEW: Added post notification test send process
+* FIXED: Fixed code to prevent PHP notice in Import Subscribers functionality
+* CHANGED: Made all datetimes stored in DB UTC but display them on pages in local timezone
+* FIXED: Fixed code to prevent invalid, selectable page, displaying in Post Notif admin menu in multisite environment
+* FIXED: Fixed code which was preventing display of data on View Post Notifs Sent page in multisite environment
 
 = 1.0.9 =
 Release Date: May 23, 2016
@@ -458,6 +513,9 @@ Release Date: April 8, 2015
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+NOTE: Post Notif admin menu item sequence has changed.  @@postexcerpt variable has been deprecated (use @@postexcerptmanual)!  Many new features and bug fixes are included in this release.  Full details are in the Changelog (https://wordpress.org/plugins/post-notif/changelog/) under 1.1.0.
 
 = 1.0.9 =
 Added German translations.  Added missing 1.0.8 strings to Spanish translation.
