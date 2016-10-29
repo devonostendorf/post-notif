@@ -4,7 +4,7 @@
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.6   
-**Stable tag:** 1.1.0   
+**Stable tag:** 1.1.1   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -433,6 +433,12 @@ You can later turn category functionality back on by doing the reverse of these 
 
 ## Changelog ##
 
+### 1.1.1 ###
+Release Date: October 28, 2016
+
+* FIXED: Fixed pre-PHP 5.5 fatal errors with empty(trim()) calls
+* CHANGED: Added corrected German translations (de_DE and de_DE_formal) by Ruediger Walter
+
 ### 1.1.0 ###
 Release Date: October 25, 2016
 
@@ -515,6 +521,9 @@ Release Date: April 13, 2015
 * Initial release
 
 ## Upgrade Notice ##
+
+### 1.1.1 ###
+Fixed pre-PHP 5.5 fatal errors with empty(trim()) calls.  Added corrected German translations.
 
 ### 1.1.0 ###
 NOTE: Post Notif admin menu item sequence has changed.  @@postexcerpt variable has been deprecated (use @@postexcerptmanual)!  Many new features and bug fixes are included in this release.  Full details are in the Changelog (https://wordpress.org/plugins/post-notif/changelog/) under 1.1.0.
