@@ -199,7 +199,7 @@ class Post_Notif_Misc {
 
 		$local_timezone = get_option( 'timezone_string', 'UTC' );
 
-		if ( empty( trim( $local_timezone ) ) ) {
+		if ( false == trim( $local_timezone ) ) {
 			$local_timezone = 'UTC';
 		}
 		
@@ -273,7 +273,7 @@ class Post_Notif_Misc {
 		
 		$local_timezone = get_option( 'timezone_string', 'UTC' );
 		
-		if ( empty( trim( $local_timezone ) ) ) {
+		if ( false == trim( $local_timezone ) ) {
 			$local_timezone = 'UTC';
 		}
 		

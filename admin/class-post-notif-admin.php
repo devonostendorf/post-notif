@@ -793,7 +793,7 @@ class Post_Notif_Admin {
 		list( $headers, $post_notif_email_subject, $post_notif_email_body_template ) = $this->resolve_post_notification_email_vars( $post_id );
 		
 		foreach( $recipients_arr as $recipient_email_addr ) {
-			if ( ! ( empty( trim( $recipient_email_addr ) ) ) ) {
+			if ( false != trim( $recipient_email_addr ) ) {
 				if ( preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i' , $recipient_email_addr ) ) {
 			
 					// Address IS valid, physically send email
