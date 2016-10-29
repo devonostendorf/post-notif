@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Notif 1.1.0\n"
-"PO-Revision-Date: 2016-10-25 23:15:21+00:00\n"
+"PO-Revision-Date: 2016-10-28 12:15:21+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,7 +18,7 @@ msgstr ""
 msgid ""
 "Post notif for this post is already IN PROCESS. Please check back later."
 msgstr ""
-"Post notif für diesen Beitrag ist bereits IN PROCESS. Bitte schauen Sie "
+"Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit. Bitte schau "
 "später noch einmal vorbei."
 
 #: admin/class-post-notif-admin.php:272
@@ -35,26 +35,22 @@ msgstr "Ungültiges Datum und / oder Uhrzeit! Bitte versuche es erneut."
 
 #: admin/class-post-notif-admin.php:325
 msgid "Post notification process, for this post, is already running!"
-msgstr "Post-Benachrichtigungsprozess, für diesen Post, wird bereits "
-"ausgeführt!"
+msgstr "Benachrichtigungsprozess wird für diesen Beitrag bereits ausgeführt!"
 
 #: admin/class-post-notif-admin.php:400
 msgid "One post notification has been sent for this post!"
 msgid_plural "%s total post notifications have been sent for this post!"
-msgstr[0] "Eine Postbenachrichtigung wurde für diesen Post gesendet!"
-msgstr[1] "Für diesen Beitrag wurde %s Benachrichtigung über drei Post "
-"gesendet!"
+msgstr[0] "Eine Benachrichtigung wurde für diesen Beitrag gesendet!"
+msgstr[1] "Für diesen Beitrag wurden %s Benachrichtigungen gesendet!"
 
 #: admin/class-post-notif-admin.php:403
 msgid "Post notification process, for this post, is already in process!"
-msgstr "Post-Benachrichtigungsprozess für diesen Beitrag ist bereits in "
-"Bearbeitung!"
+msgstr "Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit!"
 
 #: admin/class-post-notif-admin.php:406
 msgid ""
 "Post notification process, for this post, FAILED to complete successfully!"
-msgstr "Post-Benachrichtigung, für diesen Beitrag, FEHLER erfolgreich "
-"abgeschlossen!"
+msgstr "Die Benachrichtigung für diesen Beitrag ist fehlgeschlagen!"
 
 #: admin/class-post-notif-admin.php:409
 #: admin/partials/post-notif-admin-meta-box.php:18
@@ -63,12 +59,12 @@ msgstr "Zuletzt versendet:"
 
 #: admin/class-post-notif-admin.php:632
 msgid "Post notification has been scheduled for this post!"
-msgstr "Post-Benachrichtigung ist für diesen Beitrag geplant!"
+msgstr "Eine Benachrichtigung ist für diesen Beitrag geplant!"
 
 #: admin/class-post-notif-admin.php:632
 #: admin/partials/post-notif-admin-meta-box.php:32
 msgid "Scheduled for:"
-msgstr "Eingetragen für:"
+msgstr "Eingeplant für:"
 
 #: admin/class-post-notif-admin.php:637
 msgid "Date cannot be in the past! Please try again."
@@ -76,22 +72,23 @@ msgstr "Datum kann nicht in der Vergangenheit sein! Bitte versuche es erneut."
 
 #: admin/class-post-notif-admin.php:645
 msgid "Post notification is ALREADY scheduled for this post!"
-msgstr "Post-Benachrichtigung ist bereits für diesen Beitrag geplant!"
+msgstr "Eine Benachrichtigung für diesen Beitrag ist bereits geplant!"
 
 #: admin/class-post-notif-admin.php:711
 msgid "Post notification for this post has been CANCELLED!"
-msgstr "Post-Benachrichtigung für diesen Beitrag wurde abgesagt!"
+msgstr "Die Benachrichtigung für diesen Beitrag wurde abgebrochen!"
 
 #: admin/class-post-notif-admin.php:717
 msgid ""
 "Post notification for this post is already IN PROCESS and cannot be "
 "cancelled!"
-msgstr "Post-Benachrichtigung für diesen Post ist bereits IN PROCESS und kann "
+msgstr ""
+"Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit und kann "
 "nicht abgebrochen werden!"
 
 #: admin/class-post-notif-admin.php:736 admin/class-post-notif-admin.php:739
 msgid "Post notification is no longer scheduled for this post!"
-msgstr "Post-Benachrichtigung ist nicht mehr für diesen Post geplant!"
+msgstr "Eine Benachrichtigung ist für diesen Beitrag nicht mehr geplant!"
 
 #: admin/class-post-notif-admin.php:736
 msgid "Last sent: "
@@ -309,7 +306,7 @@ msgstr "NEUVERSAND"
 
 #: admin/partials/post-notif-admin-meta-box.php:22
 msgid "Schedule RESEND"
-msgstr "Planen Sie RESEND ein"
+msgstr "Plane eine erneute Benachrichtigung ein"
 
 #: admin/partials/post-notif-admin-meta-box.php:27
 #: admin/partials/post-notif-admin-meta-box.php:110
@@ -319,7 +316,7 @@ msgstr "Senden"
 
 #: admin/partials/post-notif-admin-meta-box.php:28
 msgid "Schedule Send"
-msgstr "Zeitplan Send"
+msgstr "Zeitplan Versand"
 
 #: admin/partials/post-notif-admin-meta-box.php:50
 msgid "Send Now"
@@ -331,7 +328,7 @@ msgstr "Zeitplan"
 
 #: admin/partials/post-notif-admin-meta-box.php:63
 msgid "Datetime to schedule post notification to run at"
-msgstr "Datetime zu planen Post-Benachrichtigung zu laufen"
+msgstr "Geplanter Zeitpunkt für den Versand der Benachrichtigung"
 
 #: admin/partials/post-notif-admin-meta-box.php:66
 msgid "Month"
@@ -356,16 +353,16 @@ msgstr "Minute"
 #: admin/partials/post-notif-admin-meta-box.php:100
 #: admin/partials/post-notif-admin-meta-box.php:113
 msgid "Cancel"
-msgstr "Stornieren"
+msgstr "Abbrechen"
 
 #: admin/partials/post-notif-admin-meta-box.php:140
 #: admin/partials/post-notif-admin-meta-box.php:144
 msgid "Test Send"
-msgstr "Test Senden"
+msgstr "Versand-Test"
 
 #: admin/partials/post-notif-admin-meta-box.php:141
 msgid "Send to:"
-msgstr "Senden an"
+msgstr "Senden an:"
 
 #: admin/views/post-notif-admin-display-options.php:21
 msgid "Email Settings"
@@ -588,7 +585,7 @@ msgstr[1] "%s Abonnenten wurden exportiert."
 #: admin/views/post-notif-admin-view-subs.php:25
 msgid "Subscriber confirmed."
 msgid_plural "%s subscribers confirmed."
-msgstr[0] "Abonnent bestätigt"
+msgstr[0] "Abonnent bestätigt."
 msgstr[1] "%s Abonnenten bestätigt."
 
 #: admin/views/post-notif-admin-view-subs.php:31
