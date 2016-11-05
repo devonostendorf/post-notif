@@ -297,7 +297,7 @@ class Post_Notif_Updater {
 			to_delete BOOLEAN NOT NULL DEFAULT 0,
 			last_update_dttm TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY  (id),
-			UNIQUE KEY (email_addr)			
+			UNIQUE KEY email_addr (email_addr)			
 		) $charset_collate;";
 		dbDelta( $sql );		
 		
