@@ -4,7 +4,7 @@
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.6   
-**Stable tag:** 1.1.1   
+**Stable tag:** 1.1.2   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -69,6 +69,11 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 		* Resend confirmation email
 		
 * Multisite capable
+
+* Translations for the following languages:
+	* Dutch (nl_NL)
+	* German (de\_DE and de\_DE\_formal)
+	* Spanish (es_ES)
 
 ### Benefits: ###
 
@@ -433,6 +438,12 @@ You can later turn category functionality back on by doing the reverse of these 
 
 ## Changelog ##
 
+### 1.1.2 ###
+Release Date: November 4, 2016
+
+* NEW: Added Dutch (nl_NL) translation by frankmaNL
+* FIXED: Updated custom table create statement to adhere to WordPress 4.6 dbDelta() KEY format
+
 ### 1.1.1 ###
 Release Date: October 28, 2016
 
@@ -522,6 +533,9 @@ Release Date: April 13, 2015
 
 ## Upgrade Notice ##
 
+### 1.1.2 ###
+Added Dutch translation.  Updated custom table create statement to adhere to WordPress 4.6 dbDelta() KEY format.
+
 ### 1.1.1 ###
 Fixed pre-PHP 5.5 fatal errors with empty(trim()) calls.  Added corrected German translations.
 
@@ -565,3 +579,4 @@ Special thanks to:
 * All of the people courageous enough to risk sounding stupid by asking the same questions I had about how things work in WordPress!
 * [Enrique Maza](http://sevalepensar.com) for the Spanish (es_ES) translation
 * Ruediger Walter for the German (de\_DE and de\_DE\_formal) translations
+* frankmaNL for the Dutch (nl_NL) translation
