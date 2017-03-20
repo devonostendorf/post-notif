@@ -1001,17 +1001,17 @@ class Post_Notif_Admin {
 			
 			$import_row_number = 1;
 				  
-			// Retrieve active system categories (for validation below)
-			$category_args = array(
-				'exclude' => 1,		// Omit Uncategorized
-				'orderby' => 'name',
-				'order' => 'ASC',
-				'hide_empty' => 0
-			);
-			$existing_categories = get_categories( $category_args );
+			// Retrieve Post Notif-available system categories (for validation below)
+			
+			$post_notif_options_arr = get_option( 'post_notif_settings' );
+				
 			$existing_categories_arr = array();
-			foreach ( $existing_categories as $existing_category ) {			
-				$existing_categories_arr[] = $existing_category->cat_ID;
+			if ( array_key_exists( 'available_categories', $post_notif_options_arr ) ) {
+				
+				// Categories ARE available for subscribers to choose from
+				foreach ( $post_notif_options_arr['available_categories'] as $available_category => $discard ) {			
+					$existing_categories_arr[] = $available_category;
+				}
 			}
 			
 			// Attempt to process each import row
@@ -1437,8 +1437,7 @@ class Post_Notif_Admin {
    		// Select categories each subscriber is subscribed to AND pass array to page
    		//		for display
  		$args = array(
-			'exclude' => 1		// Omit Uncategorized
-			,'orderby' => 'name'
+			'orderby' => 'name'
 			,'order' => 'ASC'
 			,'hide_empty' => 0
 		);
