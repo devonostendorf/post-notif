@@ -50,7 +50,7 @@ class Post_Notif_Updater {
 	 */
 	public function __construct( $installed_post_notif_db_version ) {
 
-		$this->post_notif_db_version = 3;
+		$this->post_notif_db_version = 4;
 		$this->installed_post_notif_db_version = $installed_post_notif_db_version;
 		  
 	}
@@ -110,6 +110,7 @@ class Post_Notif_Updater {
 			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
 			,'widget_info_message_processing' => 'Processing...'
 			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
+			,'widget_failure_message' => 'Thanks for subscribing.'
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
 			,'available_categories' => array( '0' )
 			,'admin_menu_position' => '3.389'
@@ -300,6 +301,18 @@ class Post_Notif_Updater {
 			UNIQUE KEY email_addr (email_addr)			
 		) $charset_collate;";
 		dbDelta( $sql );		
+		
+	}
+	
+	/**
+	 * Apply changes to get database schema to version 4.
+	 *
+	 * @since	1.1.3
+	 * @access	private
+	 */
+	private function post_notif_db_update_version_4() {
+			
+		// NOOP - Only added 'widget_failure_message' to $post_notif_settings_arr
 		
 	}
 	

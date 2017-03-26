@@ -262,6 +262,15 @@
             				<br />
             			</td>
             		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Message (failed subscription request):', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[widget_failure_message]" id="widget_failure_message" value="<?php echo esc_attr( $options['widget_failure_message'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
             	</table> 
             	<h2 class="title"><?php esc_html_e( 'Category Settings', 'post-notif' ); ?></h2>
             	<table class="form-table">

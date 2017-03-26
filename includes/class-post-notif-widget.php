@@ -289,12 +289,13 @@ class Post_Notif_Widget extends WP_Widget {
 			else {
 				
 				// Subscriber is new
-				$result = $wpdb->insert( 
+				$first_name = ( $first_name != '') ? $first_name : __( '[Unknown]', 'post-notif' );
+				$subscriber_inserted = $wpdb->insert( 
 					$wpdb->prefix.'post_notif_subscriber' 
 					,array( 
 						'id' => ''
 						,'email_addr' => $email_addr
-						,'first_name' => ( $first_name != '') ? $first_name : __( '[Unknown]', 'post-notif' )
+						,'first_name' => $first_name
 						,'confirmed' => 0 
 						,'last_modified' => gmdate( "Y-m-d H:i:s" )
 						,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
@@ -304,14 +305,26 @@ class Post_Notif_Widget extends WP_Widget {
 					) 
 				);
     
-				// Send confirmation email
 				$subscriber_arr = array(
 					'email_addr' => $email_addr
 					,'first_name' => $first_name
 					,'authcode' => $authcode
 				);
-				Post_Notif_Misc::send_confirmation_email( $subscriber_arr );
-				wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_success_message'] ) );    		
+
+				if ( $subscriber_inserted ) {
+					
+					// Send confirmation email
+					Post_Notif_Misc::send_confirmation_email( $subscriber_arr );
+					wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_success_message'] ) );
+				}
+				else {
+				
+					// Subscriber creation failed
+					
+					// Send admin email
+					Post_Notif_Misc::send_admin_failed_subscriber_creation_email( $subscriber_arr );
+					wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_failure_message'] ) );					
+				}
 			}
 		}
 		else {

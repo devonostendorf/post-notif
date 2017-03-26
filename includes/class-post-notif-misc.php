@@ -211,6 +211,41 @@ class Post_Notif_Misc {
 	}
 	
  	/**
+	 * Send failed subscriber creation email to admin.
+	 *
+	 * @since	1.1.3
+	 * @param 	array	$subscriber_arr	A single subscriber's data (first name, email addr).
+	 */
+	public static function send_admin_failed_subscriber_creation_email( $subscriber_arr ) {
+
+		// This is based on Post Notif settings
+    		
+		// Compose email
+		    
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
+    
+		$email_subject = __( 'Post Notif: FAILURE to create subscriber', 'post-notif' );
+
+		$email_body = __( 'The following person attempted to subscribe but subscriber creation failed.', 'post-notif' );
+		$email_body .= '  ' . __( 'You should add them directly (via the Import Subscribers process and then "resend" their confirmation email [from the Manage Subscribers page]), but also be sure to check your database permissions too, to determine why failure occurred in the first place!', 'post-notif' ) . '<br /><br />';
+		$email_body .= __( 'First Name: ', 'post-notif' ) . $subscriber_arr['first_name'] . '<br />';
+		$email_body .= __( 'Email Address: ', 'post-notif' ) . $subscriber_arr['email_addr'];
+				
+		// Send email to admin
+    		
+		// Set sender name and email address
+		$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
+			. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
+   		
+		// Specify HTML-formatted email
+		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+   
+		//	Physically send email
+   		$mail_sent = wp_mail( $post_notif_options_arr['eml_sender_eml_addr'], $email_subject, $email_body, $headers );   
+			  
+	}
+	
+ 	/**
 	 * Send subscription confirmation email to a subscriber.
 	 *
 	 * @since	1.0.2
