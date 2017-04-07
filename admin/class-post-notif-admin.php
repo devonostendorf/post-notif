@@ -215,6 +215,106 @@ class Post_Notif_Admin {
 		);
 		
 	}
+
+	/**
+	 * Add Post Notif option to Publish meta box on Edit Post page.
+	 *
+	 * @since	1.1.3
+	 * @return	null	If this is not a post
+	 */	
+	public function add_post_notif_option_to_publish_box() {
+		
+		global $post;
+		
+		if ( 'post' != $post->post_type ) {
+			
+			return;
+		}
+		
+		if ( 'publish' == $post->post_status ) {
+			
+			// Posts that have been published always have Post Notif default to "Manual" as this prevents
+			//	accidental re-sending of post notifications on updates to post
+			$send_notif_on_publish = 'no';
+			update_post_meta( $post->ID, 'send_notif_on_publish', $send_notif_on_publish );
+		}
+		elseif ( ! $send_notif_on_publish = get_post_meta( $post->ID, 'send_notif_on_publish', true ) ) {
+				
+			// Default from Post Notif settings since no value found in post meta for this post
+			$post_notif_options_arr = get_option( 'post_notif_settings' );
+			$send_notif_on_publish = $post_notif_options_arr['send_notif_on_publish'];
+		}			
+		
+		if ( 'yes' == $send_notif_on_publish ) {
+			$active = __( 'Auto', 'post-notif' );
+			$class = 'pn-auto';
+			$inactive = __( 'Manual', 'post-notif' );
+		}
+		else {
+			$active = __( 'Manual', 'post-notif' );
+			$class = 'pn-manual';
+			$inactive = __( 'Auto', 'post-notif' );
+		}
+		
+		// Add Post Notif option to core Publish meta box	
+		include( plugin_dir_path( __FILE__ ) . 'partials/post-notif-admin-publish-meta-box-addon.php' );			
+		
+	}
+
+	/**
+	 * Save post notif configuration for specified post to post meta.
+	 *
+	 * @since	1.1.3
+	 * @param	int		$post_id	Post to save post notif configuration for.
+	 * @return	null	If this is an autosave or an unauthorized user or not a post
+	 */
+	public function save_send_notif_on_publish_post_meta( $post_id ) {
+
+		if ( ( wp_is_post_autosave( $post_id ) ) ||
+			( ! current_user_can( 'edit_page', $post_id ) ) ||
+			( empty( $post_id ) ) || 
+			( 'post' != get_post_type( $post_id ) ) 
+		) {
+		
+			// This is an autosave or an unauthorized user or not a post
+			return;
+			
+		}
+		
+		if ( isset( $_POST['hdnPostNotifSchedAuto'] ) ) {
+			update_post_meta( $post_id, 'send_notif_on_publish', $_POST['hdnPostNotifSchedAuto'] );
+		}
+		
+	}
+	
+	/**
+	 * Send post notification if specified post has been configured to send automatically on publish.
+	 *
+	 * @since	1.1.3
+	 * @param	string	$new_status	New post status after an update.
+	 * @param	string	$old_status	Previous post status.
+	 * @param	WP_Post	$post	The object for the current post/page.
+	 */
+	public function send_notif_on_publish_if_auto( $new_status, $old_status, $post ) {
+	
+		if ( 'publish' == $new_status ) {
+
+			// NOTE: Because this function is hooked into transition_post_status action, and it, in turn, calls
+			//		the save_post action, which the save_send_notif_on_publish_post_meta() function (above) is hooked 
+			//		into, if the post notif option has changed since the last (which could be the first!) time draft was
+			//		saved, that value will not be current in the post meta data.  So force that save.				
+			$this->save_send_notif_on_publish_post_meta( $post->ID );			
+			
+			$send_notif_on_publish = get_post_meta( $post->ID, 'send_notif_on_publish', true );
+
+			if ( 'yes' == $send_notif_on_publish ) {
+			
+				// Fire post notif NOW!
+				$this->process_post_notif_send( $post->ID );
+			}
+		}		
+		
+	}
 	
 	/**
 	 * Render meta box on Edit Post page.

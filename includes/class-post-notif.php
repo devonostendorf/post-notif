@@ -189,7 +189,10 @@ class Post_Notif {
    		$this->loader->add_action( 'wp_ajax_get_post_notif_send_status', $plugin_admin, 'get_post_notif_send_status' );
 		$this->loader->add_action( 'wp_ajax_post_notif_send', $plugin_admin, 'send_post_notif_ajax_handler' );
 
-		// Schedule send notif (from Edit Post page) functionality
+		// Schedule send notif (from Edit Post page) functionality	
+		$this->loader->add_action( 'post_submitbox_misc_actions', $plugin_admin, 'add_post_notif_option_to_publish_box' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'save_send_notif_on_publish_post_meta' );
+		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'send_notif_on_publish_if_auto', 10, 3 );		
 		$this->loader->add_action( 'wp_ajax_schedule_post_notif_send', $plugin_admin, 'schedule_post_notif_send' );
 		$this->loader->add_action( 'post_notif_send_scheduled_post_notif', $plugin_admin, 'execute_scheduled_post_notif_send', 10, 1 );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'unschedule_post_notif_send_enqueue' );

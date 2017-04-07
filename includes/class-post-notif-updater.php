@@ -95,6 +95,7 @@ class Post_Notif_Updater {
 			,'eml_to_sub_after_conf_body' => "Hi @@firstname,<br />\n<br />\nThanks for subscribing to the posts on @@blogname.<br />\n<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
 			,'post_notif_eml_subj' => 'New post on @@blogname: @@posttitle'
 			,'post_notif_eml_body' => "Hi @@firstname,<br />\n<br />\nHere's the direct link to the post:<br />@@permalink<br />\n<br />\n@@signature<br /><br />\n<br />\nIf you'd like to change the categories you're subscribed to, click here:<br />\n@@prefsurl<br />\n<br />\nIf you'd like to unsubscribe from all future notification, click here:<br />\n@@unsubscribeurl"
+			,'send_notif_on_publish' => 'no'
 			,'@@signature' => 'Thanks,<br />[ENTER NAME HERE]'
 			,'sub_confirmed_page_title' => 'Post Notification Preferences'
 			,'sub_confirmed_page_greeting' => 'You are now all set to receive post notifications!'

@@ -107,6 +107,22 @@
 						</td>
 					</tr>
 					<tr valign="top">
+						<th scope="row">
+							<?php esc_html_e( 'Send post notifications when post published:', 'post-notif' ); ?>
+						</th>
+						<td>
+							<span class="block-element">
+								<input type="radio" name="post_notif_settings[send_notif_on_publish]" id="send_notif_on_publish_yes" value="yes" <?php checked( $options['send_notif_on_publish'], 'yes' ); ?> >
+								<label for="send_notif_on_publish_yes"><?php esc_html_e( 'Yes (Auto)', 'post-notif' ); ?></label>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							</span>
+							<span class="block-element">
+								<input type="radio" name="post_notif_settings[send_notif_on_publish]" id="send_notif_on_publish_no" value="no" <?php checked( $options['send_notif_on_publish'], 'no' ); ?> >
+								<label for="send_notif_on_publish_no"><?php esc_html_e( 'No (Manual)', 'post-notif' ); ?></label>
+							</span>
+						</td>
+					</tr>
+					<tr valign="top">
             			<th scope="row">
             				<?php esc_html_e( 'If using "Custom Structure" permalink:', 'post-notif' ); ?>
             			</th>
