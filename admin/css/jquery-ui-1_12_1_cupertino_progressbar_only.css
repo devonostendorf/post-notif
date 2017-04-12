@@ -1,7 +1,7 @@
 .ui-progressbar {
 	position: relative;
 }
-#id_spnSendPostNotifProgressBarLabel {
+#id_spnPostNotifProgressBarLabel {
 	position: absolute;
 	left: 50%;
 	top: 4px;

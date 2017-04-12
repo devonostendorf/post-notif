@@ -6,19 +6,18 @@
 	 		var post_id = document.getElementById("id_hdnPostID").value;
 
  			// Hide Send button  	
- 			jQuery('#id_btnPostNotifSend').hide();
+ 			$('#id_btnPostNotifSend').hide();
  			
  			// Set Post Notif status message span to contain processing message
-	 		jQuery("#id_spnPostNotifStatus").text(post_notif_send_ajax_obj.processing_msg);	 			 		
+	 		$("#id_spnPostNotifStatus").text(post_notif_send_ajax_obj.processing_msg);	 			 		
  			 		
-	 		var send_post_notif_now = document.getElementById('id_radSendPostNotifNow');
-	 		if (send_post_notif_now.checked) {
-
+	 		if ($("#id_spnPostNotifSendNowOrSchedActive").hasClass('pn-sendnow')) {
+	
 	 			// Send NOW	
 
-	 			// Hide radio buttons
-	 			jQuery('#id_spnPostNotifSchedRadioButtons').hide();
- 		 			
+	 			// Hide manual send controls
+	 			$("#id_divPostNotifManualSendControls").hide();
+	 			
 	 			// Call Post Notif send init function
 	 			$.post(ajaxurl, {
 	 				action: 'init_post_notif_send',
@@ -28,14 +27,14 @@
 	 				if ('-1' === data.status) {
 
 	 					// Process is already running - STOP PROCESSING!
-	 					jQuery("#id_spnPostNotifStatus").text(data.message);	 					
+	 					$("#id_spnPostNotifStatus").text(data.message);	 					
 	 				} 
 	 				else {
 
 	 					// All is well, carry on
 	 			
 	 					// Create a jQuery Progressbar
-	 					jQuery("#id_post_notif_progress_bar").progressbar();
+	 					$("#id_post_notif_progress_bar").progressbar();
 
 	 					// Check status of process every second
 	 					var processCheckTimer = setInterval(function() {
@@ -49,7 +48,7 @@
 	 							if ('-1' === response) {
 
 	 								// Set the progress bar to display 100% complete
-	 								jQuery("#id_divSendPostNotifProgressBar").progressbar({
+	 								$("#id_divPostNotifProgressBar").progressbar({
 	 									value: 100
 	 								});
 	 			
@@ -57,18 +56,18 @@
 	 								clearInterval(processCheckTimer);
 	 						
 	 								// Hardcode progress bar label to 100% 
-	 								jQuery("#id_spnSendPostNotifProgressBarLabel").text( "100%" );
+	 								$("#id_spnPostNotifProgressBarLabel").text( "100%" );
 	 							} 
 	 							else {
 
 	 								// Update the progress bar to display appropriate percent complete
 	 								var percentComplete = Math.floor(100 * response);
-	 								jQuery("#id_divSendPostNotifProgressBar").progressbar({
+	 								$("#id_divPostNotifProgressBar").progressbar({
 	 									value: percentComplete
 	 								});
 	 						
 	 								// Set progress bar label to appropriate percent complete 
-	 								jQuery("#id_spnSendPostNotifProgressBarLabel").text( percentComplete + "%" );
+	 								$("#id_spnPostNotifProgressBarLabel").text( percentComplete + "%" );
 	 							}	 					
 	 						});
 
@@ -81,11 +80,11 @@
 	 					}, function(data) {
 
 	 						// Update Post Notif status message span with total count of notifs sent
-	 						jQuery("#id_spnPostNotifStatus").text(data.message);
+	 						$("#id_spnPostNotifStatus").text(data.message);
 	 						
 	 						// Update and show Post Notif last sent span with last run timestamp
-	 						jQuery("#id_spnPostNotifLastSent").text(data.timestamp);
-	 						jQuery("#id_spnPostNotifLastSent").show();	 			
+	 						$("#id_spnPostNotifLastSent").text(data.timestamp);
+	 						$("#id_spnPostNotifLastSent").show();	 			
 	 					});
 	 				} 					
 
@@ -98,11 +97,11 @@
 	 			// Validate date/time fields
 	 			
 	 			// Grab datetime pieces from user's entries into input fields
-	 			var schedYear = $('#id_postNotifSchedYear').val();
-				var schedMonth = $('#id_postNotifSchedMonth').val();
-				var schedDay = $('#id_postNotifSchedDay').val();
-				var schedHour = $('#id_postNotifSchedHour').val();
-				var schedMinute = $('#id_postNotifSchedMinute').val();
+	 			var schedYear = $('#id_selPostNotifSchedYear').val();
+				var schedMonth = $('#id_selPostNotifSchedMonth').val();
+				var schedDay = $('#id_selPostNotifSchedDay').val();
+				var schedHour = $('#id_selPostNotifSchedHour').val();
+				var schedMinute = $('#id_selPostNotifSchedMinute').val();
 			
 				// Attempt to build a Date object
 				var scheduleDatetime = new Date( schedYear, schedMonth - 1, schedDay, schedHour, schedMinute );
@@ -112,25 +111,33 @@
 					|| scheduleDatetime.getMinutes() != schedMinute) {	
 				
 					// This is an invalid datetime
-					jQuery("#id_spnPostNotifStatus").text(post_notif_send_ajax_obj.invalid_date_format_msg);	
-					jQuery('#id_btnPostNotifSend').show();
+					$("#id_spnPostNotifStatus").text(post_notif_send_ajax_obj.invalid_date_format_msg);	
+					$('#id_btnPostNotifSend').show();
 					return false;
 				}
 					 			
-	 			// Hide radio buttons
-	 			jQuery('#id_spnPostNotifSchedRadioButtons').hide();
-
+	 			// Hide manual send controls
+	 			$("#id_divPostNotifManualSendControls").hide();
+	 			 			
 	 			var localDatetime = (1 + scheduleDatetime.getMonth()) + ':'
 	 				+ scheduleDatetime.getDate() + ':'
 	 				+ scheduleDatetime.getFullYear() + ':'
 	 				+ scheduleDatetime.getHours() + ':'
 	 				+ scheduleDatetime.getMinutes();
+	 				
+	 			var localPublishDatetime = $('#hidden_mm').val() + ':'
+	 				+ $('#hidden_jj').val() + ':'
+	 				+ $('#hidden_aa').val() + ':'
+	 				+ $('#hidden_hh').val() + ':'
+	 				+ $('#hidden_mm').val() + ':'
+	 				+ $('#hidden_mn').val();
 	 		
 	 			$.post(post_notif_send_ajax_obj.ajax_url, {
 	 				_ajax_nonce: post_notif_send_ajax_obj.nonce,
 	 				action: "schedule_post_notif_send",
 	 				post_id: post_id,
 	 				datetime_local: localDatetime,
+	 				publish_datetime_local: localPublishDatetime,
 	 			}, function(data) {
 	 				
 	 				if (data.valid_datetime) {
@@ -138,58 +145,35 @@
 	 					// All's well
 	 					
 	 					// Hide schedule time input fields
-	 					jQuery("#id_spnPostNotifSendSchedTimestamp").hide();
+	 					$("#id_spnPostNotifSendSchedTimestamp").hide();
 	 				
 	 					// Update and show Post Notif scheduled for message span with scheduled for timestamp
-	 					jQuery("#id_spnPostNotifScheduledFor").text(data.timestamp);
-	 					jQuery("#id_spnPostNotifScheduledFor").show();
+	 					$("#id_spnPostNotifScheduledFor").text(data.timestamp);
+	 					$("#id_spnPostNotifScheduledFor").show();
 	 				
 	 					// Show Cancel button
-	 					jQuery('#id_btnPostNotifCancelSchedSend').show();
+	 					$('#id_btnPostNotifCancelSchedSend').show();
 	 				}
 	 				else {
 	 					 					
 	 					// Attempted to schedule in the past
-	 					jQuery('#id_spnPostNotifSchedRadioButtons').show();
-	 					jQuery('#id_btnPostNotifSend').show();
+	 					$("#id_divPostNotifManualSendControls").show();
+	 					$('#id_btnPostNotifSend').show();
 	 				}
 	 					 			
 	 				// Set Post Notif status message span with appropriate message
-	 				jQuery("#id_spnPostNotifStatus").text(data.message);
+	 				$("#id_spnPostNotifStatus").text(data.message);
 	 			});	 			
 	 		}
 	 	});
 	});
-
-	$(function() {
-		$('#id_radSendPostNotifNow').click(function(event) {
-			if (this.checked) {
-					
-				// Hide schedule time input fields
-				jQuery('#id_spnPostNotifSendSchedTimestamp').hide();
-				
-				// Set button label to appropriate value
-				jQuery('#id_btnPostNotifSend').prop('value', jQuery('#id_hdnPostNotifSendNowLabel').val());
-			} 
-	 	});
-		$('#id_radSendPostNotifSched').click(function(event) {
-			if (this.checked) {
-					  
-				// Show schedule time input fields
-				jQuery('#id_spnPostNotifSendSchedTimestamp').show();
-				
-				// Set button label to appropriate value
-				jQuery('#id_btnPostNotifSend').prop('value', jQuery('#id_hdnPostNotifSchedSendLabel').val());				
-			}
-	 	});
-	}); 
 	
 	$(function() {
 	 	$("#id_btnPostNotifCancelSchedSend").click(function(e) { 
 	 		var post_id = document.getElementById("id_hdnPostID").value;
 	 			
  			// Hide Cancel button
- 			jQuery('#id_btnPostNotifCancelSchedSend').hide();
+ 			$('#id_btnPostNotifCancelSchedSend').hide();
 	 		
 	 		$.post(post_notif_cancel_send_ajax_obj.ajax_url, {
 	 			_ajax_nonce: post_notif_cancel_send_ajax_obj.nonce,
@@ -198,27 +182,30 @@
 	 		}, function(data) {
 
 	 			// Hide Scheduled For span			
-	 			jQuery('#id_spnPostNotifScheduledFor').hide();
-	 			
+	 			$('#id_spnPostNotifScheduledFor').hide();
+	 			$("#id_divPostNotifManualSend").hide();
+
 	 			if (data.update_last_sent) {
 	 				
 	 				// Post notification process ran while page got stale
-	 				jQuery("#id_spnPostNotifLastSent").text(data.update_last_sent_text);
-	 				jQuery("#id_spnPostNotifLastSent").show();
+	 				$("#id_spnPostNotifLastSent").text(data.update_last_sent_text);
+	 				$("#id_spnPostNotifLastSent").show();
 	 			}
 	 			
 	 			if (data.cancelled) {
 	 				
-	 				// Scheduled run was successfully cancelled - give user option to run now
-	 				jQuery('#id_radSendPostNotifNow').prop('checked', true);
-	 				jQuery('#id_radSendPostNotifSched').prop('checked', false);
-	 				jQuery('#id_spnPostNotifSchedRadioButtons').show();
-	 				jQuery('#id_btnPostNotifSend').prop('value', jQuery('#id_hdnPostNotifSendNowLabel').val());
-	 				jQuery('#id_btnPostNotifSend').show();	 				
+	 				// Scheduled run was successfully cancelled - give user option to send now and/or reschedule
+	 				if ($("#id_spnPostNotifSendNowOrSchedActive").hasClass('pn-schedule')) {
+	 					$("#id_spnPostNotifSendSchedTimestamp").show();
+	 				}
+	 				$("#id_spnPostNotifSendNowOrSchedActive").show();
+	 				$("#id_divPostNotifManualSendControls").show();
+					$("#id_divPostNotifManualSend").show();
+	 				$('#id_btnPostNotifSend').show();	 				
 	 			}
 	 			
 	 			// Update Post Notif status message span with appropriate message
-	 			jQuery("#id_spnPostNotifStatus").text(data.message);	 			
+	 			$("#id_spnPostNotifStatus").text(data.message);	 
 	 		});	 			
 	 	});
 	});
@@ -229,7 +216,7 @@
 	 		var recipients = $('#id_emlPostNotifTestSendRecipients').val();
 	 			
  			// Set Test Post Notif status message span to contain processing message
-	 		jQuery("#id_spnTestPostNotifStatus").text(post_notif_test_send_ajax_obj.processing_msg);	 			 		
+	 		jQuery("#id_spnPostNotifTestSendStatus").text(post_notif_test_send_ajax_obj.processing_msg);	 			 		
 	 		
 	 		$.post(post_notif_test_send_ajax_obj.ajax_url, {
 	 			_ajax_nonce: post_notif_test_send_ajax_obj.nonce,
@@ -261,7 +248,7 @@
 	 			}
 
 	 			// Update Test Post Notif status message span with appropriate message (including additional HTML)
-	 			jQuery("#id_spnTestPostNotifStatus").html(data.process_complete_message + '<br /><br />' + sentEmailAddrMessage + invalidEmailAddrMessage);	 			
+	 			jQuery("#id_spnPostNotifTestSendStatus").html(data.process_complete_message + '<br /><br />' + sentEmailAddrMessage + invalidEmailAddrMessage);	 			
 	 		});	 			
 	 	});
 	});
@@ -269,12 +256,13 @@
 	$(function() {
 		$('#id_lnkPostNotifSchedAuto').click(function(event) {
 			if ($(this).hasClass('pn-auto')) {
-				
+
 				// Is set to Auto, switch to Manual
 				$(this).removeClass("pn-auto").addClass("pn-manual");
 				$("#id_spnPostNotifSchedActive").text('Manual');
 				$("#id_spnPostNotifSchedInactive").text('Auto');
 				$("#id_hdnPostNotifSchedAuto").val('no');
+				$("#id_divPostNotifManualSend").show();
 			} 
 			else {         		  
 				
@@ -283,6 +271,36 @@
 				$("#id_spnPostNotifSchedActive").text('Auto');
 				$("#id_spnPostNotifSchedInactive").text('Manual');
 				$("#id_hdnPostNotifSchedAuto").val('yes');
+				$("#id_divPostNotifManualSend").hide();
+				
+			}
+	 	});
+	}); 
+
+	$(function() {
+		$('#id_lnkPostNotifSendNowOrSched').click(function(event) {
+			$("#id_spnPostNotifStatus").text('');	 			
+			if ($("#id_spnPostNotifSendNowOrSchedActive").hasClass('pn-schedule')) {
+				
+				// Is set to Schedule, switch to Send Now
+				$("#id_spnPostNotifSendNowOrSchedActive").removeClass("pn-schedule").addClass("pn-sendnow");
+				$("#id_spnPostNotifSendNowOrSchedActive").text($('#id_hdnPostNotifSendNowOptionLabel').val());
+				$("#id_spnPostNotifSendNowOrSchedInactive").text($('#id_hdnPostNotifScheduleOptionLabel').val());
+				$("#id_spnPostNotifSendSchedTimestamp").hide();
+
+				// Set button label to appropriate value
+				$('#id_btnPostNotifSend').prop('value', jQuery('#id_hdnPostNotifSendNowButtonLabel').val());
+			} 
+			else {         		  
+				
+				// Is set to Send Now, switch to Schedule
+				$("#id_spnPostNotifSendNowOrSchedActive").removeClass("pn-sendnow").addClass("pn-schedule");
+				$("#id_spnPostNotifSendNowOrSchedActive").text($('#id_hdnPostNotifScheduleOptionLabel').val());
+				$("#id_spnPostNotifSendNowOrSchedInactive").text($('#id_hdnPostNotifSendNowOptionLabel').val());
+				$("#id_spnPostNotifSendSchedTimestamp").show();
+
+				// Set button label to appropriate value
+				$('#id_btnPostNotifSend').prop('value', jQuery('#id_hdnPostNotifScheduleButtonLabel').val());				
 			}
 	 	});
 	}); 

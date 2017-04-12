@@ -324,54 +324,73 @@ class Post_Notif_Admin {
 	 */
 	public function render_post_notif_meta_box( $post ) {
 		
-		if ( 'publish' == get_post_status( $post->ID ) ) {
-			
-			// Post has been published, allow Post Notif send
-				  
-			global $wpdb;			
-		
-			// Tack prefix on to table name
-			$post_notif_post_tbl = $wpdb->prefix.'post_notif_post';
-						
-			// Determine if post notifs have already been sent for this post id
+		if ( 'auto-draft' != $post->post_status ) {
+	
+			// "Test Send" functionality is available for any post status other than 'auto-draft'
+							
+			$post_published_or_scheduled = false;
+			$auto_send_selected = true;
 			$previously_sent = false;
-			$notif_sent_dttm = $wpdb->get_var( 
-				$wpdb->prepare(
-					"SELECT MAX(notif_sent_dttm) AS notif_sent_dttm FROM " . $post_notif_post_tbl . " WHERE post_id = %d"
-					,$post->ID
-				)		
-			);
-			if ( null !== $notif_sent_dttm ) {
-				$previously_sent = true;	
-			}
-			
-			// By default, all buttons in meta box are visible 
-			$hide_buttons = false;
-			$status_message = '';
-
-			// Determine if post notif send is already scheduled for this post
 			$already_scheduled = false;
-			$notif_scheduled_for_dttm = wp_next_scheduled( 'post_notif_send_scheduled_post_notif', array( $post->ID ) ); 
-			if ( false !== $notif_scheduled_for_dttm ) {
-				$already_scheduled = true;
-			}
-			else {			
-				if ( $this->post_notif_already_running( $post->ID ) ) {
+			$process_running = false;
+			$status_message = '';
+		
+			$post_scheduled = ('future' == $post->post_status );
+			$post_published = ('publish' == $post->post_status );
 			
-					// Process IS running now
-					$hide_buttons = true;
-					$status_message = __( 'Post notif for this post is already IN PROCESS. Please check back later.', 'post-notif' );
+			if ( $post_scheduled || $post_published ) {
+
+				// Post has been scheduled to be published or has actually been published already, so allow Post Notif send		
+				$post_published_or_scheduled = true;
+				if ( ! $send_notif_on_publish = get_post_meta( $post->ID, 'send_notif_on_publish', true ) ) {
+				
+					// Default from Post Notif settings since no value found in post meta for this post
+					$post_notif_options_arr = get_option( 'post_notif_settings' );
+					$send_notif_on_publish = $post_notif_options_arr['send_notif_on_publish'];
+				}	
+			
+				if ( 'no' == $send_notif_on_publish ) {
+				
+					// Post Notif send option is set to manual so make Schedule (and possibly Send Now) available
+					$auto_send_selected = false;
+					
+					global $wpdb;			
+		
+					// Tack prefix on to table name
+					$post_notif_post_tbl = $wpdb->prefix.'post_notif_post';
+						
+					// Determine if post notifs have already been sent for this post id
+					$previously_sent = false;
+					$notif_sent_dttm = $wpdb->get_var( 
+						$wpdb->prepare(
+							"SELECT MAX(notif_sent_dttm) AS notif_sent_dttm FROM " . $post_notif_post_tbl . " WHERE post_id = %d"
+							,$post->ID
+						)		
+					);
+					if ( null !== $notif_sent_dttm ) {
+						$previously_sent = true;	
+					}
+
+					// Determine if post notif send is already scheduled for this post
+					$already_scheduled = false;
+					$notif_scheduled_for_dttm = wp_next_scheduled( 'post_notif_send_scheduled_post_notif', array( $post->ID ) ); 
+					if ( false !== $notif_scheduled_for_dttm ) {
+						$already_scheduled = true;
+					}
+					elseif ( $this->post_notif_already_running( $post->ID ) ) {
+			
+						// Process IS running now
+						$process_running = true;
+						$status_message = __( 'Post notif for this post is already IN PROCESS. Please check back later.', 'post-notif' );
+					}
+					
 				}
 			}
-			
+				
 			// Render meta box	
 			include( plugin_dir_path( __FILE__ ) . 'partials/post-notif-admin-meta-box.php' );			
 
 		}
-		else {
-			_e( 'Post has not yet been published.', 'post-notif' );
-		}
-	
 	
 	}
 		
@@ -704,26 +723,38 @@ class Post_Notif_Admin {
 
 		$post_id = $_POST['post_id'];
 		$datetime_local = $_POST['datetime_local'];
+		$publish_datetime_local = $_POST['publish_datetime_local'];
 
 		$timestamp_utc = wp_next_scheduled( 'post_notif_send_scheduled_post_notif', array( $post_id ) );
 		if ( false === $timestamp_utc ) {
 			
 			// Not yet scheduled
 
-			// Get individual pieces of datetime
+			// Get individual pieces of current datetime
 			$datetime_local_arr = explode( ':', $datetime_local ); 
 
-			// Generate UNIX timestamp - local timezone
+			// Generate UNIX timestamp in local timezone			
 			$timestamp_local = mktime( $datetime_local_arr[3], $datetime_local_arr[4], 0, $datetime_local_arr[0], $datetime_local_arr[1], $datetime_local_arr[2] );
 		
 			// Convert to UTC for WP cron
 			$timestamp_utc = $timestamp_local - Post_Notif_Misc::offset_from_UTC();
-
+			
+			// Get individual pieces of publish datetime
+			$publish_datetime_local_arr = explode( ':', $publish_datetime_local ); 
+			
+			// Generate UNIX timestamp in local timezone
+			$timestamp_publish_datetime_local = mktime( $publish_datetime_local_arr[3], $publish_datetime_local_arr[4], 0, $publish_datetime_local_arr[0], $publish_datetime_local_arr[1], $publish_datetime_local_arr[2] );
+		
+			// Convert to UTC for comparison to current timestamp
+			$timestamp_publish_datetime_utc = $timestamp_publish_datetime_local - Post_Notif_Misc::offset_from_UTC();
+	
 			// Get current (UTC) timestamp
 			$current_timestamp_utc = time();
 
-			if ( $current_timestamp_utc < $timestamp_utc )  {
+			if ( ( $current_timestamp_utc < $timestamp_utc ) && ( $timestamp_publish_datetime_utc <  $timestamp_utc ) ) {
 			
+				// Scheduled post notif is scheduled for later than current datetime AND later than scheduled post publish!!			
+
 				// Create datetimes for display to user (local) and storage in DB (UTC) 
 				$local_datetime = date( 'Y-m-d H:i:s', $timestamp_local );
 				$utc_datetime = date( 'Y-m-d H:i:s', $timestamp_utc );
@@ -731,10 +762,15 @@ class Post_Notif_Admin {
 				wp_schedule_single_event( $timestamp_utc, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
 				wp_send_json( array( 'message' => __( 'Post notification has been scheduled for this post!', 'post-notif' ), 'timestamp' => __( 'Scheduled for:', 'post-notif' ) . ' ' . Post_Notif_Misc::UTC_to_local_datetime( $utc_datetime ), 'valid_datetime' => 1 ) );				
 			}
-			else {
+			elseif ( $current_timestamp_utc >= $timestamp_utc ) {
 
 				// Cannot schedule process to be run in the past
 				wp_send_json( array( 'message' => __( 'Date cannot be in the past! Please try again.', 'post-notif' ), 'valid_datetime' => 0 ) );
+			}
+			else {
+
+				// Cannot schedule process to be run prior to scheduled post publish
+				wp_send_json( array( 'message' => __( 'Please choose a date and time after the scheduled publish date and time.', 'post-notif' ), 'valid_datetime' => 0 ) );
 			}
 		}
 		else {
@@ -755,14 +791,19 @@ class Post_Notif_Admin {
 	 */
 	public function execute_scheduled_post_notif_send( $post_id ) {
 	
-		if ( ! ( $this->post_notif_already_running( $post_id ) ) ) {
+		if ( 'publish' == get_post_status( $post_id ) ) {
 			
-			// Process is actually starting, initialize process tracking option values
-			update_option( 'post_notif_count_to_send_post_id_' . $post_id, 0 );
-			update_option( 'post_notif_count_sent_post_id_' . $post_id, 0 );
+			// Only send post notifs if post is published!
 			
-			// Actually perform process
-			$this->process_post_notif_send( $post_id );
+			if ( ! ( $this->post_notif_already_running( $post_id ) ) ) {
+			
+				// Process is actually starting, initialize process tracking option values
+				update_option( 'post_notif_count_to_send_post_id_' . $post_id, 0 );
+				update_option( 'post_notif_count_sent_post_id_' . $post_id, 0 );
+			
+				// Actually perform process
+				$this->process_post_notif_send( $post_id );
+			}
 		}
 		
 	}   
