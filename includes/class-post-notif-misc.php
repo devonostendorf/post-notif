@@ -179,7 +179,7 @@ class Post_Notif_Misc {
 		// Determine whether trailing "/" is required
 		$permalink_structure = get_option( 'permalink_structure', '' );
 		
-		if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1) ) ) ) {
+		if ( empty( $permalink_structure ) || ( '/' == ( substr( $permalink_structure, -1 ) ) ) ) {
 					
 			// Include trailing "/", in URLs, based on blog's current permalink structure
 			$url .= '/';

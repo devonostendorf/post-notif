@@ -259,8 +259,8 @@
 
 				// Is set to Auto, switch to Manual
 				$(this).removeClass("pn-auto").addClass("pn-manual");
-				$("#id_spnPostNotifSchedActive").text('Manual');
-				$("#id_spnPostNotifSchedInactive").text('Auto');
+				$("#id_spnPostNotifSchedActive").text($('#id_hdnPostNotifManualOptionLabel').val());
+				$("#id_spnPostNotifSchedInactive").text($('#id_hdnPostNotifAutoOptionLabel').val());
 				$("#id_hdnPostNotifSchedAuto").val('no');
 				$("#id_divPostNotifManualSend").show();
 			} 
@@ -268,8 +268,8 @@
 				
 				// Is set to Manual, switch to Auto
 				$(this).removeClass("pn-manual").addClass("pn-auto");
-				$("#id_spnPostNotifSchedActive").text('Auto');
-				$("#id_spnPostNotifSchedInactive").text('Manual');
+				$("#id_spnPostNotifSchedActive").text($('#id_hdnPostNotifAutoOptionLabel').val());
+				$("#id_spnPostNotifSchedInactive").text($('#id_hdnPostNotifManualOptionLabel').val());
 				$("#id_hdnPostNotifSchedAuto").val('yes');
 				$("#id_divPostNotifManualSend").hide();
 				

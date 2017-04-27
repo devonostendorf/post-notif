@@ -13,6 +13,10 @@
  */
 ?>
 	<div class="misc-pub-section"> 
+
+		<?php /* Make accurate option text available to JS */ ?>
+		<input type="hidden" id="id_hdnPostNotifAutoOptionLabel" value="<?php esc_attr_e( 'Auto', 'post-notif' ); ?>">		 
+		<input type="hidden" id="id_hdnPostNotifManualOptionLabel" value="<?php esc_attr_e( 'Manual', 'post-notif' ); ?>">		
 		<span class="dashicons dashicons-email-alt" style="opacity: 0.5;"></span>
 		&nbsp;Post Notif:&nbsp;
 		<strong><span id="id_spnPostNotifSchedActive"><?php echo esc_html( $active ); ?></span></strong>
