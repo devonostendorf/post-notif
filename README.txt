@@ -3,8 +3,8 @@ Contributors: DevonOstendorf
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
-Tested up to: 4.6
-Stable tag: 1.1.2
+Tested up to: 4.7
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Email sent to subscriber after subscription is confirmed subject and body
 	* @@signature variable (for optional use in emails)
 	* Many additional email template variables (for optional use in emails)
+	* Send post notifications automatically when post is published 
 		
 * Configurable page settings:
 	* Subscription confirmed page title and page greeting 	
@@ -51,6 +52,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Make all or a subset of system categories available to subscribers or turn off categories entirely
 	
 * Configurable post notification send:
+	* Auto send (when post is published)
 	* Send now
 	* Schedule send (via WordPress cron)
 	* Test send
@@ -164,8 +166,13 @@ The email sender email address (under Email Settings in the settings) must be an
 = What's the Test Send functionality all about? =
 This allows you to test send (to one email address or a list of comma-delimited email addresses) the post notification for the current post, so you can see the email subject and body, complete with variables substituted, as it will appear to your subscribers when you send it for real.  Please note that personalized variables (e.g., @@firstname, @@confurl, @@prefsurl, and @@unsubscribeurl) will not be resolved in the test send email.
 
+= What does the Post Notif option ("Auto" or "Manual"), in the core Publish meta box, on the Edit Post page, do? =
+
+This option defaults to whatever you've set it to on the Settings page (Settings >> Post Notif >> "Send post notifications when post published"), though the setting is ALWAYS defaulted to "Manual" for any post which has been published previously (to avoid inadvertent automatic re-sending of post notifications if you hit "Update" after something like a typo correction).  Regardless of what value defaults in, for a post, you can always override it, as desired.  If "Auto" is selected, post notifications will be sent immediately after the post is published, whether it is published by you manually or scheduled to be published by the system at a later date/time.  If "Manual" is selected, options will appear in the Post Notif meta box, corresponding to the post's current status.  If it has been published already, both "Send Now" and "Schedule" will be available.  If the post is scheduled to be published at a future date/time, only "Schedule" will be available.
+
 = I've scheduled a post notification for a specific date/time, which has passed; why hasn't the post notification been sent? =
-As WordPress Cron is not a true UNIX-style Cron daemon, some activity (even just a public page view from an unknown user) needs to happen SOMEWHERE on the blog, AFTER the schedule datetime, for the post notification process to be triggered. 
+
+As WordPress Cron is not a true UNIX-style Cron daemon, some activity (even just a public page view from an unknown user) needs to happen SOMEWHERE on the blog, AFTER the schedule datetime, for the post notification process to be triggered.  You may also want to consider configuring your Post Notifications to be sent automatically upon post publish (see above).
 
 = Why aren't all my notifications being sent out? =
 
@@ -434,6 +441,14 @@ You can later turn category functionality back on by doing the reverse of these 
 
 == Changelog ==
 
+= 1.1.3 =
+Release Date: April 30, 2017
+
+* NEW: Added ability to auto-send post notifications when post is published
+* CHANGED: Added ability to schedule post notifications for posts scheduled to be published
+* FIXED: Restricted categories for subscriber import to set of PN-available categories
+* FIXED: Added process to handle subscriber creation failure
+
 = 1.1.2 =
 Release Date: November 4, 2016
 
@@ -531,6 +546,9 @@ Release Date: April 8, 2015
 
 == Upgrade Notice ==
 
+= 1.1.3 =
+Added ability to auto-send post notifications when post is published.  Added ability to schedule post notifications for posts scheduled to be published.  Fixed subscriber import category bug.  Fixed subscriber creation failure issue.
+
 = 1.1.2 =
 Added Dutch translation.  Updated custom table create statement to adhere to WordPress 4.6 dbDelta() KEY format.
 
@@ -576,5 +594,6 @@ Special thanks to:
 * [Matt Van Andel](http://www.mattvanandel.com) for the [Custom List Table Example plugin](https://wordpress.org/plugins/custom-list-table-example/)
 * All of the people courageous enough to risk sounding stupid by asking the same questions I had about how things work in WordPress!
 * [Enrique Maza](http://sevalepensar.com) for the Spanish (es_ES) translation
+* David Cox for the Spanish translation revisions
 * Ruediger Walter for the German (de_DE and de_DE_formal) translations
 * frankmaNL for the Dutch (nl_NL) translation
