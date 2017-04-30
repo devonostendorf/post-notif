@@ -1,85 +1,99 @@
-# Translation of Stable (latest release) in German
-# This file is distributed under the same license as the Stable (latest release) package.
+# Copyright (C) 2017 Post Notif
+# This file is distributed under the same license as the Post Notif package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Notif 1.1.0\n"
-"PO-Revision-Date: 2016-10-28 12:15:21+00:00\n"
+"Project-Id-Version: Post Notif 1.1.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-notif\n"
+"POT-Creation-Date: 2017-04-27 21:39:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.6.10\n"
-"POT-Creation-Date: \n"
-"Last-Translator: Ruediger Walter <rue.walter@posteo.de>\n"
-"Language-Team: Ruediger Walter <rue.walter@posteo.de>\n"
+"PO-Revision-Date: 2017-04-29 21:39:39+00:00\n"
+"Language-Team: Devon Ostendorf <devon@devonostendorf.com>\n"
+"Last-Translator: Ruediger Walter\n"
 "Language: de_DE\n"
 
-#: admin/class-post-notif-admin.php:263
+#: admin/class-post-notif-admin.php:249 admin/class-post-notif-admin.php:256
+#: admin/partials/post-notif-admin-publish-meta-box-addon.php:18
+msgid "Auto"
+msgstr "Auto"
+
+#: admin/class-post-notif-admin.php:251 admin/class-post-notif-admin.php:254
+#: admin/partials/post-notif-admin-publish-meta-box-addon.php:19
+msgid "Manual"
+msgstr "Handbuch"
+
+#: admin/class-post-notif-admin.php:384
 msgid ""
 "Post notif for this post is already IN PROCESS. Please check back later."
 msgstr ""
 "Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit. Bitte "
 "schauen Sie später noch einmal vorbei."
 
-#: admin/class-post-notif-admin.php:272
-msgid "Post has not yet been published."
-msgstr "Beitrag wurde noch nicht veröffentlicht."
-
-#: admin/class-post-notif-admin.php:299 admin/class-post-notif-admin.php:764
+#: admin/class-post-notif-admin.php:418 admin/class-post-notif-admin.php:905
 msgid "Processing..."
 msgstr "Wird bearbeitet..."
 
-#: admin/class-post-notif-admin.php:300
+#: admin/class-post-notif-admin.php:419
 msgid "Invalid date and/or time! Please try again."
 msgstr "Ungültiges Datum und / oder Uhrzeit! Bitte versuchen Sie es erneut."
 
-#: admin/class-post-notif-admin.php:325
+#: admin/class-post-notif-admin.php:444
 msgid "Post notification process, for this post, is already running!"
 msgstr "Benachrichtigungsprozess wird für diesen Beitrag bereits ausgeführt!"
 
-#: admin/class-post-notif-admin.php:400
+#: admin/class-post-notif-admin.php:519
 msgid "One post notification has been sent for this post!"
 msgid_plural "%s total post notifications have been sent for this post!"
 msgstr[0] "Eine Benachrichtigung wurde für diesen Beitrag gesendet!"
 msgstr[1] "Für diesen Beitrag wurden %s Benachrichtigungen gesendet!"
 
-#: admin/class-post-notif-admin.php:403
+#: admin/class-post-notif-admin.php:522
 msgid "Post notification process, for this post, is already in process!"
 msgstr "Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit!"
 
-#: admin/class-post-notif-admin.php:406
+#: admin/class-post-notif-admin.php:525
 msgid ""
 "Post notification process, for this post, FAILED to complete successfully!"
 msgstr "Die Benachrichtigung für diesen Beitrag ist fehlgeschlagen!"
 
-#: admin/class-post-notif-admin.php:409
-#: admin/partials/post-notif-admin-meta-box.php:18
+#: admin/class-post-notif-admin.php:528
+#: admin/partials/post-notif-admin-meta-box.php:23
 msgid "Last sent:"
 msgstr "Zuletzt versendet:"
 
-#: admin/class-post-notif-admin.php:632
+#: admin/class-post-notif-admin.php:763
 msgid "Post notification has been scheduled for this post!"
 msgstr "Eine Benachrichtigung ist für diesen Beitrag geplant!"
 
-#: admin/class-post-notif-admin.php:632
-#: admin/partials/post-notif-admin-meta-box.php:32
+#: admin/class-post-notif-admin.php:763
+#: admin/partials/post-notif-admin-meta-box.php:39
 msgid "Scheduled for:"
 msgstr "Eingeplant für:"
 
-#: admin/class-post-notif-admin.php:637
+#: admin/class-post-notif-admin.php:768
 msgid "Date cannot be in the past! Please try again."
 msgstr ""
 "Datum kann nicht in der Vergangenheit sein! Bitte versuchen Sie es erneut."
 
-#: admin/class-post-notif-admin.php:645
+#: admin/class-post-notif-admin.php:773
+msgid ""
+"Please choose a date and time after the scheduled publish date and time."
+msgstr ""
+"Bitte wählen Sie ein Datum und eine Uhrzeit nach dem geplanten Datum und "
+"Uhrzeit."
+
+#: admin/class-post-notif-admin.php:781
 msgid "Post notification is ALREADY scheduled for this post!"
 msgstr "Eine Benachrichtigung für diesen Beitrag ist bereits geplant!"
 
-#: admin/class-post-notif-admin.php:711
+#: admin/class-post-notif-admin.php:852
 msgid "Post notification for this post has been CANCELLED!"
 msgstr "Die Benachrichtigung für diesen Beitrag wurde abgebrochen!"
 
-#: admin/class-post-notif-admin.php:717
+#: admin/class-post-notif-admin.php:858
 msgid ""
 "Post notification for this post is already IN PROCESS and cannot be "
 "cancelled!"
@@ -87,247 +101,259 @@ msgstr ""
 "Eine Benachrichtigung für diesen Beitrag ist bereits in Arbeit und kann "
 "nicht abgebrochen werden!"
 
-#: admin/class-post-notif-admin.php:736 admin/class-post-notif-admin.php:739
+#: admin/class-post-notif-admin.php:877 admin/class-post-notif-admin.php:880
 msgid "Post notification is no longer scheduled for this post!"
 msgstr "Eine Benachrichtigung ist für diesen Beitrag nicht mehr geplant!"
 
-#: admin/class-post-notif-admin.php:736
+#: admin/class-post-notif-admin.php:877
 msgid "Last sent: "
 msgstr "Zuletzt versendet: "
 
-#: admin/class-post-notif-admin.php:812
+#: admin/class-post-notif-admin.php:953
 msgid "Processing...complete."
 msgstr "Verarbeitung ... abgeschlossen."
 
-#: admin/class-post-notif-admin.php:813
+#: admin/class-post-notif-admin.php:954
 msgid "Successfully sent to:"
 msgstr "Erfolgreich gesendet an:"
 
-#: admin/class-post-notif-admin.php:815
+#: admin/class-post-notif-admin.php:956
 msgid "Skipped invalid email addresses:"
 msgstr "Ungültige E-Mail-Adressen wurden übersprungen:"
 
-#: admin/class-post-notif-admin.php:832
+#: admin/class-post-notif-admin.php:973
 msgid "Post Notif Settings"
 msgstr "Post-Notif-Einstellungen"
 
-#: admin/class-post-notif-admin.php:897 admin/class-post-notif-admin.php:898
+#: admin/class-post-notif-admin.php:1038 admin/class-post-notif-admin.php:1039
 msgid "View Subscribers"
 msgstr "Zeige Abonnenten"
 
-#: admin/class-post-notif-admin.php:906 admin/class-post-notif-admin.php:907
+#: admin/class-post-notif-admin.php:1047 admin/class-post-notif-admin.php:1048
 msgid "View Post Notifs Sent"
 msgstr "Zeige versendete Mitteilungen"
 
-#: admin/class-post-notif-admin.php:915 admin/class-post-notif-admin.php:916
+#: admin/class-post-notif-admin.php:1056 admin/class-post-notif-admin.php:1057
 msgid "Manage Subscribers"
 msgstr "Bearbeite Abonnenten"
 
-#: admin/class-post-notif-admin.php:924 admin/class-post-notif-admin.php:925
+#: admin/class-post-notif-admin.php:1065 admin/class-post-notif-admin.php:1066
 msgid "Import Subscribers"
-msgstr "Importiere  Abonnenten"
+msgstr "Importiere Abonnenten"
 
-#: admin/class-post-notif-admin.php:933 admin/class-post-notif-admin.php:934
+#: admin/class-post-notif-admin.php:1074 admin/class-post-notif-admin.php:1075
 msgid "Staged Subscribers"
 msgstr "Zurückgestellte Abonnenten"
 
-#: admin/class-post-notif-admin.php:1046
+#: admin/class-post-notif-admin.php:1187
 msgid "Blank email address."
 msgstr "Leere Email-Adresse."
 
-#: admin/class-post-notif-admin.php:1056
+#: admin/class-post-notif-admin.php:1197
 msgid "Email address truncated (more than 100 chars)."
 msgstr "Emailadresse gekürzt (mehr als 100 Zeichen)."
 
-#: admin/class-post-notif-admin.php:1062
+#: admin/class-post-notif-admin.php:1203
 msgid " Invalid email address."
 msgstr " Ungültige Email-Adresse."
 
-#: admin/class-post-notif-admin.php:1071 admin/class-post-notif-admin.php:1085
-#: includes/class-post-notif-widget.php:297
+#: admin/class-post-notif-admin.php:1212 admin/class-post-notif-admin.php:1226
+#: includes/class-post-notif-widget.php:292
 msgid "[Unknown]"
 msgstr "[Unbekannt]"
 
-#: admin/class-post-notif-admin.php:1096
+#: admin/class-post-notif-admin.php:1237
 msgid " First name truncated (more than 50 chars)."
-msgstr " Name gekürzt (mehr als 50 Zeichen)"
+msgstr " Name gekürzt (mehr als 50 Zeichen)."
 
-#: admin/class-post-notif-admin.php:1120
+#: admin/class-post-notif-admin.php:1261
 msgid " Non-numeric category "
-msgstr " Nicht-numerische Kategorie-ID"
+msgstr " Nicht-numerische Kategorie-ID "
 
-#: admin/class-post-notif-admin.php:1128
+#: admin/class-post-notif-admin.php:1269
 msgid " Invalid category "
 msgstr " Ungültige Kategorie "
 
-#: admin/class-post-notif-admin.php:1142
+#: admin/class-post-notif-admin.php:1283
 msgid "Staged (pending creation)"
 msgstr "Zurückgestellt (Erstellung ausstehend)"
 
-#: admin/class-post-notif-admin.php:1210
+#: admin/class-post-notif-admin.php:1351
 msgid "Create"
 msgstr "Erstelle"
 
-#: admin/class-post-notif-admin.php:1222 admin/class-post-notif-admin.php:1971
+#: admin/class-post-notif-admin.php:1363 admin/class-post-notif-admin.php:2111
 msgid "Delete"
 msgstr "Löschen"
 
-#: admin/class-post-notif-admin.php:1248
+#: admin/class-post-notif-admin.php:1389
 msgid "Created"
 msgstr "Erstellt"
 
-#: admin/class-post-notif-admin.php:1249
+#: admin/class-post-notif-admin.php:1390
 msgid "Staged"
 msgstr "Zurückgestellt"
 
-#: admin/class-post-notif-admin.php:1250
+#: admin/class-post-notif-admin.php:1391
 msgid "Warning"
 msgstr "Warnung"
 
-#: admin/class-post-notif-admin.php:1251 admin/class-post-notif-admin.php:1568
-#: admin/class-post-notif-admin.php:1743
+#: admin/class-post-notif-admin.php:1392 admin/class-post-notif-admin.php:1708
+#: admin/class-post-notif-admin.php:1883
 msgid "Duplicate email address"
 msgstr "Email-Adresse doppelt vorhanden"
 
-#: admin/class-post-notif-admin.php:1252
+#: admin/class-post-notif-admin.php:1393
 msgid "Import error"
 msgstr "Import-Fehler"
 
-#: admin/class-post-notif-admin.php:1253
+#: admin/class-post-notif-admin.php:1394
 msgid "System error"
 msgstr "Systemfehler"
 
-#: admin/class-post-notif-admin.php:1343 admin/class-post-notif-admin.php:2167
+#: admin/class-post-notif-admin.php:1484 admin/class-post-notif-admin.php:2307
 msgid "First Name"
 msgstr "Name"
 
-#: admin/class-post-notif-admin.php:1344 admin/class-post-notif-admin.php:2168
+#: admin/class-post-notif-admin.php:1485 admin/class-post-notif-admin.php:2308
 msgid "Email Address"
 msgstr "Email-Adresse"
 
-#: admin/class-post-notif-admin.php:1345
+#: admin/class-post-notif-admin.php:1486
 msgid "Status"
 msgstr "Status"
 
-#: admin/class-post-notif-admin.php:1346
+#: admin/class-post-notif-admin.php:1487
 msgid "Message"
 msgstr "Nachricht"
 
-#: admin/class-post-notif-admin.php:1347 admin/class-post-notif-admin.php:2171
+#: admin/class-post-notif-admin.php:1488 admin/class-post-notif-admin.php:2311
 msgid "Categories"
 msgstr "Kategorien"
 
-#: admin/class-post-notif-admin.php:1469 admin/class-post-notif-admin.php:2291
-#: admin/views/post-notif-admin-display-options.php:286
+#: admin/class-post-notif-admin.php:1609 admin/class-post-notif-admin.php:2431
+#: admin/views/post-notif-admin-display-options.php:311
 #: public/views/post-notif-public-display-sub-prefs.php:34
 msgid "All"
 msgstr "Alle"
 
-#: admin/class-post-notif-admin.php:1489 admin/class-post-notif-admin.php:2312
+#: admin/class-post-notif-admin.php:1629 admin/class-post-notif-admin.php:2452
 msgid "subscribers"
 msgstr "Abonnenten"
 
-#: admin/class-post-notif-admin.php:1627 admin/class-post-notif-admin.php:1802
+#: admin/class-post-notif-admin.php:1767 admin/class-post-notif-admin.php:1942
 msgid "Successfully created"
 msgstr "Erfolgreich erstellt"
 
-#: admin/class-post-notif-admin.php:1650 admin/class-post-notif-admin.php:1824
+#: admin/class-post-notif-admin.php:1790 admin/class-post-notif-admin.php:1964
 msgid "System error - try again later"
 msgstr "Systemfehler - versuchen Sie es später noch einmal"
 
-#: admin/class-post-notif-admin.php:1955
+#: admin/class-post-notif-admin.php:2095
 msgid "Export"
 msgstr "Exportieren"
 
-#: admin/class-post-notif-admin.php:1960
+#: admin/class-post-notif-admin.php:2100
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: admin/class-post-notif-admin.php:1976
+#: admin/class-post-notif-admin.php:2116
 msgid "Resend Confirmation"
 msgstr "Erneute Bestätigungsabfrage senden"
 
-#: admin/class-post-notif-admin.php:2169
+#: admin/class-post-notif-admin.php:2309
 msgid "Confirmed?"
 msgstr "Bestätigt?"
 
-#: admin/class-post-notif-admin.php:2170
+#: admin/class-post-notif-admin.php:2310
 msgid "Date Subscribed"
 msgstr "Erstellungs-Datum"
 
-#: admin/class-post-notif-admin.php:2299
+#: admin/class-post-notif-admin.php:2439
 msgid "Yes"
 msgstr "Ja"
 
-#: admin/class-post-notif-admin.php:2299
+#: admin/class-post-notif-admin.php:2439
 msgid "No"
 msgstr "Nein"
 
-#: admin/class-post-notif-admin.php:2970
+#: admin/class-post-notif-admin.php:3110
 msgid "Post ID"
 msgstr "Beitrags-ID"
 
-#: admin/class-post-notif-admin.php:2971
+#: admin/class-post-notif-admin.php:3111
 msgid "Post Title"
 msgstr "Beitragstitel"
 
-#: admin/class-post-notif-admin.php:2972
+#: admin/class-post-notif-admin.php:3112
 msgid "Author"
 msgstr "Verfasser"
 
-#: admin/class-post-notif-admin.php:2973
+#: admin/class-post-notif-admin.php:3113
 msgid "Sent Date/Time"
 msgstr "Versand-Datum und -Zeit"
 
-#: admin/class-post-notif-admin.php:2974
+#: admin/class-post-notif-admin.php:3114
 msgid "Sent By"
 msgstr "Versendet von"
 
-#: admin/class-post-notif-admin.php:3022
+#: admin/class-post-notif-admin.php:3162
 msgid "*** Can''t find user ID "
 msgstr "*** Benutzer-ID konnte nicht gefunden werden "
 
-#: admin/class-post-notif-admin.php:3025
+#: admin/class-post-notif-admin.php:3165
 msgid "System (scheduled)"
 msgstr "System (geplant)"
 
-#: admin/class-post-notif-admin.php:3060
+#: admin/class-post-notif-admin.php:3200
 msgid "notification"
 msgstr "Benachrichtigung"
 
-#: admin/class-post-notif-admin.php:3061
+#: admin/class-post-notif-admin.php:3201
 msgid "notifications"
 msgstr "Benachrichtigungen"
 
-#: admin/partials/post-notif-admin-meta-box.php:21
-#: admin/partials/post-notif-admin-meta-box.php:105
-#: admin/partials/post-notif-admin-meta-box.php:118
-msgid "RESEND"
-msgstr "NEUVERSAND"
-
-#: admin/partials/post-notif-admin-meta-box.php:22
-msgid "Schedule RESEND"
-msgstr "Planen Sie eine erneute Benachrichtigung ein"
-
-#: admin/partials/post-notif-admin-meta-box.php:27
-#: admin/partials/post-notif-admin-meta-box.php:110
-#: admin/partials/post-notif-admin-meta-box.php:123
-msgid "Send"
-msgstr "Senden"
-
-#: admin/partials/post-notif-admin-meta-box.php:28
-msgid "Schedule Send"
-msgstr "Zeitplan Versand"
-
-#: admin/partials/post-notif-admin-meta-box.php:50
+#: admin/partials/post-notif-admin-meta-box.php:19
+#: admin/partials/post-notif-admin-meta-box.php:52
 msgid "Send Now"
 msgstr "Jetzt abschicken"
 
+#: admin/partials/post-notif-admin-meta-box.php:20
 #: admin/partials/post-notif-admin-meta-box.php:55
 msgid "Schedule"
 msgstr "Zeitplan"
 
-#: admin/partials/post-notif-admin-meta-box.php:63
+#: admin/partials/post-notif-admin-meta-box.php:28
+#: admin/partials/post-notif-admin-meta-box.php:97
+msgid "RESEND"
+msgstr "NEUVERSAND"
+
+#: admin/partials/post-notif-admin-meta-box.php:29
+#: admin/partials/post-notif-admin-meta-box.php:97
+msgid "Schedule RESEND"
+msgstr "Planen Sie eine erneute Benachrichtigung ein"
+
+#: admin/partials/post-notif-admin-meta-box.php:34
+#: admin/partials/post-notif-admin-meta-box.php:99
+msgid "Send"
+msgstr "Senden"
+
+#: admin/partials/post-notif-admin-meta-box.php:35
+#: admin/partials/post-notif-admin-meta-box.php:99
+msgid "Schedule Send"
+msgstr "Zeitplan Versand"
+
+#: admin/partials/post-notif-admin-meta-box.php:40
+#: admin/partials/post-notif-admin-meta-box.php:44
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: admin/partials/post-notif-admin-meta-box.php:54
+#: admin/partials/post-notif-admin-publish-meta-box-addon.php:23
+msgid "Change to"
+msgstr "Ändern"
+
+#: admin/partials/post-notif-admin-meta-box.php:64
 msgid "Datetime to schedule post notification to run at"
 msgstr "Geplanter Zeitpunkt für den Versand der Benachrichtigung"
 
@@ -351,17 +377,12 @@ msgstr "Stunde"
 msgid "Minute"
 msgstr "Minute"
 
-#: admin/partials/post-notif-admin-meta-box.php:100
-#: admin/partials/post-notif-admin-meta-box.php:113
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: admin/partials/post-notif-admin-meta-box.php:140
-#: admin/partials/post-notif-admin-meta-box.php:144
+#: admin/partials/post-notif-admin-meta-box.php:116
+#: admin/partials/post-notif-admin-meta-box.php:120
 msgid "Test Send"
 msgstr "Versand-Test"
 
-#: admin/partials/post-notif-admin-meta-box.php:141
+#: admin/partials/post-notif-admin-meta-box.php:117
 msgid "Send to:"
 msgstr "Senden an:"
 
@@ -383,7 +404,7 @@ msgstr "Betreff der Bestätigungs-Email:"
 
 #: admin/views/post-notif-admin-display-options.php:58
 msgid "Subscription confirmation email body:"
-msgstr " Inhalt der Bestätigungs-Email:"
+msgstr "Inhalt der Bestätigungs-Email:"
 
 #: admin/views/post-notif-admin-display-options.php:66
 msgid "After subscription is confirmed:"
@@ -410,102 +431,118 @@ msgid "Post notification email body:"
 msgstr "Inhalt der Benachrichtigungs-Email über neuen Beitrag:"
 
 #: admin/views/post-notif-admin-display-options.php:111
+msgid "Send post notifications when post published:"
+msgstr "Sende Post Benachrichtigungen, wenn Post veröffentlicht:"
+
+#: admin/views/post-notif-admin-display-options.php:116
+msgid "Yes (Auto)"
+msgstr "Ja (Auto)"
+
+#: admin/views/post-notif-admin-display-options.php:121
+msgid "No (Manual)"
+msgstr "Nein (Manuell)"
+
+#: admin/views/post-notif-admin-display-options.php:127
 msgid "If using \"Custom Structure\" permalink:"
 msgstr "Wenn Sie \"Custom Structure\" Permalink verwenden:"
 
-#: admin/views/post-notif-admin-display-options.php:116
+#: admin/views/post-notif-admin-display-options.php:132
 msgid "%category% is concatenated with something"
 msgstr "%category% ist mit etwas verknüpft"
 
-#: admin/views/post-notif-admin-display-options.php:120
+#: admin/views/post-notif-admin-display-options.php:136
 msgid "This is not common."
 msgstr "Dies ist nicht üblich."
 
-#: admin/views/post-notif-admin-display-options.php:125
+#: admin/views/post-notif-admin-display-options.php:141
 msgid "Page Settings"
 msgstr "Seiten-Einstellungen"
 
-#: admin/views/post-notif-admin-display-options.php:129
+#: admin/views/post-notif-admin-display-options.php:145
 msgid "Subscription confirmed page title:"
 msgstr "Titel der Abonnement-Bestätigungs-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:138
+#: admin/views/post-notif-admin-display-options.php:154
 msgid "Subscription confirmed page greeting:"
 msgstr "Einleitungstext der Abonnement-Bestätigungs-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:147
+#: admin/views/post-notif-admin-display-options.php:163
 msgid "Subscription preferences selection instructions:"
 msgstr "Auswahl-Anweisungen für Abonnement-Einstellungen:"
 
-#: admin/views/post-notif-admin-display-options.php:156
+#: admin/views/post-notif-admin-display-options.php:172
 msgid "Current subscription preferences page title:"
 msgstr "Titel der aktuellen Abonnement-Einstellungen-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:165
+#: admin/views/post-notif-admin-display-options.php:181
 msgid "Current subscription preferences page greeting:"
 msgstr "Einleitungstext der aktuellen Abonnement-Einstellungen-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:174
+#: admin/views/post-notif-admin-display-options.php:190
 msgid "Subscription preferences updated page title:"
 msgstr "Titel der Abonnement-Einstellungen-verändert-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:183
+#: admin/views/post-notif-admin-display-options.php:199
 msgid "Subscription preferences updated page greeting:"
 msgstr "Einleitungstext der Abonnement-Einstellungen-verändert-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:192
+#: admin/views/post-notif-admin-display-options.php:208
 msgid "Unsubscribe link label:"
 msgstr "Überschrift des Kündigungs-Links:"
 
-#: admin/views/post-notif-admin-display-options.php:201
+#: admin/views/post-notif-admin-display-options.php:217
 msgid "Unsubscribe confirmation page title:"
 msgstr "Titel der Kündigungsbestätigungs-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:210
+#: admin/views/post-notif-admin-display-options.php:226
 msgid "Unsubscribe confirmation page greeting:"
 msgstr "Einleitungstext der Kündigungsbestätigungs-Seite:"
 
-#: admin/views/post-notif-admin-display-options.php:218
+#: admin/views/post-notif-admin-display-options.php:234
 msgid "Widget Messages"
 msgstr "Widget-Meldungen"
 
-#: admin/views/post-notif-admin-display-options.php:222
+#: admin/views/post-notif-admin-display-options.php:238
 msgid "Error (blank email address):"
 msgstr "Fehler (leere Email-Adresse):"
 
-#: admin/views/post-notif-admin-display-options.php:231
+#: admin/views/post-notif-admin-display-options.php:247
 msgid "Error (invalid email address):"
 msgstr "Fehler (ungültige Email-Adresse):"
 
-#: admin/views/post-notif-admin-display-options.php:240
+#: admin/views/post-notif-admin-display-options.php:256
 msgid "Message (processing):"
 msgstr "Meldung (in Bearbeitung):"
 
-#: admin/views/post-notif-admin-display-options.php:249
+#: admin/views/post-notif-admin-display-options.php:265
 msgid "Message (already subscribed):"
 msgstr "Meldung (bereits abonniert):"
 
-#: admin/views/post-notif-admin-display-options.php:258
+#: admin/views/post-notif-admin-display-options.php:274
 msgid "Message (successful subscription request):"
 msgstr "Meldung (Abonnement-Anforderung erfolgreich):"
 
-#: admin/views/post-notif-admin-display-options.php:266
+#: admin/views/post-notif-admin-display-options.php:283
+msgid "Message (failed subscription request):"
+msgstr "Nachricht (fehlgeschlagene Abonnementanfrage):"
+
+#: admin/views/post-notif-admin-display-options.php:291
 msgid "Category Settings"
 msgstr "Kategorie-Einstellungen"
 
-#: admin/views/post-notif-admin-display-options.php:270
+#: admin/views/post-notif-admin-display-options.php:295
 msgid "Categories available to subscribers:"
 msgstr "Für Abonnenten zugängliche Kategorien:"
 
-#: admin/views/post-notif-admin-display-options.php:317
+#: admin/views/post-notif-admin-display-options.php:342
 msgid "Admin Menu Settings"
 msgstr "Administrator-Menü-Einstellungen"
 
-#: admin/views/post-notif-admin-display-options.php:321
+#: admin/views/post-notif-admin-display-options.php:346
 msgid "Position in menu:"
 msgstr "Position im Menü:"
 
-#: admin/views/post-notif-admin-display-options.php:327
+#: admin/views/post-notif-admin-display-options.php:352
 msgid ""
 "If you cannot see the Post Notif admin menu, change this to another number "
 "of the form \"3.xyz\"."
@@ -615,6 +652,37 @@ msgstr[1] "Bestätigungs-Emails wurden erneut an %s Abonnenten versandt."
 msgid "No %s found."
 msgstr "Kein %s gefunden."
 
+#: includes/class-post-notif-misc.php:227
+msgid "Post Notif: FAILURE to create subscriber"
+msgstr "Post Notif: FEHLER, um einen Abonnenten zu erstellen"
+
+#: includes/class-post-notif-misc.php:229
+msgid ""
+"The following person attempted to subscribe but subscriber creation failed."
+msgstr ""
+"Die folgende Person hat versucht zu abonnieren, aber die Erstellung des "
+"Teilnehmers ist fehlgeschlagen."
+
+#: includes/class-post-notif-misc.php:230
+msgid ""
+"You should add them directly (via the Import Subscribers process and then "
+"\"resend\" their confirmation email [from the Manage Subscribers page]), but "
+"also be sure to check your database permissions too, to determine why "
+"failure occurred in the first place!"
+msgstr ""
+"Sie sollten sie direkt hinzufügen (über den Import Abonnenten-Prozess und "
+"dann \"zurücksenden\" ihre Bestätigungs-E-Mail [von der Seite Abonnenten "
+"verwalten), aber auch sicher sein, um Ihre Datenbank-Berechtigungen zu "
+"überprüfen, um festzustellen, warum Ausfall in erster Linie aufgetreten ist!"
+
+#: includes/class-post-notif-misc.php:231
+msgid "First Name: "
+msgstr "Vorname:"
+
+#: includes/class-post-notif-misc.php:232
+msgid "Email Address: "
+msgstr "E-Mail-Addresse: "
+
 #: includes/class-post-notif-widget.php:60
 msgid "Allow users to subscribe to post notifications."
 msgstr "Ermöglichen Sie Nutzern, Beitrags-Benachrichtigungen zu abonnieren."
@@ -645,7 +713,7 @@ msgstr "Anwenden"
 
 #: includes/class-post-notif-wp-list-table.php:526
 msgid "Filter by date"
-msgstr "﻿Nach Datum filtern"
+msgstr "Nach Datum filtern"
 
 #: includes/class-post-notif-wp-list-table.php:528
 msgid "All dates"
@@ -734,7 +802,7 @@ msgstr "https://devonostendorf.com/projects/#post-notif"
 
 #. Description of the plugin/theme
 msgid "Notify subscribers when you publish new posts."
-msgstr "Benachrichtigen Sie Abonnenten über neuveröffentlichte Beiträge"
+msgstr "Benachrichtigen Sie Abonnenten über neuveröffentlichte Beiträge."
 
 #. Author of the plugin/theme
 msgid "Devon Ostendorf <devon@devonostendorf.com>"
