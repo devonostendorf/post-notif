@@ -1029,7 +1029,7 @@ class Post_Notif_Admin {
 			,'edit_others_posts'
 			,'post-notif-view-subs'
 			,null
-			,''
+			,'dashicons-email'
 			,$post_notif_options_arr['admin_menu_position']
 		);
 		
