@@ -4,7 +4,7 @@
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.7   
-**Stable tag:** 1.1.3   
+**Stable tag:** 1.1.4   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -73,6 +73,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 * Multisite capable
 
 * Translations for the following languages:
+	* Czech (cs_CZ)
 	* Dutch (nl_NL)
 	* German (de\_DE and de\_DE\_formal)
 	* Spanish (es_ES)
@@ -363,7 +364,7 @@ You can later turn category functionality back on by doing the reverse of these 
 		* Post notification email body
 	
 7. @@postteaser
-	* Description: Post's content up to '<!--more-->'
+	* Description: Post's content up to <code><!--more--></code>
 	
 	* Can be used in:
 		* Post notification email body
@@ -443,6 +444,12 @@ You can later turn category functionality back on by doing the reverse of these 
 13. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
 
 ## Changelog ##
+
+### 1.1.4 ###
+Release Date: May 14, 2017
+
+* NEW: Added Czech translation (cs_CZ) by Jirka Licek
+* CHANGED: Replaced generic gear dashicon with email dashicon for Post Notif top level menu
 
 ### 1.1.3 ###
 Release Date: April 30, 2017
@@ -547,6 +554,9 @@ Release Date: April 13, 2015
 
 ## Upgrade Notice ##
 
+### 1.1.4 ###
+Added Czech translation.  Added email dashicon for Post Notif top level menu.
+
 ### 1.1.3 ###
 Added ability to auto-send post notifications when post is published.  Added ability to schedule post notifications for posts scheduled to be published.  Fixed subscriber import category bug.  Fixed subscriber creation failure issue.
 
@@ -598,3 +608,4 @@ Special thanks to:
 * David Cox for the Spanish translation revisions
 * Ruediger Walter for the German (de\_DE and de\_DE\_formal) translations
 * frankmaNL for the Dutch (nl_NL) translation
+* Jirka Licek for the Czech (cs_CZ) translation
