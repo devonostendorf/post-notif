@@ -1110,7 +1110,8 @@ class Post_Notif_Admin {
 		
 		global $wpdb;
 		
-		$row_delimiter = chr( 13 );
+		$file_row_delimiter = "/\\r\\n|\\r|\\n/";
+		$textarea_row_delimiter = chr( 13 );
 		$subscriber_arr = array();
 		
 		// Tack prefix on to table names 
@@ -1125,7 +1126,7 @@ class Post_Notif_Admin {
 			if ( ! empty( $file_contents ) ) {
 						  
 				// File IS populated and NOT empty
-				$subscriber_arr = explode( $row_delimiter, $file_contents );
+				$subscriber_arr = preg_split( $file_row_delimiter, $file_contents );
 			}
 		}
 		if ( 0 == count( $subscriber_arr ) ) {
@@ -1133,7 +1134,7 @@ class Post_Notif_Admin {
 			// No import file was selected OR it's empty, so read contents of textarea
 		
 			// Split out single textarea, by delimiter (newline), into array elements
-			$subscriber_arr = explode( $row_delimiter, trim( $_POST['tarSubscriberData'] ) );
+			$subscriber_arr = explode( $textarea_row_delimiter, trim( $_POST['tarSubscriberData'] ) );
 		}
 		
 		if ( count( $subscriber_arr ) > 0 ) {
@@ -1149,9 +1150,26 @@ class Post_Notif_Admin {
 			$existing_categories_arr = array();
 			if ( array_key_exists( 'available_categories', $post_notif_options_arr ) ) {
 				
-				// Categories ARE available for subscribers to choose from
-				foreach ( $post_notif_options_arr['available_categories'] as $available_category => $discard ) {			
-					$existing_categories_arr[] = $available_category;
+				if ( 1 != $post_notif_options_arr['available_categories'][0] ) {
+				
+					// Individual categories ARE available for subscribers to choose from
+					foreach ( $post_notif_options_arr['available_categories'] as $available_category => $discard ) {			
+						$existing_categories_arr[] = $available_category;
+					}
+				}
+				else {
+				
+					// "All" categories are selected as available in Post Notif settings
+					$category_args = array(
+						'orderby' => 'name',
+						'order' => 'ASC',
+						'hide_empty' => 0
+					);
+					$existing_categories = get_categories( $category_args );
+					$existing_categories_arr = array();
+					foreach ( $existing_categories as $existing_category ) {			
+						$existing_categories_arr[] = $existing_category->cat_ID;
+					}
 				}
 			}
 			
