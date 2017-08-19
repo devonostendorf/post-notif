@@ -235,7 +235,6 @@ class Post_Notif {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 
 		// Handle URLs (confirm subscription, manage prefs, update prefs, unsubscribe)
-		$this->loader->add_filter( 'query_vars', $plugin_public, 'add_query_vars' );			
 		$this->loader->add_action( 'init', $plugin_public, 'url_controller' );
 		$this->loader->add_action( 'admin_post_sub-prefs-form', $plugin_public, 'process_preferences_update' );
 		$this->loader->add_action( 'admin_post_nopriv_sub-prefs-form', $plugin_public, 'process_preferences_update' );		

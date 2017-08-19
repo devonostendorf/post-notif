@@ -124,23 +124,7 @@ class Post_Notif_Public {
 
 
 	// Functions related to handling Post Notif URLs
-	
-	/**
-	 * Add Post Notif-specific query vars.
-	 *
-	 * @since	1.0.0
-	 * @param	array	$vars	The collection of global query vars.
-	 * @return	array	The collection of global query vars.
-	 */	
-	public function add_query_vars( $vars ) {
-		
-		$vars[] = "email_addr";
-		$vars[] = "authcode";
-		
-		return $vars;
 
-	}
-		
 	/**
 	 * Route Post Notif-related URL to appropriate handler.
 	 *
@@ -212,23 +196,15 @@ class Post_Notif_Public {
 	 * @return	array	The current (pseudo) page, rendered.
 	 */	
 	public function create_subscription_confirmed_page( $posts ) {
-
-		global $wpdb;				 
-		global $wp_query;
-
+		
+		global $wpdb;
+		
 		// Tack prefix on to table names
 		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
-		// Get parms passed in URL
-		
-		if ( isset( $wp_query->query_vars['email_addr'] ) ) {
-			$email_addr = $wp_query->query_vars['email_addr'];
-		}
-
-		if ( isset( $wp_query->query_vars['authcode'] ) ) {
-		 	$authcode = $wp_query->query_vars['authcode'];
-		}
+		// Get query variables from URL
+		list( $email_addr, $authcode ) = $this->get_query_vars();
 	 
 		// Get subscriber
 		$subscriber = $wpdb->get_row(
@@ -339,7 +315,49 @@ class Post_Notif_Public {
 		}
 		// implicit else: bad URL, page not found will be displayed		
 	}
-	
+
+	/**
+	 * Core translates pluses ("+") to spaces (" ") in query variable values so
+	 *	we cannot assume using $wp_query->query_vars will properly handle email
+	 *	addresses.
+	 *
+	 * @since	1.1.5
+	 * @access	private
+	 * @return	array	Email address and authcode.
+	 */	
+	private function get_query_vars() {
+
+		defined ( 'EMAIL_ADDR_QUERY_VAR' ) || define( 'EMAIL_ADDR_QUERY_VAR', 'email_addr=' );
+		defined ( 'AUTHCODE_QUERY_VAR' ) || define( 'AUTHCODE_QUERY_VAR', 'authcode=' );
+		$email_addr_query_var_len = strlen( EMAIL_ADDR_QUERY_VAR );
+		$authcode_query_var_len = strlen( AUTHCODE_QUERY_VAR );
+
+		// Extract query vars from full URL		
+		$query_vars_string = substr( $_SERVER['REQUEST_URI'], strpos( $_SERVER['REQUEST_URI'], EMAIL_ADDR_QUERY_VAR ) );
+		$query_vars_arr = explode( '&', $query_vars_string );
+		
+		// Validate query vars
+		
+		if ( 2 != count( $query_vars_arr ) ) {
+			return array( '', '' );
+		}
+		else {
+			$email_addr = substr( $query_vars_arr[0], $email_addr_query_var_len );
+			$authcode = substr( $query_vars_arr[1], $authcode_query_var_len );
+			
+			if ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i', $email_addr ) ) {
+				return array( '', '' );
+			}
+			elseif ( ! preg_match( '/([0-9a-zA-Z]{32})/i', $authcode ) ) {
+				return array( '', '' );
+			}
+			else {
+				return array( $email_addr, $authcode );
+			}
+		}
+		
+	}
+		
 	/**
 	 * Create fake page object, to apply blog's current theme page template to 
 	 *	all Post Notif-related page data.
@@ -495,21 +513,13 @@ class Post_Notif_Public {
 	private function create_preferences_page( $page_title, $page_greeting ) {
 			  
 		global $wpdb;
-		global $wp_query;
 
 		// Tack prefix on to table names
 		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
-		// Get parms passed in URL
-
-		if ( isset( $wp_query->query_vars['email_addr'] ) ) {
-			$email_addr = $wp_query->query_vars['email_addr'];
-		}
-
-		if ( isset( $wp_query->query_vars['authcode'] ) ) {
-		 	$authcode = $wp_query->query_vars['authcode'];
-		}
+		// Get query variables from URL
+		list( $email_addr, $authcode ) = $this->get_query_vars();
 		
 		// Get subscriber
 		$subscriber_id = $wpdb->get_var( 
@@ -717,21 +727,13 @@ class Post_Notif_Public {
 	public function create_unsubscribe_page( $posts ) {
   
 		global $wpdb;
-		global $wp_query;
 		 
 		// Tack prefix on to table names
 		$post_notif_subscriber_tbl = $wpdb->prefix.'post_notif_subscriber';
 		$post_notif_sub_cat_tbl = $wpdb->prefix.'post_notif_sub_cat';
 
-		// Get parms passed in URL
-
-		if ( isset( $wp_query->query_vars['email_addr'] ) ) {
-		 	$email_addr = $wp_query->query_vars['email_addr'];
-		}
-
-		if ( isset( $wp_query->query_vars['authcode'] ) ) {
-		 	$authcode = $wp_query->query_vars['authcode'];
-		}
+		// Get query variables from URL
+		list( $email_addr, $authcode ) = $this->get_query_vars();
 	 
 		// Get subscriber
 		$subscriber_id = $wpdb->get_var( 
@@ -817,4 +819,4 @@ class Post_Notif_Public {
    	
    	}
 
-}	
+}
