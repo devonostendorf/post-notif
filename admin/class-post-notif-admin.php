@@ -587,7 +587,7 @@ class Post_Notif_Admin {
 		// Find subscribers to this/these ^^^ category/s
 		$subscribers_arr = $wpdb->get_results(
 			"
-				SELECT $post_notif_subscriber_tbl.id AS id
+				SELECT DISTINCT $post_notif_subscriber_tbl.id AS id
 					,email_addr 
 					,first_name
 					,authcode
