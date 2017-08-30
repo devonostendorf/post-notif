@@ -64,6 +64,14 @@ class Post_Notif_Widget extends WP_Widget {
 		// Register site scripts
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_widget_scripts' ) );
 
+		if ( $post_notif_widget_settings_arr = $this->get_post_notif_widget_settings() ) {
+			if ( 1 == $post_notif_widget_settings_arr['override_theme_css'] ) {
+
+				// Apply stylesheet overrides
+				$this->override_theme_css( $post_notif_widget_settings_arr );
+			}
+		}
+		
 		// Refreshing the widget's cached output with each new post
 		add_action( 'save_post',    array( $this, 'flush_widget_cache' ) );
 		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
@@ -75,6 +83,124 @@ class Post_Notif_Widget extends WP_Widget {
 		add_action( 'wp_ajax_nopriv_post_notif_widget', array( $this, 'post_notif_widget_ajax_handler' ) );
 
 	}
+	
+	/**
+	 * Get widget's settings.
+	 *
+	 * @since	1.1.5
+	 * @access	private
+	 * @return	array|boolean	Array of widget's settings or false if widget not found.
+	 */
+	private function get_post_notif_widget_settings() {
+				
+		$post_notif_widget_arr = get_option( 'widget_post-notif');
+		if ( $post_notif_widget_arr ) {
+				  
+			// Widget IS defined
+			
+			// Find index containing title so we can access other settings
+			foreach( $post_notif_widget_arr as $arr_key => $arr_item ) {
+				if ( is_array( $arr_item ) ) {
+					if ( array_key_exists( 'title', $arr_item ) ) {
+						
+						return $arr_item;
+					}
+				}
+			}
+		}
+		
+		return false;
+	
+	}
+	
+	/**
+	 * Register the (blank) stylesheet and attach admin-configured overrides for
+	 * the widget, if necessary.
+	 *
+	 * @since	1.1.5
+	 * @access	private
+	 * @param	array	$post_notif_widget_settings_arr	The admin-configured settings for the widget.
+	 */
+	private function override_theme_css( $post_notif_widget_settings_arr ) {
+
+		// Define formatting variables
+		$selector_indent = "\t\t\t";
+		$property_indent = "\t\t\t\t";
+		$newline = PHP_EOL;
+		
+		// NOTE: This is a blank stylesheet, merely used as an attachment point for wp_add_inline_style()
+		wp_enqueue_style( $this->get_widget_slug(), plugin_dir_url( __FILE__ ) . 'css/post-notif-widget.css', array(), '1.1.5', 'all' );
+
+		
+		// Define all configurable styling
+		
+		$settings_arr = array(
+			array( 
+				'name' => 'call_to_action'
+				,'selector' => $selector_indent . '#id_lblCallToAction {' . $newline
+			)
+			,array(
+				'name' => 'placeholder'
+				,'selector' => $selector_indent . '#id_txtFirstName::placeholder,' . $newline . $selector_indent . '#id_txtEmailAddr::placeholder {' . $newline
+			)
+			,array(
+				'name' => 'input_fields'
+				,'selector' => $selector_indent . '#id_txtFirstName,' . $newline . $selector_indent . '#id_txtEmailAddr {' . $newline
+			)
+			,array(
+				'name' => 'error'
+				,'selector' => $selector_indent . '#id_spnErrorMsg {' . $newline
+			)
+			,array(
+				'name' => 'message'
+				,'selector' => $selector_indent . '#id_spnSuccessMsg {' . $newline
+			)
+		);
+		
+		$properties_arr = array(
+			'properties' => array(
+				'font-family'
+				,'font-size'
+				,'color'
+			)
+			,'setting_types' => array(
+				'font_family'
+				,'font_size'
+				,'font_color'
+			)
+		);
+			
+		$ruleset_arr = array();
+
+		// Iterate through settings
+		foreach ( $settings_arr as $current_setting_arr ) {
+			$ruleset_arr[ $current_setting_arr['name'] ] = '';
+			
+			// Iterate through properties by setting types
+			foreach ( $properties_arr['setting_types'] as $index => $value ) {
+				$setting_full_name = $current_setting_arr['name'] . '_' . $value;			
+				if ( false != trim( $post_notif_widget_settings_arr[ $setting_full_name ] ) ) {
+					
+					// This property has been overridden, so add it to current rule
+					$ruleset_arr[ $current_setting_arr['name'] ] .= $property_indent . $properties_arr['properties'][ $index ] . ': ' . esc_html( $post_notif_widget_settings_arr[ $setting_full_name ] ) . ';' . $newline;
+				}		
+			}
+			if ( false != trim( $ruleset_arr[ $current_setting_arr['name'] ] ) ) {
+				$ruleset_arr[ $current_setting_arr['name'] ] = $current_setting_arr['selector'] . $ruleset_arr[ $current_setting_arr['name'] ] . $selector_indent . '}' . $newline;
+			}	
+		}
+		
+		$widget_style = '';
+		foreach ( $ruleset_arr as $rule ) {
+			$widget_style .= $rule;
+		}
+
+		if ( false != trim( $widget_style ) ) {
+			$widget_style = $newline . $widget_style;
+			wp_add_inline_style( $this->get_widget_slug(), $widget_style );
+		}
+
+	}	
 
 	/**
 	 * Return the widget slug.
@@ -154,9 +280,28 @@ class Post_Notif_Widget extends WP_Widget {
 		// Update widget's old values with the new, incoming values
 		$instance['title'] = strip_tags( $new_instance['title'] );
 		$instance['call_to_action'] = strip_tags( $new_instance['call_to_action'] );
-		$instance['button_label'] = strip_tags( $new_instance['button_label'] );
+		$instance['button_label'] = strip_tags( $new_instance['button_label'], '<img>' );
+		$instance['first_name_field_size'] = strip_tags( $new_instance['first_name_field_size'] );
 		$instance['first_name_placeholder'] = strip_tags( $new_instance['first_name_placeholder'] );
+		$instance['require_first_name'] = isset( $new_instance['require_first_name'] ) ? (bool) $new_instance['require_first_name'] : false;
+		$instance['email_addr_field_size'] = strip_tags( $new_instance['email_addr_field_size'] );
 		$instance['email_addr_placeholder'] = strip_tags( $new_instance['email_addr_placeholder'] );
+		$instance['override_theme_css'] = isset( $new_instance['override_theme_css'] ) ? (bool) $new_instance['override_theme_css'] : false;
+		$instance['call_to_action_font_family'] = strip_tags( $new_instance['call_to_action_font_family'] );
+		$instance['call_to_action_font_size'] = strip_tags( $new_instance['call_to_action_font_size'] );
+		$instance['call_to_action_font_color'] = strip_tags( $new_instance['call_to_action_font_color'] );
+		$instance['placeholder_font_family'] = strip_tags( $new_instance['placeholder_font_family'] );
+		$instance['placeholder_font_size'] = strip_tags( $new_instance['placeholder_font_size'] );
+		$instance['placeholder_font_color'] = strip_tags( $new_instance['placeholder_font_color'] );
+		$instance['input_fields_font_family'] = strip_tags( $new_instance['input_fields_font_family'] );
+		$instance['input_fields_font_size'] = strip_tags( $new_instance['input_fields_font_size'] );
+		$instance['input_fields_font_color'] = strip_tags( $new_instance['input_fields_font_color'] );
+		$instance['error_font_family'] = strip_tags( $new_instance['error_font_family'] );
+		$instance['error_font_size'] = strip_tags( $new_instance['error_font_size'] );
+		$instance['error_font_color'] = strip_tags( $new_instance['error_font_color'] );
+		$instance['message_font_family'] = strip_tags( $new_instance['message_font_family'] );
+		$instance['message_font_size'] = strip_tags( $new_instance['message_font_size'] );
+		$instance['message_font_color'] = strip_tags( $new_instance['message_font_color'] );
 		$this->flush_widget_cache();
 		
 		$alloptions = wp_cache_get( 'alloptions', 'options' );
@@ -183,8 +328,27 @@ class Post_Notif_Widget extends WP_Widget {
 		$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : $post_notif_widget_defaults_arr['title_default'];
 		$call_to_action = isset( $instance['call_to_action'] ) ? esc_attr( $instance['call_to_action'] ) : $post_notif_widget_defaults_arr['call_to_action_default'];
 		$button_label = isset( $instance['button_label'] ) ? esc_attr( $instance['button_label'] ) : $post_notif_widget_defaults_arr['button_label_default'];
+		$first_name_field_size = isset( $instance['first_name_field_size'] ) ? esc_attr( $instance['first_name_field_size'] ) : $post_notif_widget_defaults_arr['first_name_field_size_default'];
 		$first_name_placeholder = isset( $instance['first_name_placeholder'] ) ? esc_attr( $instance['first_name_placeholder'] ) : $post_notif_widget_defaults_arr['first_name_placeholder_default'];
+		$require_first_name = isset( $instance['require_first_name'] ) ? (bool) $instance['require_first_name'] : (bool) $post_notif_widget_defaults_arr['require_first_name_default'];
+		$email_addr_field_size = isset( $instance['email_addr_field_size'] ) ? esc_attr( $instance['email_addr_field_size'] ) : $post_notif_widget_defaults_arr['email_addr_field_size_default'];
 		$email_addr_placeholder = isset( $instance['email_addr_placeholder'] ) ? esc_attr( $instance['email_addr_placeholder'] ) : $post_notif_widget_defaults_arr['email_addr_placeholder_default'];
+		$override_theme_css = isset( $instance['override_theme_css'] ) ? (bool) $instance['override_theme_css'] : (bool) $post_notif_widget_defaults_arr['override_theme_css_default'];
+		$call_to_action_font_family = isset( $instance['call_to_action_font_family'] ) ? esc_attr( $instance['call_to_action_font_family'] ) : $post_notif_widget_defaults_arr['call_to_action_font_family_default'];
+		$call_to_action_font_size = isset( $instance['call_to_action_font_size'] ) ? esc_attr( $instance['call_to_action_font_size'] ) : $post_notif_widget_defaults_arr['call_to_action_font_size_default'];
+		$call_to_action_font_color = isset( $instance['call_to_action_font_color'] ) ? esc_attr( $instance['call_to_action_font_color'] ) : $post_notif_widget_defaults_arr['call_to_action_font_color_default'];
+		$placeholder_font_family = isset( $instance['placeholder_font_family'] ) ? esc_attr( $instance['placeholder_font_family'] ) : $post_notif_widget_defaults_arr['placeholder_font_family_default'];
+		$placeholder_font_size = isset( $instance['placeholder_font_size'] ) ? esc_attr( $instance['placeholder_font_size'] ) : $post_notif_widget_defaults_arr['placeholder_font_size_default'];
+		$placeholder_font_color = isset( $instance['placeholder_font_color'] ) ? esc_attr( $instance['placeholder_font_color'] ) : $post_notif_widget_defaults_arr['placeholder_font_color_default'];
+		$input_fields_font_family = isset( $instance['input_fields_font_family'] ) ? esc_attr( $instance['input_fields_font_family'] ) : $post_notif_widget_defaults_arr['input_fields_font_family_default'];
+		$input_fields_font_size = isset( $instance['input_fields_font_size'] ) ? esc_attr( $instance['input_fields_font_size'] ) : $post_notif_widget_defaults_arr['input_fields_font_size_default'];
+		$input_fields_font_color = isset( $instance['input_fields_font_color'] ) ? esc_attr( $instance['input_fields_font_color'] ) : $post_notif_widget_defaults_arr['input_fields_font_color_default'];
+		$error_font_family = isset( $instance['error_font_family'] ) ? esc_attr( $instance['error_font_family'] ) : $post_notif_widget_defaults_arr['error_font_family_default'];
+		$error_font_size = isset( $instance['error_font_size'] ) ? esc_attr( $instance['error_font_size'] ) : $post_notif_widget_defaults_arr['error_font_size_default'];
+		$error_font_color = isset( $instance['error_font_color'] ) ? esc_attr( $instance['error_font_color'] ) : $post_notif_widget_defaults_arr['error_font_color_default'];
+		$message_font_family = isset( $instance['message_font_family'] ) ? esc_attr( $instance['message_font_family'] ) : $post_notif_widget_defaults_arr['message_font_family_default'];
+		$message_font_size = isset( $instance['message_font_size'] ) ? esc_attr( $instance['message_font_size'] ) : $post_notif_widget_defaults_arr['message_font_size_default'];
+		$message_font_color = isset( $instance['message_font_color'] ) ? esc_attr( $instance['message_font_color'] ) : $post_notif_widget_defaults_arr['message_font_color_default'];
  
 		// Display the admin form
 		include( plugin_dir_path(__FILE__) . 'views/admin.php' );
@@ -256,13 +420,25 @@ class Post_Notif_Widget extends WP_Widget {
 		// Get user's first name and email address from submitted form
 		$first_name =  substr( trim( $_POST['form_data']['first_name'] ), 0, 50 );
 		$email_addr =  substr( trim( $_POST['form_data']['email_addr'] ), 0, 100 );
-    
+
+		$error = '';
+
+		if ( $post_notif_widget_settings_arr = $this->get_post_notif_widget_settings() ) {
+			if ( 1 == $post_notif_widget_settings_arr['require_first_name'] ) {
+				
+				// Confirm that first name is not blank
+				if ( '' == $first_name ) {
+					$error = $post_notif_settings_arr['widget_error_reqd_first_name_blank'] . ' ';
+				}
+			}
+		}
+		
 		// Confirm that email addr is valid
 		if ( '' == $email_addr ) {
-			$error = $post_notif_settings_arr['widget_error_email_addr_blank'];
+			$error .= $post_notif_settings_arr['widget_error_email_addr_blank'];
 		} 
 		elseif ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i', $email_addr ) ) {
-			$error = $post_notif_settings_arr['widget_error_email_addr_invalid'];
+			$error .= $post_notif_settings_arr['widget_error_email_addr_invalid'];
 		} 
    
 		if ( empty( $error ) ) {

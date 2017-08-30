@@ -20,11 +20,11 @@ if ( ! empty ($instance['title'] )) {
 		<span id="id_spnSuccessMsg"></span>
 		<label id="id_lblCallToAction"><?php echo esc_html( $instance['call_to_action'] ); ?></label>
 		<br />
-		<input type="text" id="id_txtFirstName" name="txtFirstName" size="20" maxlength="50" placeholder="<?php echo esc_attr( $instance['first_name_placeholder'] ); ?>" />
+		<input type="text" id="id_txtFirstName" name="txtFirstName" size="<?php echo $instance['first_name_field_size']; ?>" maxlength="50" placeholder="<?php echo esc_attr( $instance['first_name_placeholder'] ); ?>" <?php if ( $instance['require_first_name'] ) echo 'required'; ?>/>
 		<br />
-		<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="30" maxlength="100" placeholder="<?php echo esc_attr( $instance['email_addr_placeholder'] ); ?>" required/>	
+		<input type="email" id="id_txtEmailAddr" name="txtEmailAddr" size="<?php echo $instance['email_addr_field_size']; ?>" maxlength="100" placeholder="<?php echo esc_attr( $instance['email_addr_placeholder'] ); ?>" required/>	
 		<ul>
-			<input type="button" id="id_btnSubmit" name="btnSubmit" value="<?php echo esc_attr( $instance['button_label'] ); ?>" />
+			<button type="button" id="id_btnSubmit" name="btnSubmit"><?php echo $instance['button_label']; ?></button>
 		</ul>
 		<span id="id_spnErrorMsg"></span>
 	</form>

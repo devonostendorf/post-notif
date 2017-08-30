@@ -324,6 +324,29 @@
 				});        
 			}
 	 	});
-	}); 
+	});
+	
+	function checkOverrideTheme() {
+		$('.pn-chkoverridetheme').click(function(event) {
+			if (this.checked) {
+				
+				// "Override theme CSS" selected, display all override options
+				$('.pn-overridetheme').slideDown();
+			} 
+			else {
+				
+				// "Override theme CSS" UNselected, hide all override options
+				$('.pn-overridetheme').slideUp();
+			}
+	 	});
+	};
+
+	$(document).ready(function(){
+		checkOverrideTheme();
+	});
+	
+	$(document).ajaxComplete(function () {
+		checkOverrideTheme();
+	});
 
 })( jQuery );

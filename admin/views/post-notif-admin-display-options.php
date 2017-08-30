@@ -235,6 +235,15 @@
             	<table class="form-table">
             		<tr valign="top">
             			<th scope="row">
+            				<?php esc_html_e( 'Error (required first name is blank):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[widget_error_reqd_first_name_blank]" id="widget_error_reqd_first_name_blank" value="<?php echo esc_attr( $options['widget_error_reqd_first_name_blank'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
             				<?php esc_html_e( 'Error (blank email address):', 'post-notif' ); ?>
             			</th>
             			<td>

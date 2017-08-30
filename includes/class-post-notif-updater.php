@@ -50,7 +50,7 @@ class Post_Notif_Updater {
 	 */
 	public function __construct( $installed_post_notif_db_version ) {
 
-		$this->post_notif_db_version = 4;
+		$this->post_notif_db_version = 5;
 		$this->installed_post_notif_db_version = $installed_post_notif_db_version;
 		  
 	}
@@ -107,6 +107,7 @@ class Post_Notif_Updater {
 			,'unsub_link_label' => 'Unsubscribe from post notification'
 			,'unsub_confirmation_page_title' => 'Post Notification - Unsubscribed'
 			,'unsub_confirmation_page_greeting' => "You've been unsubscribed (sorry to see you go!)"
+			,'widget_error_reqd_first_name_blank' => 'A first name is required.'
 			,'widget_error_email_addr_blank' => 'An email address is required.'
 			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
 			,'widget_info_message_processing' => 'Processing...'
@@ -135,8 +136,27 @@ class Post_Notif_Updater {
 			'title_default' => 'Subscribe'
 			,'call_to_action_default' => 'Notify me when new posts are published:'
 			,'button_label_default' => 'Sign me up!'
+			,'first_name_field_size_default' => '20'
 			,'first_name_placeholder_default' => 'First Name (optional)'
+			,'require_first_name_default' => 0
+			,'email_addr_field_size_default' => '30'
 			,'email_addr_placeholder_default' => 'Email Address'
+			,'override_theme_css_default' => 0
+			,'call_to_action_font_family_default' => ''
+			,'call_to_action_font_size_default' => ''
+			,'call_to_action_font_color_default' => ''
+			,'placeholder_font_family_default' => ''
+			,'placeholder_font_size_default' => ''
+			,'placeholder_font_color_default' => ''
+			,'input_fields_font_family_default' => ''
+			,'input_fields_font_size_default' => ''
+			,'input_fields_font_color_default' => ''
+			,'error_font_family_default' => ''
+			,'error_font_size_default' => ''
+			,'error_font_color_default' => ''
+			,'message_font_family_default' => ''
+			,'message_font_size_default' => ''
+			,'message_font_color_default' => ''
 		);
 		// Replace add_option() call with update_option() as these are strictly
 		//		defaults - user updates to the widget settings are not stored back
@@ -314,6 +334,20 @@ class Post_Notif_Updater {
 	private function post_notif_db_update_version_4() {
 			
 		// NOOP - Only added 'widget_failure_message' to $post_notif_settings_arr
+		
+	}
+	
+	/**
+	 * Apply changes to get database schema to version 5.
+	 *
+	 * @since	1.1.5
+	 * @access	private
+	 */
+	private function post_notif_db_update_version_5() {
+			
+		// NOOP - Only added 'widget_error_reqd_first_name_blank' to
+		//	$post_notif_settings_arr and numerous widget default placeholders
+		//	(tied to overriding theme CSS) to $post_notif_widget_defaults_arr
 		
 	}
 	
