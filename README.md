@@ -3,8 +3,9 @@
 **Donate link:** https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU   
 **Tags:** post, notif, notification, email, subscribe   
 **Requires at least:** 4.1.1   
-**Tested up to:** 4.8   
-**Stable tag:** 1.1.4   
+**Tested up to:** 4.8  
+**Requires PHP:** 5.6   
+**Stable tag:** 1.1.5   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -37,17 +38,22 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Unsubscribe confirmation page title
 	* Unsubscribe confirmation page greeting
 
+* Configurable widget settings:
+	* Title label
+	* Call to action text, font, font size, and font color
+	* Submit button label
+	* Require first name?
+	* First name field size, font, font size, and font color
+	* Email address field size, font, font size, and font color
+	* First name and email placeholder text, font, font size, and font color
+	* Error and status message font, font size, and font color
+	
 * Configurable widget messages:
-	* Blank and invalid email address errors 	
-	* Widget processing message	
+	* Blank first name error
+	* Blank and invalid email address errors
+	* Widget processing message 	
 	* Already subscribed info message	
 	* Successful subscription request message	
-				
-* Configurable widget labels/input field placeholders:
-	* Title
-	* Call to action
-	* Submit button label
-	* First name and email placeholders
 	
 * Configurable category settings:
 	* Make all or a subset of system categories available to subscribers or turn off categories entirely
@@ -73,10 +79,10 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 * Multisite capable
 
 * Translations for the following languages:
-	* Czech (cs_CZ)
-	* Dutch (nl_NL)
-	* German (de\_DE and de\_DE\_formal)
-	* Spanish (es_ES)
+	* Czech (cs_CZ) via language pack
+	* Dutch (nl_NL) via language pack
+	* German (de\_DE and de\_DE\_formal) included in plugin package
+	* Spanish (es_ES) included in plugin package
 
 ### Benefits: ###
 
@@ -186,7 +192,7 @@ Post Notif is probably not a good fit for your needs (at least at this point in 
 
 ### Why isn't Post Notif translated into my language? ###
 
-It is because no one who speaks your language has translated this plugin yet.  If you'd like to do so, you'll find the current post-notif.pot file in the post-notif/languages directory.  [Please contact me](https://devonostendorf.com) with any translation files you create - thanks much!
+It is because no one who speaks your language has translated this plugin yet.  If you'd like to do so, you'll find the current post-notif.pot file in the post-notif/languages directory.  [Please contact me](https://devonostendorf.com) with any translation files you create; I will help you get set up as a Project Translation Editor (PTE) with the WordPress.org [Polyglots team](https://make.wordpress.org/polyglots/) to create a language pack for Post Notif - thanks much!
 
 ### Why create another post notification plugin? ###
 
@@ -445,6 +451,15 @@ You can later turn category functionality back on by doing the reverse of these 
 
 ## Changelog ##
 
+### 1.1.5 ###
+Release Date: September 13, 2017
+
+* FIXED: Fixed code to prevent duplicate notifs from being sent when a post has multiple categories
+* FIXED: Fixed issue where subscriber import from file failed on "invalid" categories
+* FIXED: Fixed situation where email addrs containing "+" wouldn't work with personalized URLs
+* NEW: Added additional configurable settings to widget admin
+* REMOVED: Removed language files for Czech and Dutch as both now have language packs maintained on WordPress.org
+
 ### 1.1.4 ###
 Release Date: May 14, 2017
 
@@ -554,6 +569,9 @@ Release Date: April 13, 2015
 
 ## Upgrade Notice ##
 
+### 1.1.5 ###
+Prevented duplicate notifs when a post has multiple categories.  Fixed sub import from file failure on "invalid" cats.  Fixed issue w/email addrs containing "+" breaking personalized URLs.  Added new config settings to widget admin.  Removed Czech and Dutch lang files (moved to language packs).
+
 ### 1.1.4 ###
 Added Czech translation.  Added email dashicon for Post Notif top level menu.
 
@@ -607,5 +625,6 @@ Special thanks to:
 * [Enrique Maza](http://sevalepensar.com) for the Spanish (es_ES) translation
 * David Cox for the Spanish translation revisions
 * Ruediger Walter for the German (de\_DE and de\_DE\_formal) translations
+* Wolfgang for the German translation revisions
 * frankmaNL for the Dutch (nl_NL) translation
 * Jirka Licek for the Czech (cs_CZ) translation

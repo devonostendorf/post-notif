@@ -133,8 +133,8 @@ class Post_Notif_Admin {
 			// Get the current language locale
 			$language = get_locale();
 		
-			// Check if the nag screen has been disabled for this language (or if current language is US or UK English)
-			if ( ( 'en_US' !== $language ) && ( 'en_UK' !== $language )
+			// Check if the nag screen has been disabled for this language (or if current language is US or UK English or Czech or Dutch)
+			if ( ( 'en_US' !== $language ) && ( 'en_UK' !== $language ) && ( 'cs_CZ' !== $language ) && ( 'nl_NL' !== $language )
 				&& ( false === get_option( 'post_notif_language_detector_' . $language, false ) ) ) {
 			
 				// Nag screen, for current language, has NOT been dismissed 
