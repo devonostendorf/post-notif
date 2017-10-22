@@ -150,9 +150,6 @@
 	 					// Update and show Post Notif scheduled for message span with scheduled for timestamp
 	 					$("#id_spnPostNotifScheduledFor").text(data.timestamp);
 	 					$("#id_spnPostNotifScheduledFor").show();
-	 				
-	 					// Show Cancel button
-	 					$('#id_btnPostNotifCancelSchedSend').show();
 	 				}
 	 				else {
 	 					 					
@@ -165,48 +162,6 @@
 	 				$("#id_spnPostNotifStatus").text(data.message);
 	 			});	 			
 	 		}
-	 	});
-	});
-	
-	$(function() {
-	 	$("#id_btnPostNotifCancelSchedSend").click(function(e) { 
-	 		var post_id = document.getElementById("id_hdnPostID").value;
-	 			
- 			// Hide Cancel button
- 			$('#id_btnPostNotifCancelSchedSend').hide();
-	 		
-	 		$.post(post_notif_cancel_send_ajax_obj.ajax_url, {
-	 			_ajax_nonce: post_notif_cancel_send_ajax_obj.nonce,
-	 			action: "unschedule_post_notif_send",
-	 			post_id: post_id,
-	 		}, function(data) {
-
-	 			// Hide Scheduled For span			
-	 			$('#id_spnPostNotifScheduledFor').hide();
-	 			$("#id_divPostNotifManualSend").hide();
-
-	 			if (data.update_last_sent) {
-	 				
-	 				// Post notification process ran while page got stale
-	 				$("#id_spnPostNotifLastSent").text(data.update_last_sent_text);
-	 				$("#id_spnPostNotifLastSent").show();
-	 			}
-	 			
-	 			if (data.cancelled) {
-	 				
-	 				// Scheduled run was successfully cancelled - give user option to send now and/or reschedule
-	 				if ($("#id_spnPostNotifSendNowOrSchedActive").hasClass('pn-schedule')) {
-	 					$("#id_spnPostNotifSendSchedTimestamp").show();
-	 				}
-	 				$("#id_spnPostNotifSendNowOrSchedActive").show();
-	 				$("#id_divPostNotifManualSendControls").show();
-					$("#id_divPostNotifManualSend").show();
-	 				$('#id_btnPostNotifSend').show();	 				
-	 			}
-	 			
-	 			// Update Post Notif status message span with appropriate message
-	 			$("#id_spnPostNotifStatus").text(data.message);	 
-	 		});	 			
 	 	});
 	});
 

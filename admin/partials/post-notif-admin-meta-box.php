@@ -13,6 +13,11 @@
  */
 ?>
 	<input type="hidden" name="hdnPostID" id="id_hdnPostID" value="<?php echo esc_attr( $post->ID ); ?>" />
+	<em> 
+		<?php echo $maintain_notifs_sent_info_message; ?>	
+	</em>
+	<br />
+	<br />
 <?php if ( $post_published_or_scheduled ) : ?>
 	
 	<?php /* Make accurate option text available to JS */ ?>
@@ -20,7 +25,7 @@
 	<input type="hidden" id="id_hdnPostNotifScheduleOptionLabel" value="<?php esc_attr_e( 'Schedule', 'post-notif' ); ?>">		
 <?php 	if ( $previously_sent ) : ?>
 	<span id="id_spnPostNotifLastSent">
-		<?php esc_html_e( 'Last sent:', 'post-notif' ); ?>&nbsp;<?php echo Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm ); ?>
+		<?php esc_html_e( 'Last processed:', 'post-notif' ); ?>&nbsp;<?php echo Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm ); ?>
 		<br />
 	</span>	
 
@@ -34,14 +39,14 @@
 	<input type="hidden" id="id_hdnPostNotifSendNowButtonLabel" value="<?php esc_attr_e( 'Send', 'post-notif' ); ?>">
 	<input type="hidden" id="id_hdnPostNotifScheduleButtonLabel" value="<?php esc_attr_e( 'Schedule Send', 'post-notif' ); ?>">
 <?php 	endif; ?>	
-	<div id="id_divPostNotifManualSend"<?php echo ( ( $auto_send_selected || $process_running ) ? ' style="display: none" ' : '' ); ?> >	
+	<div id="id_divPostNotifManualSend"<?php echo ( ( $auto_send_selected || $process_running ) ? ' style="display: none" ' : '' ); ?> >
 <?php 	if ( $already_scheduled ) : ?>
-		<span id="id_spnPostNotifScheduledFor"><?php esc_html_e( 'Scheduled for:' , 'post-notif' ); ?>&nbsp;<?php echo date( "F j, Y", $notif_scheduled_for_dttm + Post_Notif_Misc::offset_from_UTC() ) . ' @ ' . date( "g:i:s A", $notif_scheduled_for_dttm + Post_Notif_Misc::offset_from_UTC() ); ?></span>		
-		<input type="button" name="btnPostNotifCancelSchedSend" id="id_btnPostNotifCancelSchedSend" value="<?php esc_attr_e( 'Cancel', 'post-notif' ); ?>" />
-		<br />		
+		<span id="id_spnPostNotifScheduledFor"><?php esc_html_e( 'Scheduled for:' , 'post-notif' ); ?>&nbsp;<?php echo date( "F j, Y", $notif_scheduled_for_dttm + Post_Notif_Misc::offset_from_UTC() ) . ' @ ' . date( "g:i:s A", $notif_scheduled_for_dttm + Post_Notif_Misc::offset_from_UTC() ); ?>
+			<br />
+		</span>		
+		<br />
 <?php 	else : ?>
 		<span id="id_spnPostNotifScheduledFor" style="display: none"></span>
-		<input type="button" name="btnPostNotifCancelSchedSend" id="id_btnPostNotifCancelSchedSend" value="<?php esc_attr_e( 'Cancel', 'post-notif' ); ?>" style="display: none" />
 <?php	endif; ?>	
 		<br />
 		<div id="id_divPostNotifManualSendControls"<?php echo ( $already_scheduled ? ' style="display: none" ' : '' ); ?> >

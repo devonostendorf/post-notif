@@ -65,7 +65,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	
 * Admin and editor tools:
 	* View subscribers (and the post categories they've subscribed to)
-	* View post notifications sent
+	* Manage post notifications sent (check the status of, pause, or cancel, post notification processes [both running and scheduled])
 		
 * Admin-only tools:
 	* Import subscribers (see FAQ for details on how import process works)
@@ -180,6 +180,14 @@ This option defaults to whatever you've set it to on the Settings page (Settings
 = I've scheduled a post notification for a specific date/time, which has passed; why hasn't the post notification been sent? =
 
 As WordPress Cron is not a true UNIX-style Cron daemon, some activity (even just a public page view from an unknown user) needs to happen SOMEWHERE on the blog, AFTER the schedule datetime, for the post notification process to be triggered.  You may also want to consider configuring your Post Notifications to be sent automatically upon post publish (see above).
+
+= Where did the View Post Notifs Sent page go? =
+
+It has been replaced with the Manage Post Notifs Sent page, which allows admins and editors to check the status of, pause, or cancel, post notification processes (both running and scheduled).
+
+= How do I cancel a scheduled (future) notification? =
+
+This functionality has been moved from the Post Notif metabox (on the Edit Post page) to the Manage Post Notifs Sent page; go there, find the scheduled notification and click on the "Cancel" action immediately below the Post ID.
 
 = Why aren't all my notifications being sent out? =
 

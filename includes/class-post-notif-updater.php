@@ -50,7 +50,7 @@ class Post_Notif_Updater {
 	 */
 	public function __construct( $installed_post_notif_db_version ) {
 
-		$this->post_notif_db_version = 5;
+		$this->post_notif_db_version = 6;
 		$this->installed_post_notif_db_version = $installed_post_notif_db_version;
 		  
 	}
@@ -348,6 +348,34 @@ class Post_Notif_Updater {
 		// NOOP - Only added 'widget_error_reqd_first_name_blank' to
 		//	$post_notif_settings_arr and numerous widget default placeholders
 		//	(tied to overriding theme CSS) to $post_notif_widget_defaults_arr
+		
+	}
+
+	/**
+	 * Apply changes to get database schema to version 6.
+	 *
+	 * @since	1.2.0
+	 * @access	private
+	 */
+	private function post_notif_db_update_version_6() {
+			
+		global $wpdb;
+		
+		$charset_collate = $wpdb->get_charset_collate();
+		
+		$sql = "CREATE TABLE {$wpdb->prefix}post_notif_post (
+			post_id bigint(20) UNSIGNED NOT NULL,
+			notif_sent_dttm datetime NOT NULL,
+			sent_by bigint(20) UNSIGNED NOT NULL,
+			notif_end_dttm datetime,
+			send_status char(1) NOT NULL DEFAULT 'C',
+			num_recipients mediumint(9) NOT NULL DEFAULT -1,
+			num_notifs_sent mediumint(9) UNSIGNED NOT NULL DEFAULT 0,
+			scheduled boolean NOT NULL DEFAULT 0,
+			last_subscriber_id_sent mediumint(9) NOT NULL DEFAULT 0,
+			PRIMARY KEY  (post_id,notif_sent_dttm)
+		) $charset_collate;";
+		dbDelta( $sql );	
 		
 	}
 	

@@ -195,9 +195,7 @@ class Post_Notif {
 		$this->loader->add_action( 'transition_post_status', $plugin_admin, 'send_notif_on_publish_if_auto', 10, 3 );		
 		$this->loader->add_action( 'wp_ajax_schedule_post_notif_send', $plugin_admin, 'schedule_post_notif_send' );
 		$this->loader->add_action( 'post_notif_send_scheduled_post_notif', $plugin_admin, 'execute_scheduled_post_notif_send', 10, 1 );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'unschedule_post_notif_send_enqueue' );
-		$this->loader->add_action( 'wp_ajax_unschedule_post_notif_send', $plugin_admin, 'unschedule_post_notif_send' );
-		
+
 		// Send test notif (from Edit Post page) functionality
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'test_post_notif_send_enqueue' );
 		$this->loader->add_action( 'wp_ajax_test_post_notif_send', $plugin_admin, 'test_post_notif_send' );
