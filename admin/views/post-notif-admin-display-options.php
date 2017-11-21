@@ -122,6 +122,44 @@
 							</span>
 						</td>
 					</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Enable batch send options:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+							<label for="enable_batch_send_options">
+            					<input type="checkbox" name="post_notif_settings[enable_batch_send_options]" id="enable_batch_send_options" value="1" <?php echo ( ( array_key_exists( 'enable_batch_send_options', $options ) ) ? 'checked' : '' ); ?> />
+            				</label>
+            				<br />
+            				<p class="description">
+            					<?php esc_html_e( 'You may want to enable (and configure) this if your host throttles emails.', 'post-notif' ); ?>
+            				</p>
+            			</td>
+            		</tr>					
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Batch size:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[batch_size]" id="batch_size" value="<?php echo esc_attr( $options['batch_size'] ); ?>" <?php if ( ! array_key_exists( 'enable_batch_send_options', $options ) ) echo ' readonly="readonly" '; ?> >
+            				<br />
+            				<p class="description">
+            					<?php esc_html_e( 'Number of emails to be sent at a time (some hosts limit this in the name of spam prevention).', 'post-notif' ); ?>
+            				</p>
+            			</td>
+            		</tr>
+ 					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Batch pause (in minutes):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[batch_pause]" id="batch_pause" value="<?php echo esc_attr( $options['batch_pause'] ); ?>" <?php if ( ! array_key_exists( 'enable_batch_send_options', $options ) ) echo ' readonly="readonly" '; ?> >
+            				<br />
+            				<p class="description">
+            					<?php esc_html_e( 'How long to wait before sending next batch of emails (some hosts set a maximum number of emails that can be sent per hour, for example).', 'post-notif' ); ?>
+            				</p>
+            			</td>
+            		</tr>
 					<tr valign="top">
             			<th scope="row">
             				<?php esc_html_e( 'If using "Custom Structure" permalink:', 'post-notif' ); ?>

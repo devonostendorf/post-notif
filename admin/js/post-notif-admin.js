@@ -23,71 +23,7 @@
 	 				action: 'init_post_notif_send',
 	 				post_id: post_id,
 	 			}, function(data) {
-
-	 				if ('-1' === data.status) {
-
-	 					// Process is already running - STOP PROCESSING!
-	 					$("#id_spnPostNotifStatus").text(data.message);	 					
-	 				} 
-	 				else {
-
-	 					// All is well, carry on
-	 			
-	 					// Create a jQuery Progressbar
-	 					$("#id_post_notif_progress_bar").progressbar();
-
-	 					// Check status of process every second
-	 					var processCheckTimer = setInterval(function() {
-	 				
-	 						// Get the current status of the send process
-	 						$.post(ajaxurl, {
-	 							action: 'get_post_notif_send_status',
-	 							post_id: post_id,
-	 						}, function(response) {
-
-	 							if ('-1' === response) {
-
-	 								// Set the progress bar to display 100% complete
-	 								$("#id_divPostNotifProgressBar").progressbar({
-	 									value: 100
-	 								});
-	 			
-	 								// Kill timer
-	 								clearInterval(processCheckTimer);
-	 						
-	 								// Hardcode progress bar label to 100% 
-	 								$("#id_spnPostNotifProgressBarLabel").text( "100%" );
-	 							} 
-	 							else {
-
-	 								// Update the progress bar to display appropriate percent complete
-	 								var percentComplete = Math.floor(100 * response);
-	 								$("#id_divPostNotifProgressBar").progressbar({
-	 									value: percentComplete
-	 								});
-	 						
-	 								// Set progress bar label to appropriate percent complete 
-	 								$("#id_spnPostNotifProgressBarLabel").text( percentComplete + "%" );
-	 							}	 					
-	 						});
-
-	 					}, 1000);
-
-	 					$.post(post_notif_send_ajax_obj.ajax_url, {
-	 						_ajax_nonce: post_notif_send_ajax_obj.nonce,
-	 						action: "post_notif_send",
-	 						post_id: post_id,
-	 					}, function(data) {
-
-	 						// Update Post Notif status message span with total count of notifs sent
-	 						$("#id_spnPostNotifStatus").text(data.message);
-	 						
-	 						// Update and show Post Notif last sent span with last run timestamp
-	 						$("#id_spnPostNotifLastSent").text(data.timestamp);
-	 						$("#id_spnPostNotifLastSent").show();	 			
-	 					});
-	 				} 					
-
+	 				$("#id_spnPostNotifStatus").text(data.message);
 	 			});
 	 		}
 	 		else {
@@ -304,4 +240,17 @@
 		checkOverrideTheme();
 	});
 
+	$(function() {
+		$('#enable_batch_send_options').click(function(event) {
+			if (this.checked) {					  
+				$('#batch_size').removeAttr('readonly');
+				$('#batch_pause').removeAttr('readonly');
+			} 
+			else {
+ 				$('#batch_size').attr('readonly', 'true')
+				$('#batch_pause').attr('readonly', 'true')
+			}
+	 	});
+	});
+	
 })( jQuery );

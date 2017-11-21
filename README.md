@@ -5,7 +5,7 @@
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.8  
 **Requires PHP:** 5.6   
-**Stable tag:** 1.2.0-1   
+**Stable tag:** 1.2.0-2 BETA   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -62,6 +62,7 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Auto send (when post is published)
 	* Send now
 	* Schedule send (via WordPress cron)
+	* Batch send options (batch size, batch pause)
 	* Test send
 
 * Admin and editor tools:
@@ -182,6 +183,10 @@ This option defaults to whatever you've set it to on the Settings page (Settings
 
 As WordPress Cron is not a true UNIX-style Cron daemon, some activity (even just a public page view from an unknown user) needs to happen SOMEWHERE on the blog, AFTER the schedule datetime, for the post notification process to be triggered.  You may also want to consider configuring your Post Notifications to be sent automatically upon post publish (see above).
 
+### Where did the Send Now progress bar go? ###
+
+It has been removed in exchange for a more robust send process.  Due to issues with PHP script timeouts (particularly for large subscriber lists), the send notification processing code has been strengthened to avoid timing out.  However, this is incompatible with the progress bar.  Please see the new Manage Post Notifs Sent page (mentioned below) to check the status of all of your notifications going forward.
+
 ### Where did the View Post Notifs Sent page go? ###
 
 It has been replaced with the Manage Post Notifs Sent page, which allows admins and editors to check the status of, pause, or cancel, post notification processes (both running and scheduled).
@@ -192,7 +197,7 @@ This functionality has been moved from the Post Notif metabox (on the Edit Post 
 
 ### Why aren't all my notifications being sent out? ###
 
-If your web host throttles the number of emails you can send during a period of time, this plugin cannot override that limit.
+If your web host throttles the number of emails you can send during a period of time, you should enable batch mode on the Settings page (Settings >> Post Notif >> "Enable batch send options") and then define a batch size and/or batch pause.  Please note that only 0 and positive integers are valid values for batch size and batch pause.  If batch size = 100 and batch pause = 60, the send process will send a batch consisting of up to 100 emails and then will schedule (via WordPress Cron) the next batch to process 60 minutes later.  If batch size = 100 and batch pause = 0, the send process will send a batch consisting of up to 100 emails and then will begin the next batch immediately.  If batch size = 0 and batch pause = 60, the send process will send as many emails as it can before either the script times out or the complete set of subscribers is exhausted and then (if any subscribers remain to be notified) will schedule (via WordPress Cron) the next batch to process 60 minutes later.  If batch size = 0 and batch pause = 0, the send process will behave as if batch mode is disabled (i.e., the send process will send as many emails as it can before either the script times out or the complete set of subscribers is exhausted and then [if any subscribers remain to be notified] will begin the next batch immediately).
 
 ### I have 10,000 subscribers - is this a good plugin for me to use to notify them? ###
 

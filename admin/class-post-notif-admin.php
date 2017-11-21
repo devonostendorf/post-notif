@@ -56,27 +56,6 @@ class Post_Notif_Admin {
 	}
 
 	/**
-	 * Register the stylesheets for the admin area.
-	 *
-	 * @since    1.1.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * An instance of this class should be passed to the run() function
-		 * defined in Post_Notif_Admin_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Post_Notif_Admin_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-		 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/jquery-ui-1_12_1_cupertino_progressbar_only.min.css', array(), $this->version, 'all' );
-		
-	}	
-
-	/**
 	 * Register the JavaScript for the admin area.
 	 *
 	 * @since	1.0.0
@@ -95,9 +74,6 @@ class Post_Notif_Admin {
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-notif-admin.min.js', array( 'jquery' ), $this->version, false );
 		 
-		// Include this to use jQuery UI Progressbar
-		wp_enqueue_script( 'jquery-ui-progressbar', $this->version, false );
-		
 	}
 	
 	/**
@@ -328,6 +304,7 @@ class Post_Notif_Admin {
 				$create_new_send_process_arr = array(
 					'post_id' => $post->ID
 					,'notif_sent_dttm' => gmdate( "Y-m-d H:i:s" )
+					,'notif_schedule_dttm' => $scheduled ? gmdate( "Y-m-d H:i:s" ) : null
 					,'sent_by' => $current_user
 					,'send_status' => 'I'
 					,'num_recipients' => 0
@@ -336,7 +313,6 @@ class Post_Notif_Admin {
 				$this->create_post_notif_send_process_row( $create_new_send_process_arr );
 
 				$this->schedule_immediate_resumption_of_send( $post->ID );
-				spawn_cron( time() );
 
 			}
 		}		
@@ -380,8 +356,13 @@ class Post_Notif_Admin {
 			$already_scheduled = false;
 			$process_running = false;
 			$status_message = '';
-			$maintain_notifs_sent_info_message = __( 'Go to: <strong>Post Notif >> Manage Post Notifs Sent</strong> to check the status of, pause, or cancel, post notification processes (both running and scheduled).', 'post-notif' );
-			
+			$manage_post_notifs_sent_url = '<a href="' . admin_url( 'admin.php?page=post-notif-manage-posts-sent' ) . '">Post Notif >> Manage Post Notifs Sent</a>';
+			$maintain_notifs_sent_info_message = sprintf(
+				/* translators: %s: URL of Manage Post Notifs Sent page */
+				__( 'Go to: %s to check the status of, pause, or cancel, post notification processes (both running and scheduled).', 'post-notif' ),
+				$manage_post_notifs_sent_url
+			);
+						
 			$post_scheduled = ('future' == $post->post_status );
 			$post_published = ('publish' == $post->post_status );
 			
@@ -494,11 +475,13 @@ class Post_Notif_Admin {
 			);
 			$this->create_post_notif_send_process_row( $create_new_send_process_arr );
 			
-			wp_send_json( array( 'status' => 1 ) );
-		}
-		
-  		wp_send_json( array( 'status' => '-1', 'message' => __( 'Post notification process, for this post, is already running!', 'post-notif' ) ) );
+			$this->schedule_immediate_resumption_of_send( $post_id );			
 
+			wp_send_json( array( 'status' => '1', 'message' => __( 'Post notif for this post is pending.', 'post-notif' ) ) );
+		}
+		else {
+			wp_send_json( array( 'status' => '-1', 'message' => __( 'Post notification process, for this post, is already running!', 'post-notif' ) ) );
+		}
 	}
 
 	/**
@@ -527,82 +510,6 @@ class Post_Notif_Admin {
 	}    
 	
 	/**
-	 * Calculates manually-run post notification send process percent complete for display on progress bar.
-	 *
-	 * @since	1.1.0
-	 * @return	int	Exits with calculated process percent complete or -1 (if process complete or not running)
-	 */	
-	public function get_post_notif_send_status() {
-
- 		// Get post ID for current notification
-		$post_id = $_POST['post_id'];
-
-		if ( $this->post_notif_already_running( $post_id ) ) {
-   	
-   			if ( $post_notif_process_details_arr = $this->get_in_process_send_notif_row( $post_id ) ) {
-   				$post_notif_count_sent = floatval( $post_notif_process_details_arr['num_notifs_sent'] );
- 				$post_notif_count_to_send = floatval( $post_notif_process_details_arr['num_recipients'] );
-   			}
-   			else {
-   				$post_notif_count_sent = 0;
-   				$post_notif_count_to_send = 0;
-   			}
-   			
-   			if ( ( 0 == $post_notif_count_sent ) && ( 0 == $post_notif_count_to_send ) ) {
-   				
-   				// This is the first call to the function - avoid divide by zero!
-   				exit( 0 );
-   			}
-   			
-   			// Calculate processing percent complete
-   			$process_pct =  $post_notif_count_sent / $post_notif_count_to_send; 		
-   			
-   			if ( 1 == $process_pct ) {   				
-   				exit ( '-1' );
-   			}
-   			
-  			exit( $process_pct );   	
-   		} 
-   		else {
-   			
-   			// This has been called outside of a processing cycle
-   			exit( '-1' );
-   		}
-
-   	}
-	
-	/**
-	 * Handle AJAX event sent when "Send Notif" button (in meta box on Edit Post page) is pressed.
-	 *
-	 * @since	1.0.0
-	 * @return	null	If unable to send emails (already in process)
-	 */	
-	public function send_post_notif_ajax_handler() {
-
-		// Confirm matching nonce
-		check_ajax_referer( 'post_notif_send' );
-
-		// Get current post ID
-		$post_id = $_POST['post_id'];
-		
-		// Perform actual post notification process
-		list( $post_notifs_sent_success, $post_notif_sent_count, $notif_sent_dttm ) = $this->process_post_notif_send( $post_id );
-		
-		if ( $post_notifs_sent_success ) {
-   			$post_notif_sent_msg = sprintf( _n( 'One post notification has been sent for this post!', '%s total post notifications have been sent for this post!', $post_notif_sent_count, 'post-notif' ), number_format_i18n( $post_notif_sent_count ) );
-		}
-		elseif ( -1 == $post_notif_sent_count ) {
-   			$post_notif_sent_msg = __( 'Post notification process, for this post, is already in process!', 'post-notif' );
-		}
-		else {
-   			$post_notif_sent_msg = __( 'Post notification process, for this post, FAILED to complete successfully!', 'post-notif' );
-   		}
-
-   		wp_send_json( array( 'message' => $post_notif_sent_msg, 'timestamp' => __( 'Last sent:', 'post-notif' ) . ' ' . Post_Notif_Misc::UTC_to_local_datetime( $notif_sent_dttm ) ) );	
-    				   	
-    }
-
-	/**
 	 * Perform post notification.
 	 *
 	 * @since	1.1.0
@@ -613,6 +520,10 @@ class Post_Notif_Admin {
 	 */
 	private function process_post_notif_send( $post_id ) {
      			
+		$max_execution_secs = ini_get('max_execution_time');
+		$timeout_exists = ( true == $max_execution_secs );
+		$execution_upper_limit = time() + $max_execution_secs - 5;
+
 		global $wpdb;
    
 		// Tack prefix on to table names
@@ -622,7 +533,7 @@ class Post_Notif_Admin {
 		
 		$post_notif_count_sent = 0;
 		$post_notif_send_complete = false;
-
+		
 		// Find categories this post is associated with
 		$post_categories_arr = wp_get_post_categories( $post_id ); 
 		$post_category_clause = '(';
@@ -655,18 +566,69 @@ class Post_Notif_Admin {
 			//	notification to all (confirmed) subscribers
 			$sub_cat_tbl_join = '';
 			$cat_id_clause = '';
-		}				
-
+		}	
+		
 		if ( $post_notif_process_details_arr = $this->get_in_process_send_notif_row( $post_id ) ) {
 			$last_subscriber_id_sent = $post_notif_process_details_arr['last_subscriber_id_sent'];
 			$notif_intiated_dttm = $post_notif_process_details_arr['notif_sent_dttm'];
 			$post_notif_count_sent = $post_notif_process_details_arr['num_notifs_sent'];
+			
+			if ( 0 != $last_subscriber_id_sent ) {
+				$subscriber_count = $post_notif_process_details_arr['num_recipients'];
+			}
+			else {
+
+				// Get count of subscribers to send for first time this is run
+    		
+				$subscriber_count = $wpdb->get_var( 
+					"
+						SELECT DISTINCT COUNT($post_notif_subscriber_tbl.id)
+						FROM $post_notif_subscriber_tbl
+						$sub_cat_tbl_join
+						WHERE confirmed = 1
+							$cat_id_clause
+					"
+				);
+    		
+				// Store number of post notifs to send
+				$send_process_update_num_recipients_arr = array(
+					'num_recipients' => $subscriber_count
+				);
+				$send_process_update_num_recipients_where_clause_arr = array(
+					'post_id' => $post_id
+					,'notif_sent_dttm' => $notif_intiated_dttm
+					,'send_status' => 'I'
+				);
+				$this->update_post_notif_send_process_status( $send_process_update_num_recipients_arr, $send_process_update_num_recipients_where_clause_arr );
+
+    		}
+    					
+
 		}
 		else {
 			$last_subscriber_id_sent = -1;
 			$notif_intiated_dttm = -1;	
 		}
- 
+		
+		// Add batch size limit
+		$limit_clause = '';
+		$batch_mode = array_key_exists( 'enable_batch_send_options', $post_notif_options_arr );
+		if ( $batch_mode ) {		
+			
+			$batch_size = $post_notif_options_arr['batch_size'];
+			if ( is_numeric( $batch_size ) && ( is_int( $batch_size + 0 ) ) && ( $batch_size > 0 ) ) {
+				$limit_clause = 'LIMIT ' . $batch_size;
+			}
+			else {
+				$batch_size = 0;	
+			}
+			
+			$batch_pause = $post_notif_options_arr['batch_pause'];
+			if ( ! is_numeric( $batch_pause ) || ( ! is_int( $batch_pause + 0 ) ) || ( $batch_pause <= 0 ) ) {
+				$batch_pause = 0;	
+			}
+		}
+		
 		if ( -1 !== $last_subscriber_id_sent ) {
 			
 			// This must be non-NULL to avoid accidentally starting at the beginning of the subscriber list,
@@ -685,6 +647,7 @@ class Post_Notif_Admin {
 						$cat_id_clause
 					AND $post_notif_subscriber_tbl.id > $last_subscriber_id_sent
 					ORDER BY $post_notif_subscriber_tbl.id
+					$limit_clause
 				"
 			);
 		}
@@ -696,18 +659,6 @@ class Post_Notif_Admin {
    							
 		if ( count( $subscribers_arr ) > 0 ) {
  
-			// Store number of post notifs to send
-			$send_process_update_num_recipients_arr = array(
-				'num_recipients' => $post_notif_count_sent + count( $subscribers_arr )
-			);
-			$send_process_update_num_recipients_where_clause_arr = array(
-				'post_id' => $post_id
-				,'notif_sent_dttm' => $notif_intiated_dttm
-				,'send_status' => 'I'
-			);
-			$this->update_post_notif_send_process_status( $send_process_update_num_recipients_arr, $send_process_update_num_recipients_where_clause_arr );
-			
-  				 				   		   		
 			// Compose emails
 
 			// Resolve non-personalized email variables 
@@ -715,10 +666,19 @@ class Post_Notif_Admin {
 
 			// Generate generic subscriber URL base
 			$subscriber_url_template = Post_Notif_Misc::generate_subscriber_url_base();
-
+		
+			$curr_batch_post_notif_count_sent = 0;
+ 				
 			// Iterate through subscribers, tailoring links (change prefs, unsubscribe) to each subscriber
 			foreach ( $subscribers_arr as $subscriber ) {
-   				
+  				
+				if ( ! $this->post_notif_already_running( $post_id ) ) {
+
+					// Process has been paused or cancelled
+					return array( $post_notif_send_complete, $post_notif_count_sent, gmdate( "Y-m-d H:i:s" ) );
+				
+				}
+
 				$subscriber_url = $subscriber_url_template . '?email_addr=' . $subscriber->email_addr . '&authcode=' . $subscriber->authcode;
 				$prefs_url = str_replace( 'ACTION_PLACEHOLDER', 'manage_prefs', $subscriber_url );
 				$unsubscribe_url = str_replace( 'ACTION_PLACEHOLDER', 'unsubscribe', $subscriber_url );
@@ -741,34 +701,90 @@ class Post_Notif_Admin {
 				);
 				$this->update_post_notif_send_process_status( $send_process_update_columns_arr, $send_process_where_clause_arr );			
 			
-				if ( ! $this->post_notif_already_running( $post_id ) ) {
-
-					// Process has been paused or cancelled
-					return array( $post_notif_send_complete, $post_notif_count_sent, gmdate( "Y-m-d H:i:s" ) );
+				++$curr_batch_post_notif_count_sent;
 				
+				if ( $post_notif_count_sent == $subscriber_count ) {
+					
+					// Send process has completed
+		
+					// Store all sent datetimes in database as UTC
+					$notif_end_dttm = gmdate( "Y-m-d H:i:s" );
+ 					
+					$send_process_set_status_complete_arr = array(
+						'notif_end_dttm' => $notif_end_dttm
+						,'send_status' => 'C'
+					);
+					$send_process_set_status_complete_where_clause_arr = array(
+						'post_id' => $post_id
+						,'notif_sent_dttm' => $notif_intiated_dttm
+					);
+					$this->update_post_notif_send_process_status( $send_process_set_status_complete_arr, $send_process_set_status_complete_where_clause_arr ); 	
+		
+					$post_notif_send_complete = true;
+
+					return array( $post_notif_send_complete, $post_notif_count_sent, $notif_end_dttm );
 				}
+					
+				if ( $batch_mode ) {
+					
+					if ( ( $batch_size > 0 ) && ( 0 == $post_notif_count_sent % $batch_size ) ) {
+						
+						// Batch size hit
+					
+						if ( $batch_pause > 0 ) {
+					
+							// Batch pause is defined, schedule WP cron event to
+							//	resume process after specified pause + exit
+							$this->schedule_next_batch_after_pause( $post_id );
+							return;
+						}
+						else {
+						
+							// Batch pause is NOT defined, resume process
+							//	(via wp_remote_post() call) immediately + exit						
+							$this->trigger_immediate_resumption_of_send( $post_id );
+							return;
+						}
+					}
+					/*
+					else {	// batch size == 0 OR we've not hit batch size
+						// NOOP -> Keep going (drop through here to "out of time or memory test")!!
+					*/
+				}
+				
+				// NOTE: At this point we know we have NOT hit a batch size limit!
+
+				if ( ( $timeout_exists ) && ( time() >= $execution_upper_limit ) ) {
+					
+					// We ARE about to run out of time or memory
+					
+					if ( $batch_mode ) {
+						if ( ( 0 == $batch_size ) && ( $batch_pause > 0 ) ) {
+					
+							// If batch size is not defined but batch pause IS,
+							//	schedule WP cron event to resume process after specified pause + exit
+							$this->schedule_next_batch_after_pause( $post_id );
+							return;
+						}
+						/*
+						else {	// batch pause == 0
+							// NOOP -> Drop to resume process immediately + exit
+						}
+						*/
+					}
+					
+					// Resume process (via wp_remote_post() call) immediately + exit
+					$this->trigger_immediate_resumption_of_send( $post_id );
+					return;
+				}
+				/*
+				else {
+					// NOOP -> Keep going
+				}
+				*/
+			
 			}
 		}
- 		
-		// Send process has completed
-		
-		// Store all sent datetimes in database as UTC
-		$notif_end_dttm = gmdate( "Y-m-d H:i:s" );
- 					
-		$send_process_set_status_complete_arr = array(
-			'notif_end_dttm' => $notif_end_dttm
-			,'send_status' => 'C'
-		);
-		$send_process_set_status_complete_where_clause_arr = array(
-			'post_id' => $post_id
-			,'notif_sent_dttm' => $notif_intiated_dttm
-		);
-		$this->update_post_notif_send_process_status( $send_process_set_status_complete_arr, $send_process_set_status_complete_where_clause_arr ); 	
-		
-		$post_notif_send_complete = true;
-
-		return array( $post_notif_send_complete, $post_notif_count_sent, $notif_end_dttm );
-		
 	}
     
  	/**
@@ -873,14 +889,16 @@ class Post_Notif_Admin {
 			
 				// Scheduled post notif is scheduled for later than current datetime AND later than scheduled post publish!!			
 
-				// Create datetimes for display to user (local) and storage in DB (UTC) 
+				// Create datetimes for display to user (local) and storage in DB (UTC)
+				$local_current_datetime = date( 'Y-m-d H:i:s', $current_timestamp_utc );
 				$local_datetime = date( 'Y-m-d H:i:s', $timestamp_local );
 				$utc_datetime = date( 'Y-m-d H:i:s', $timestamp_utc );
 			
 				// Process is being scheduled, initialize process tracking
 				$create_new_send_process_arr = array(
 					'post_id' => $post_id
-					,'notif_sent_dttm' => $utc_datetime
+					,'notif_sent_dttm' => $local_current_datetime
+					,'notif_schedule_dttm' => $utc_datetime
 					,'sent_by' => get_current_user_id()
 					,'send_status' => 'S'
 					,'num_recipients' => 0
@@ -923,19 +941,15 @@ class Post_Notif_Admin {
 		if ( 'publish' == get_post_status( $post_id ) ) {
 			
 			// Only send post notifs if post is published!
-						
-			$trigger_dttm = $this->get_active_send_notif_key( $post_id );
 
 			// Process is actually starting		
 			$send_process_set_status_initiate_arr = array(
-				'send_status' => 'I'
+				'send_status' => "'I'"
 			);
-			$send_process_set_status_initiate_where_clause_arr = array(
-				'post_id' => $post_id
-				,'notif_sent_dttm' => $trigger_dttm
-				,'send_status' => 'S'
-			);
-			$this->update_post_notif_send_process_status( $send_process_set_status_initiate_arr, $send_process_set_status_initiate_where_clause_arr ); 	
+			$send_process_set_status_initiate_where_clause = 
+				"post_id = " . $post_id
+				. " AND send_status IN ('B','S')";
+			$this->update_post_notif_send_process_status_flexible( $send_process_set_status_initiate_arr, $send_process_set_status_initiate_where_clause );
 
 			$this->process_post_notif_send( $post_id );			
 		}
@@ -960,6 +974,9 @@ class Post_Notif_Admin {
 				'post_id' => $insert_column_arr['post_id']
 				,'notif_sent_dttm' => $insert_column_arr['notif_sent_dttm']
 				,'sent_by' => $insert_column_arr['sent_by']
+				,'notif_schedule_dttm' => array_key_exists( 'notif_schedule_dttm', $insert_column_arr ) 
+					? $insert_column_arr['notif_schedule_dttm'] 
+					: null
 				,'send_status' => $insert_column_arr['send_status']
 				,'num_recipients' => $insert_column_arr['num_recipients']
 				,'scheduled' => $insert_column_arr['scheduled']
@@ -1011,6 +1028,45 @@ class Post_Notif_Admin {
 	}
 
 	/**
+	 * Update post notification send process row. [Required to handle ORs in WHERE clause!]
+	 *
+	 * @since	1.2.0
+	 * @access	private
+	 * @param	array	$columns_to_update_arr	Set of values mapped to columns, in table, to update.
+	 * @param	array	[$where_clause_columns_arr	Set of values mapped to columns, in table, for use in SQL WHERE clause.]
+	 * @return	int		Number of rows updated.
+	 */	
+	private function update_post_notif_send_process_status_flexible( $columns_to_update_arr, $where_clause ) {
+		
+		global $wpdb;
+	  
+		$set_columns_clause = '';
+		
+		foreach ( $columns_to_update_arr as $column_key => $column_value ) {
+			$set_columns_clause .= $column_key . ' = ' . $column_value . ', ';
+		}
+		
+		if ( ! empty( $set_columns_clause ) ) {
+			$set_columns_clause = substr( $set_columns_clause, 0, -2 );
+		}
+		
+		$num_rows_updated = $wpdb->query( 
+    			"
+    				UPDATE " . $wpdb->prefix.'post_notif_post'
+    				. " SET " . $set_columns_clause
+    				. " WHERE " . $where_clause
+ 		);			
+		
+		if ( $num_rows_updated ) {
+			return $num_rows_updated;
+		}
+		else {
+			return 0;
+		}
+		
+	}
+
+	/**
 	 * Get active post notification send process row's notif_sent_dttm column value for specified post.
 	 *
 	 * @since	1.2.0
@@ -1028,7 +1084,7 @@ class Post_Notif_Admin {
     				SELECT notif_sent_dttm
     				FROM " . $wpdb->prefix.'post_notif_post'
     				. " WHERE post_id = %d
-    				AND send_status IN ('I','P','S')
+    				AND send_status IN ('B','I','P','S')
     			"
     			, $post_id
     		)
@@ -1061,9 +1117,9 @@ class Post_Notif_Admin {
    						,last_subscriber_id_sent
    					FROM " . $wpdb->prefix.'post_notif_post'
    					. " WHERE post_id = %d
-   					AND send_status IN ('I','P','S')
-   				"
-   				,$post_id
+    				AND send_status IN ('B','I','P','S')
+    			"
+    			, $post_id
    			)
    			,ARRAY_A
    		);
@@ -1104,7 +1160,7 @@ class Post_Notif_Admin {
 		return $post_notif_process_details;
 
 	}
-
+	
 	/**
 	 * Schedule WP cron event to immediately send post notifications for specified post.
 	 *
@@ -1126,6 +1182,8 @@ class Post_Notif_Admin {
 		// Schedule past due event (using start dttm from "Send Now" initiation) so that WP cron picks up immediately!
 		wp_schedule_single_event( $timestamp_utc, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
 		
+		spawn_cron( time() );
+		
 	}
 
 	/**
@@ -1143,6 +1201,89 @@ class Post_Notif_Admin {
 			// Cancel future scheduled send for this post
 			wp_unschedule_event( $notif_scheduled_for_dttm, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
 		}
+		
+	}
+
+	/**
+	 * Use wp_remote_post to avoid PHP script timeout while processing subscriber set.
+	 *
+	 * @since	1.2.0
+	 * @access	private
+	 * @param	int		$post_id	Post to trigger resumption of post notification for.
+	 */
+ 	private function trigger_immediate_resumption_of_send( $post_id ) {
+	
+		$query_args = array(
+			'action' => 'resume_post_notif_send'
+			,'nonce' => wp_create_nonce( 'post_notif_resume_immediately' )
+		);		
+		$url = add_query_arg( $query_args, admin_url( 'admin-ajax.php' ) );
+		
+		$post_args = array(
+			'timeout' => 0.01
+			,'blocking' => false
+			,'body' => array(
+				'post_id' => $post_id
+			)
+			,'cookies' => $_COOKIE
+			,'sslverify' => apply_filters( 'https_local_ssl_verify', false )
+		);
+		wp_remote_post( esc_url_raw( $url ), $post_args );
+
+	}
+	
+	/**
+	 * Execute resumption of post notification send process for post specified by AJAX.
+	 *
+	 * @since	1.2.0
+	 */	
+ 	public function execute_immediate_resumption_of_send() {
+	
+		session_write_close();
+
+		check_ajax_referer( 'post_notif_resume_immediately', 'nonce' );
+
+		$this->process_post_notif_send( $_POST['post_id'] );
+
+		wp_die();
+		
+	}
+
+	/**
+	 * Schedule resumption of post notification send, for specified post, following specified pause duration.
+	 *
+	 * @since	1.2.0
+	 * @access	private
+	 * @param	int		$post_id	Post to schedule next batch for.
+	 */
+	private function schedule_next_batch_after_pause( $post_id ) {
+		
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
+		
+		$batch_pause_mins = $post_notif_options_arr['batch_pause'];
+		if ( ! is_numeric( $batch_pause_mins ) || ( ! is_int( $batch_pause_mins + 0 ) ) || ( $batch_pause_mins <= 0 ) ) {
+			$batch_pause_mins = 0;	
+		}
+		$batch_pause_secs = $batch_pause_mins * MINUTE_IN_SECONDS;
+
+		// Apply batch pause to current timestamp
+		$timestamp_utc = time() + $batch_pause_secs;
+						
+		// Update status on post_notif_post table row
+		$send_process_update_columns_arr = array(
+			'send_status' => 'B'
+			,'notif_schedule_dttm' => date( 'Y-m-d H:i:s', $timestamp_utc )
+		);
+		$send_process_where_clause_arr = array(
+			'post_id' => $post_id
+			,'send_status' => 'I'
+		);
+		$this->update_post_notif_send_process_status( $send_process_update_columns_arr, $send_process_where_clause_arr );
+
+		$this->unschedule_future_post_notif_send( $post_id );
+		
+		// Schedule resumption of send process following admin-configured batch pause
+		wp_schedule_single_event( $timestamp_utc, 'post_notif_send_scheduled_post_notif', array( $post_id ) );
 		
 	}
 	
@@ -2873,7 +3014,7 @@ class Post_Notif_Admin {
  					}					  
  				}
  			}
-		
+	
  			// prepare() needs to handle any number of subscribers
  			$id_clause_string = rtrim( str_repeat( '%d,', count( $subscriber_arr ) ), ',' );
 
@@ -2893,7 +3034,7 @@ class Post_Notif_Admin {
    				)
    				,ARRAY_A
    			);
-   		
+
    			// Remove submitted action from URL
    			$new_url = esc_url_raw( remove_query_arg( array ( 'action' ), $_SERVER['REQUEST_URI'] ) );
    		
@@ -3389,7 +3530,8 @@ class Post_Notif_Admin {
 				
 		// Define possible status descrs
 		$send_status_descr_arr = array(
-			'C' => __( 'Send completed', 'post-notif' )				// Send (C)ompleted successfully
+			'B' => __( 'Batch paused', 'post-notif' )				// (B)atch paused 	
+			,'C' => __( 'Send completed', 'post-notif' )			// Send (C)ompleted successfully
 			,'I' => __( 'In process', 'post-notif' )				// (I)n process
   			,'P' => __( 'Paused', 'post-notif' )					// (P)aused
   			,'S' => __( 'Scheduled', 'post-notif' )					// (S)cheduled
@@ -3414,24 +3556,18 @@ class Post_Notif_Admin {
 					  
 				// Cancel needs to be processed
 				
-				if ( $active_send_notif_row_arr = $this->get_active_send_notif_row( $affected_notification ) ) {
-					if ( ( 'P' == $active_send_notif_row_arr['send_status'] ) || ( 'S' == $active_send_notif_row_arr['send_status'] ) ) {
-						
-						// Update status on post_notif_post table row
-						$send_process_update_columns_arr = array(
-							'notif_end_dttm' => gmdate( "Y-m-d H:i:s" )
-							,'send_status' => 'X'
-						);
-						$send_process_where_clause_arr = array(
-							'post_id' => $affected_notification
-							,'notif_sent_dttm' => $active_send_notif_row_arr['notif_sent_dttm']
-						);
-						$this->update_post_notif_send_process_status( $send_process_update_columns_arr, $send_process_where_clause_arr );
+				// Update status on post_notif_post table row
+				$send_process_update_columns_arr = array(
+					'notif_end_dttm' => "'". gmdate( "Y-m-d H:i:s" ) . "'"
+					,'send_status' => "'X'"
+				);
+				$send_process_where_clause = 
+					"post_id = " . $affected_notification
+					. " AND send_status IN ('B','P','S')";
+				$this->update_post_notif_send_process_status_flexible( $send_process_update_columns_arr, $send_process_where_clause );
 				
-						// Unschedule from WP cron
-						$this->unschedule_future_post_notif_send( $affected_notification );
-					}
-				}
+				// Unschedule from WP cron
+				$this->unschedule_future_post_notif_send( $affected_notification );
 				
 				break;
  			case 'pause':	  
@@ -3452,20 +3588,18 @@ class Post_Notif_Admin {
 			case 'resume':
 					  
 				// Resume needs to be processed
-				
+
 				// Update status on post_notif_post table row to use WP cron to finish
 				$send_process_update_columns_arr = array(
-					'send_status' => 'S'
+					'send_status' => "'S'"
 				);
-				$send_process_where_clause_arr = array(
-					'post_id' => $affected_notification
-					,'send_status' => 'P'
-				);
+				$send_process_where_clause = 
+					"post_id = " . $affected_notification
+					. " AND send_status IN ('B','P')";
+				$this->update_post_notif_send_process_status_flexible( $send_process_update_columns_arr, $send_process_where_clause );
 				
-				$this->update_post_notif_send_process_status( $send_process_update_columns_arr, $send_process_where_clause_arr );
-				
+				// Restart IMMEDIATELY via WP cron
 				$this->schedule_immediate_resumption_of_send( $affected_notification );
-				spawn_cron( time() );
 			
 				break;
 		}
@@ -3492,7 +3626,8 @@ class Post_Notif_Admin {
 					,'single_conditional' => array(
 						'conditional_field' => 'send_status'
 						,'field_values' => array(
-							'P'
+							'B'
+							,'P'
 						)
 					)
 					,'bulk_ok' => false
@@ -3503,7 +3638,8 @@ class Post_Notif_Admin {
 					,'single_conditional' => array(
 						'conditional_field' => 'send_status'
 						,'field_values' => array(
-							'P'
+							'B'
+							,'P'
 							,'S'
 						)
 					)
@@ -3518,7 +3654,9 @@ class Post_Notif_Admin {
     		'post_id' => __( 'Post ID', 'post-notif' )
     		,'post_title' => __( 'Post Title', 'post-notif' )
     		,'author' => __( 'Author', 'post-notif' )
-    		,'notif_sent_dttm' => __( 'Send Date/Time', 'post-notif' )
+    		,'notif_sent_dttm' => __( 'Start Date/Time', 'post-notif' )
+    		,'notif_schedule_dttm' => __( 'Schedule Date/Time', 'post-notif' )
+    		,'notif_end_dttm' => __( 'End Date/Time', 'post-notif' )
     		,'sent_by_login' => __( 'Sender', 'post-notif' )
     		,'send_status_descr' => __( 'Status', 'post-notif' )
     		,'x_notifs_sent_to_y_subs' => __( 'Number of Notifs Sent', 'post-notif' )
@@ -3532,6 +3670,14 @@ class Post_Notif_Admin {
     		)
     		,'notif_sent_dttm' => array(
     			'notif_sent_dttm'
+    			,false
+    		)
+    		,'notif_schedule_dttm' => array(
+    			'notif_schedule_dttm'
+    			,false
+    		)
+    		,'notif_end_dttm' => array(
+    			'notif_end_dttm'
     			,false
     		)
     		,'send_status_descr' => array(
@@ -3578,20 +3724,21 @@ class Post_Notif_Admin {
 		// If sent_by == 0 this means it was run by a scheduled event
 		$sent_by_cron_msg = __( "System (scheduled)", 'post-notif' );
 
-		// Get post notifs sent (and attempted)
+		// Get post notifs sent(, initiated, scheduled, cancelled, paused)
 		$post_notifs_sent_arr = $wpdb->get_results(
 			"
    				SELECT post_id AS id
    					,post_id
    					,notif_sent_dttm 
-   					,notif_end_dttm
    					,sent_by
     				,IF (user_login IS NOT NULL
     					,CONCAT(user_login, ' (' , IF (scheduled = 1, 'scheduled', 'manual'), ')' )
  	  					,IF (sent_by = 0, CONCAT('" . $sent_by_cron_msg . "', '')
    							,CONCAT('" . $user_login_not_found_msg . "', sent_by) 
    						)
-    				) AS sent_by_login   				
+    				) AS sent_by_login
+    				,notif_schedule_dttm
+   					,notif_end_dttm
     				,send_status
     				,send_status AS send_status_descr
     				,IF (num_recipients = -1, 'N/A'
@@ -3614,13 +3761,19 @@ class Post_Notif_Admin {
     		$post_author_data = get_userdata( $post_object->post_author );
     		$post_notifs_sent_arr[ $notif_key ]['author'] = $post_author_data->user_login;
     		
-    		// If process is completed or cancelled, use the process end dttm instead of the process start dttm
-    		if ( ( 'C' == $post_notifs_sent_arr[ $notif_key ]['send_status'] ) || ( 'X' == $post_notifs_sent_arr[ $notif_key ]['send_status'] ) ) {
-    			$post_notifs_sent_arr[ $notif_key ]['notif_sent_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_end_dttm'] );
+   			$post_notifs_sent_arr[ $notif_key ]['notif_sent_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_sent_dttm'] );
+    		if ( $post_notifs_sent_arr[ $notif_key ]['notif_schedule_dttm'] ) {
+    			$post_notifs_sent_arr[ $notif_key ]['notif_schedule_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_schedule_dttm'] );
     		}
     		else {
-    			$post_notifs_sent_arr[ $notif_key ]['notif_sent_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_sent_dttm'] );
+    			$post_notifs_sent_arr[ $notif_key ]['notif_schedule_dttm'] = __( 'N/A', 'post-notif' );
     		}
+     		if ( $post_notifs_sent_arr[ $notif_key ]['notif_end_dttm'] ) {
+     			$post_notifs_sent_arr[ $notif_key ]['notif_end_dttm'] = Post_Notif_Misc::UTC_to_local_datetime( $notif_val['notif_end_dttm'] );
+     		}
+     		else {
+    			$post_notifs_sent_arr[ $notif_key ]['notif_end_dttm'] = __( 'N/A', 'post-notif' );
+     		}
     		
   			// Map send_status to descriptive words/phrases
   			$post_notifs_sent_arr[ $notif_key ]['send_status_descr'] = $send_status_descr_arr[ $notif_val['send_status'] ];    		
@@ -3714,5 +3867,5 @@ class Post_Notif_Admin {
 		return $subscribers_deleted;
 		
 	}
-	
+
 }

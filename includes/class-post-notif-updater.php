@@ -115,6 +115,8 @@ class Post_Notif_Updater {
 			,'widget_failure_message' => 'Thanks for subscribing.'
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
 			,'available_categories' => array( '0' )
+			,'batch_size' => '150'
+			,'batch_pause' => '60'
 			,'admin_menu_position' => '3.389'
 		);
 		// Cleanly future-proof the addition of settings by
@@ -367,6 +369,7 @@ class Post_Notif_Updater {
 			post_id bigint(20) UNSIGNED NOT NULL,
 			notif_sent_dttm datetime NOT NULL,
 			sent_by bigint(20) UNSIGNED NOT NULL,
+			notif_schedule_dttm datetime,
 			notif_end_dttm datetime,
 			send_status char(1) NOT NULL DEFAULT 'C',
 			num_recipients mediumint(9) NOT NULL DEFAULT -1,
