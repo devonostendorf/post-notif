@@ -841,7 +841,7 @@ class Post_Notif_Admin {
 		// Specify HTML-formatted email
 		$headers[] = 'Content-Type: text/html; charset=UTF-8';
 
-		return (array ( $headers, $post_notif_email_subject, $post_notif_email_body_template ) );
+		return array ( $headers, $post_notif_email_subject, $post_notif_email_body_template );
 		
 	}
 	

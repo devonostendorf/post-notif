@@ -5,7 +5,7 @@
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.8  
 **Requires PHP:** 5.6   
-**Stable tag:** 1.2.0-2 BETA   
+**Stable tag:** 1.2.0-3 BETA   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -201,7 +201,11 @@ If your web host throttles the number of emails you can send during a period of 
 
 ### I have 10,000 subscribers - is this a good plugin for me to use to notify them? ###
 
-Post Notif is probably not a good fit for your needs (at least at this point in time).  Look into using a plugin that works in conjunction with a service like AWeber or MailChimp.
+Post Notif is probably not a good fit for your needs.  Look into using a plugin that works in conjunction with a service like AWeber or MailChimp.
+
+### I deactivated Post Notif and when I re-activated it my scheduled notifications show as cancelled; what gives? ###
+
+When you deactivate Post Notif, all future WordPress Cron events, scheduled by the plugin, are deleted (the assumption being that you don't want an inactive plugin to do anything!).  This means that if you re-activate the plugin, any notifications that had been scheduled (or paused, by a batch process), will not initiate(/resume).  Therefore, to convey an accurate status of all of your notifications, when you deactivate the plugin, the notifications dependent on future scheduled WordPress Cron events are updated to "Cancelled" status.
 
 ### Why isn't Post Notif translated into my language? ###
 

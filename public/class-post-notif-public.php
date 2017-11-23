@@ -132,8 +132,6 @@ class Post_Notif_Public {
 	 */	
 	public function url_controller() {
 		  
-		global $wp_query;
-			  
 		// Handle post notif URLs
 
 		if ( $this->detect_subscription_confirmation_url() ) {
