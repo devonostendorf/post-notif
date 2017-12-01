@@ -356,9 +356,9 @@ class Post_Notif_Admin {
 			$already_scheduled = false;
 			$process_running = false;
 			$status_message = '';
-			$manage_post_notifs_sent_url = '<a href="' . admin_url( 'admin.php?page=post-notif-manage-posts-sent' ) . '">Post Notif >> Manage Post Notifs Sent</a>';
+			$manage_post_notifs_sent_url = '<a href="' . admin_url( 'admin.php?page=post-notif-manage-posts-sent' ) . '">' . __( 'Post Notif >> Manage Post Notifs Sent', 'post-notif' ) . '</a>';
 			$maintain_notifs_sent_info_message = sprintf(
-				/* translators: %s: URL of Manage Post Notifs Sent page */
+				/* translators: %s will be clickable link, with literal label of 'Post Notif >> Manage Post Notifs Sent' */
 				__( 'Go to: %s to check the status of, pause, or cancel, post notification processes (both running and scheduled).', 'post-notif' ),
 				$manage_post_notifs_sent_url
 			);
@@ -3723,6 +3723,15 @@ class Post_Notif_Admin {
    			
 		// If sent_by == 0 this means it was run by a scheduled event
 		$sent_by_cron_msg = __( "System (scheduled)", 'post-notif' );
+								
+		/* translators: used in the Sender column, on the Manage Post Notifs Sent page, next to the user's name: i.e., "Devon (scheduled)" */
+		$scheduled_text = __( "scheduled", 'post-notif' );
+		/* translators: used in the Sender column, on the Manage Post Notifs Sent page, next to the user's name: i.e., "Devon (manual)" */
+		$manual_text = __( "manual", 'post-notif' );
+		/* translators: "Not Applicable" */
+		$not_applicable_text = __( "N/A", 'post-notif' );
+		/* translators: used in the Number of Notifs Sent column, on the Manage Post Notifs Sent page, between number of notifs sent and number of total subs: i.e., "3 of 1500" */
+		$of_text = __( "of", 'post-notif' );
 
 		// Get post notifs sent(, initiated, scheduled, cancelled, paused)
 		$post_notifs_sent_arr = $wpdb->get_results(
@@ -3732,7 +3741,7 @@ class Post_Notif_Admin {
    					,notif_sent_dttm 
    					,sent_by
     				,IF (user_login IS NOT NULL
-    					,CONCAT(user_login, ' (' , IF (scheduled = 1, 'scheduled', 'manual'), ')' )
+    					,CONCAT(user_login, ' (' , IF (scheduled = 1, '" . $scheduled_text . "', '" . $manual_text . "'), ')' )
  	  					,IF (sent_by = 0, CONCAT('" . $sent_by_cron_msg . "', '')
    							,CONCAT('" . $user_login_not_found_msg . "', sent_by) 
    						)
@@ -3741,8 +3750,8 @@ class Post_Notif_Admin {
    					,notif_end_dttm
     				,send_status
     				,send_status AS send_status_descr
-    				,IF (num_recipients = -1, 'N/A'
-    				, CONCAT(num_notifs_sent, ' of ', num_recipients)
+    				,IF (num_recipients = -1, '" . $not_applicable_text . "'
+    				, CONCAT(num_notifs_sent, ' " . $of_text . " ', num_recipients)
     				) AS x_notifs_sent_to_y_subs
    					,scheduled
     			FROM $post_notif_post_tbl   			

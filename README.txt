@@ -3,9 +3,9 @@ Contributors: DevonOstendorf
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6M98ZTPSAKPGU
 Tags: post, notif, notification, email, subscribe
 Requires at least: 4.1.1
-Tested up to: 4.8
+Tested up to: 4.9
 Requires PHP: 5.6
-Stable tag: 1.1.5
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -465,6 +465,15 @@ You can later turn category functionality back on by doing the reverse of these 
 
 == Changelog ==
 
+= 1.2.0 =
+Release Date: November 30, 2017
+
+* NEW: Added new page to check the status of, pause, or cancel, post notif send processes
+* NEW: Added post notif send process batch mode options
+* CHANGED: Bolstered post notif send process (to avoid PHP timeouts) 
+* REMOVED: Removed progress indicators from Post Notif metabox
+* FIXED: Fixed code to unschedule all WordPress Cron events for future (scheduled and batch-paused) post notifs upon plugin deactivation
+
 = 1.1.5 =
 Release Date: September 13, 2017
 
@@ -584,6 +593,9 @@ Release Date: April 8, 2015
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Added new page to check status of, pause, or cancel, post notif send processes.  Added send process batch mode options.  Bolstered post notif send process (to avoid PHP timeouts).  Removed progress bar from metabox.  Fixed code to unschedule all Post Notif WP Cron events on plugin deactivation.
 
 = 1.1.5 =
 Prevented duplicate notifs when a post has multiple categories.  Fixed sub import from file failure on "invalid" cats.  Fixed issue w/email addrs containing "+" breaking personalized URLs.  Added new config settings to widget admin.  Removed Czech and Dutch lang files (moved to language packs).
