@@ -73,8 +73,340 @@ class Post_Notif_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/post-notif-public.min.js', array( 'jquery' ), $this->version, false );
-
+		
 	}
+
+	
+	// Functions related to subscriber form shortcode
+
+	/**
+	 * Register shortcode to render subscriber form and hook in AJAX handler for
+	 *	both logged in users and unknown visitors.
+	 *
+	 * @since	1.3.0
+	 */
+   	public function register_shortcode() {
+   		
+   		add_shortcode( 'post_notif_subscribe', array( $this, 'render_subscriber_form' ) );
+ 		add_action( 'wp_ajax_post_notif_subscriber_form', array( $this, 'subscriber_form_ajax_handler' ) );
+		add_action( 'wp_ajax_nopriv_post_notif_subscriber_form', array( $this, 'subscriber_form_ajax_handler' ) );
+  		
+   	}
+
+	/**
+	 * Render subscriber form.
+	 *
+	 * @since	1.3.0
+	 * @param	array	$atts	An associative array of attributes, or an empty string if no attributes are given.
+	 * @param	string	$content	The enclosed content (if the shortcode is used in its enclosing form).
+	 * @return	string	The HTML to render subscriber form.
+	 */
+   	public function render_subscriber_form( $atts, $content = null ) {
+   		
+   		if ( ( is_singular() ) || 
+   			( ( array_key_exists( 'is_widget', $atts ) ) && ( 'yes' == $atts['is_widget'] ) ) ) {
+   		
+   			// Only render subscriber form if this is a singular post or page OR if this is a widget call
+   		
+   			$post_notif_options_arr = get_option( 'post_notif_settings' );
+
+   			$clean_atts = shortcode_atts(
+   				array(
+   					'is_widget' => 'no'
+   					,'title' => $post_notif_options_arr['shortcode_title']
+   					,'id' => '1'
+   					,'call_to_action' => $post_notif_options_arr['shortcode_call_to_action']
+   					,'button_label' => $post_notif_options_arr['shortcode_button_label']
+   					,'first_name_field_size' => $post_notif_options_arr['shortcode_first_name_field_size']
+   					,'first_name_placeholder' => $post_notif_options_arr['shortcode_first_name_placeholder']
+   					,'email_addr_field_size' => $post_notif_options_arr['shortcode_email_addr_field_size']
+   					,'email_addr_placeholder' => $post_notif_options_arr['shortcode_email_addr_placeholder']
+   					,'require_first_name' => array_key_exists( 'shortcode_require_first_name', $post_notif_options_arr ) ? 'yes' : 'no'				
+   					,'override_theme_css' => array_key_exists( 'shortcode_override_theme_css', $post_notif_options_arr ) ? 'yes' : 'no'
+   					,'stylesheet_filename' => $post_notif_options_arr['shortcode_stylesheet_filename']
+   					,'call_to_action_font_family' => $post_notif_options_arr['shortcode_call_to_action_font_family']
+   					,'call_to_action_font_size' => $post_notif_options_arr['shortcode_call_to_action_font_size']
+   					,'call_to_action_font_color' => $post_notif_options_arr['shortcode_call_to_action_font_color']
+   					,'placeholder_font_family' => $post_notif_options_arr['shortcode_placeholder_font_family']
+   					,'placeholder_font_size' => $post_notif_options_arr['shortcode_placeholder_font_size']
+   					,'placeholder_font_color' => $post_notif_options_arr['shortcode_placeholder_font_color']
+   					,'input_fields_font_family' => $post_notif_options_arr['shortcode_input_fields_font_family']
+   					,'input_fields_font_size' => $post_notif_options_arr['shortcode_input_fields_font_size']
+   					,'input_fields_font_color' => $post_notif_options_arr['shortcode_input_fields_font_color']
+   					,'error_font_family' => $post_notif_options_arr['shortcode_error_font_family']
+   					,'error_font_size' => $post_notif_options_arr['shortcode_error_font_size']
+   					,'error_font_color' => $post_notif_options_arr['shortcode_error_font_color']
+   					,'message_font_family' => $post_notif_options_arr['shortcode_message_font_family']
+   					,'message_font_size' => $post_notif_options_arr['shortcode_message_font_size']
+   					,'message_font_color' => $post_notif_options_arr['shortcode_message_font_color']
+   					,'error_reqd_first_name_blank' => $post_notif_options_arr['shortcode_error_reqd_first_name_blank']
+   					,'error_email_addr_blank' => $post_notif_options_arr['shortcode_error_email_addr_blank']
+   					,'error_email_addr_invalid' => $post_notif_options_arr['shortcode_error_email_addr_invalid']
+   					,'info_message_processing' => $post_notif_options_arr['shortcode_info_message_processing']
+   					,'info_message_already_subscribed' => $post_notif_options_arr['shortcode_info_message_already_subscribed']
+   					,'failure_message' => $post_notif_options_arr['shortcode_failure_message']
+   					,'success_message' => $post_notif_options_arr['shortcode_success_message']
+   				)
+   				,$atts
+   				,'post_notif_subscribe'
+   			);
+
+   			// Set up AJAX to create a new subscriber
+   			wp_enqueue_script( $this->plugin_name.'-shortcode', plugin_dir_url( __FILE__ ) . 'js/post-notif-public-subscriber-form.js', array( 'jquery' ), $this->version, true );
+   			$this->localize_subscriber_form_handler_script( $clean_atts );
+   			
+   			// Deal with CSS overrides
+   			if ( 'yes' == $clean_atts['override_theme_css'] ) {
+   				if ( ! empty( $clean_atts['stylesheet_filename'] )) {
+			
+   					// Must be in ../post-notif/public/css
+   					if ( file_exists( plugin_dir_path( __FILE__ ) . 'css/' . $clean_atts['stylesheet_filename'] ) ) {
+				
+   						// Enqueue CSS stylesheet as specified by shortcode user
+   						wp_enqueue_style( $this->plugin_name.'-shortcode-' . $clean_atts['id'], plugin_dir_url( __FILE__ ) . 'css/' . $clean_atts['stylesheet_filename'], array(), $this->version, 'all' );
+   					}
+   				}
+   				else {
+		
+   					// Define all configurable styling
+   					$this->override_theme_css( $clean_atts );
+   				}
+   			}
+   		
+   			$post_notif_subscriber_form = '';
+   			ob_start();
+   			include( plugin_dir_path( __FILE__ ) . 'views/post-notif-public-subscriber-form.php' );
+   			$post_notif_subscriber_form .= ob_get_clean();
+  		
+   			return $post_notif_subscriber_form;
+   			
+  		}
+   	}
+
+	/**
+	 * Localize AJAX script that fires when submit button (in subscriber form) is pressed.
+	 *
+	 * @since	1.3.0
+	 * @param	array	$atts	An associative array of attributes, or an empty string if no attributes are given.
+	 */
+   	public function localize_subscriber_form_handler_script( $atts ) {
+   		
+		// Store form attributes (so unique messages are accessible to AJAX handler) in options
+		update_option( 'post_notif_shortcode_atts_' . $atts['id'], $atts );
+		
+		// Store list of attribute sets stored in options (so they can be deleted on plugin deactivation)
+		$shortcode_atts_set_names_arr = get_option( 'post_notif_shortcode_atts_set_names', array() );
+		$shortcode_atts_set_names_arr[] = 'post_notif_shortcode_atts_' . $atts['id'];
+		update_option( 'post_notif_shortcode_atts_set_names', $shortcode_atts_set_names_arr );
+		
+		$post_notif_nonce = wp_create_nonce( 'post_notif_subscriber_form' );
+		wp_localize_script( 
+			$this->plugin_name . '-shortcode'
+			,'post_notif_subscriber_form_ajax_obj'
+			,array(
+				'ajax_url' => admin_url( 'admin-ajax.php' )
+				,'nonce'    => $post_notif_nonce
+				,'processing_msg' => $atts['info_message_processing']
+			)
+		);
+   		
+   	}
+ 
+	/**
+	 * Handle AJAX event sent when submit button (in subscriber form) is pressed.
+	 *
+	 * @since	1.3.0
+	 */
+   	public function subscriber_form_ajax_handler() {
+   		
+		// Confirm matching nonce
+		check_ajax_referer( 'post_notif_subscriber_form' );
+ 
+		// Get user's first name and email address from submitted form
+		$first_name = substr( trim( $_POST['form_data']['first_name'] ), 0, 50 );
+		$email_addr = substr( trim( $_POST['form_data']['email_addr'] ), 0, 100 );
+		$form_id = trim( $_POST['form_id'] );
+		
+		// Get stored attributes, for this id, from options table
+		$atts = get_option( 'post_notif_shortcode_atts_' . $form_id, null );
+		
+		$error = '';
+
+		if ( 'yes' == $atts['require_first_name'] ) {				
+			// Confirm that first name is not blank
+			if ( '' == $first_name ) {
+				$error = $atts['error_reqd_first_name_blank'] . ' ';
+			}
+		}
+		
+		// Confirm that email addr is valid
+		if ( '' == $email_addr ) {
+			$error .= $atts['error_email_addr_blank'];
+		} 
+		elseif ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i', $email_addr ) ) {
+			$error .= $atts['error_email_addr_invalid'];
+		} 
+   
+		if ( empty( $error ) ) {
+      
+			// Generate authcode			
+			$authcode = Post_Notif_Misc::generate_authcode();
+
+			global $wpdb;
+			
+			// Insert subscriber into table
+			
+			// See if subscriber is already in table
+			$subscriber_exists = $wpdb->get_var( 
+				$wpdb->prepare(
+					"SELECT COUNT(id) FROM " . $wpdb->prefix.'post_notif_subscriber' . " WHERE email_addr = %s"
+					,$email_addr
+				)		
+			);
+			if ( $subscriber_exists ) {
+					  
+				// Subscriber DOES already exist
+				wp_send_json( array( 'success' => true, 'message' => $atts['info_message_already_subscribed'] ) );					  
+			}
+			else {
+				
+				// Subscriber is new
+				$first_name = ( $first_name != '') ? $first_name : __( '[Unknown]', 'post-notif' );
+				$subscriber_inserted = $wpdb->insert( 
+					$wpdb->prefix.'post_notif_subscriber' 
+					,array( 
+						'id' => ''
+						,'email_addr' => $email_addr
+						,'first_name' => $first_name
+						,'confirmed' => 0 
+						,'last_modified' => gmdate( "Y-m-d H:i:s" )
+						,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
+						,'authcode' => $authcode
+						,'to_delete' => 0
+						,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
+					) 
+				);
+    
+				$subscriber_arr = array(
+					'email_addr' => $email_addr
+					,'first_name' => $first_name
+					,'authcode' => $authcode
+				);
+
+				if ( $subscriber_inserted ) {
+					
+					// Send confirmation email
+					Post_Notif_Misc::send_confirmation_email( $subscriber_arr );
+					wp_send_json( array( 'success' => true, 'message' => $atts['success_message'] ) );
+				}
+				else {
+				
+					// Subscriber creation failed
+					
+					// Send admin email
+					Post_Notif_Misc::send_admin_failed_subscriber_creation_email( $subscriber_arr );
+					wp_send_json( array( 'success' => true, 'message' => $atts['failure_message'] ) );					
+				}
+			}
+		}
+		else {
+				  
+			// Error in form validation
+			wp_send_json( array( 'success' => false, 'message' => $error ) );
+		}
+		
+		// All ajax handlers should die when finished
+    	wp_die(); 
+    	
+    }
+    
+	/**
+	 * Register the (blank) stylesheet and attach admin-configured overrides for
+	 * the shortcode, if necessary.
+	 *
+	 * @since	1.3.0
+	 * @access	private
+	 * @param	array	$atts	An associative array of attributes, or an empty string if no attributes are given.
+	 */
+	private function override_theme_css( $atts ) {
+
+		// Define formatting variables
+		$selector_indent = "\t\t\t";
+		$property_indent = "\t\t\t\t";
+		$newline = PHP_EOL;
+		
+		// NOTE: This is a blank stylesheet, merely used as an attachment point for wp_add_inline_style()
+		wp_enqueue_style( $this->plugin_name . '-shortcode-' . $atts['id'], plugin_dir_url( __FILE__ ) . 'css/post-notif-public-subscriber-form.css', array(), $this->version, 'all' );
+								
+		// Define all configurable styling
+		
+		$settings_arr = array(
+			array( 
+				'name' => 'call_to_action'
+				,'selector' => $selector_indent . '#id_pn_lbl_call_to_action_' . $atts['id'] . ' {' . $newline
+			)
+			,array(
+				'name' => 'placeholder'
+				,'selector' => $selector_indent . '#id_pn_txt_first_name_' . $atts['id'] . '::placeholder,' . $newline . $selector_indent . '#id_pn_eml_email_addr_' . $atts['id'] . '::placeholder {' . $newline
+			)
+			,array(
+				'name' => 'input_fields'
+				,'selector' => $selector_indent . '#id_pn_txt_first_name_' . $atts['id'] . ',' . $newline . $selector_indent . '#id_pn_eml_email_addr_' . $atts['id'] . ' {' . $newline
+			)
+			,array(
+				'name' => 'error'
+				,'selector' => $selector_indent . '#id_pn_spn_error_msg_' . $atts['id'] . ' {' . $newline
+			)
+			,array(
+				'name' => 'message'
+				,'selector' => $selector_indent . '#id_pn_spn_success_msg_' . $atts['id'] . ' {' . $newline
+			)
+		);
+		
+		$properties_arr = array(
+			'properties' => array(
+				'font-family'
+				,'font-size'
+				,'color'
+			)
+			,'setting_types' => array(
+				'font_family'
+				,'font_size'
+				,'font_color'
+			)
+		);
+			
+		$ruleset_arr = array();
+
+		// Iterate through settings
+		foreach ( $settings_arr as $current_setting_arr ) {
+			$ruleset_arr[ $current_setting_arr['name'] ] = '';
+			
+			// Iterate through properties by setting types
+			foreach ( $properties_arr['setting_types'] as $index => $value ) {
+				$setting_full_name = $current_setting_arr['name'] . '_' . $value;			
+				if ( false != trim( $atts[ $setting_full_name ] ) ) {
+					
+					// This property has been overridden, so add it to current rule
+					$ruleset_arr[ $current_setting_arr['name'] ] .= $property_indent . $properties_arr['properties'][ $index ] . ': ' . esc_html( $atts[ $setting_full_name ] ) . ';' . $newline;
+				}		
+			}
+			if ( false != trim( $ruleset_arr[ $current_setting_arr['name'] ] ) ) {
+				$ruleset_arr[ $current_setting_arr['name'] ] = $current_setting_arr['selector'] . $ruleset_arr[ $current_setting_arr['name'] ] . $selector_indent . '}' . $newline;
+			}	
+		}
+		
+		$shortcode_style = '';
+		foreach ( $ruleset_arr as $rule ) {
+			$shortcode_style .= $rule;
+		}
+
+		if ( false != trim( $shortcode_style ) ) {
+			$shortcode_style = $newline . $shortcode_style;
+			wp_add_inline_style( $this->plugin_name.'-shortcode-'.$atts['id'], $shortcode_style );
+		}
+
+	}  
 
 	
 	// Functions related to selectively suppressing Post Notif and Recent Posts widgets from sidebar

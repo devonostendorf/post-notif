@@ -61,146 +61,12 @@ class Post_Notif_Widget extends WP_Widget {
 			)
 		);
 
-		// Register site scripts
-		add_action( 'wp_enqueue_scripts', array( $this, 'register_widget_scripts' ) );
-
-		if ( $post_notif_widget_settings_arr = $this->get_post_notif_widget_settings() ) {
-			if ( 1 == $post_notif_widget_settings_arr['override_theme_css'] ) {
-
-				// Apply stylesheet overrides
-				$this->override_theme_css( $post_notif_widget_settings_arr );
-			}
-		}
-		
 		// Refreshing the widget's cached output with each new post
 		add_action( 'save_post',    array( $this, 'flush_widget_cache' ) );
 		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
 		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
-		
-		// AJAX actions
-		add_action( 'wp_enqueue_scripts', array( $this, 'post_notif_widget_enqueue' ) );
-		add_action( 'wp_ajax_post_notif_widget', array( $this, 'post_notif_widget_ajax_handler' ) );
-		add_action( 'wp_ajax_nopriv_post_notif_widget', array( $this, 'post_notif_widget_ajax_handler' ) );
 
 	}
-	
-	/**
-	 * Get widget's settings.
-	 *
-	 * @since	1.1.5
-	 * @access	private
-	 * @return	array|boolean	Array of widget's settings or false if widget not found.
-	 */
-	private function get_post_notif_widget_settings() {
-				
-		$post_notif_widget_arr = get_option( 'widget_post-notif');
-		if ( $post_notif_widget_arr ) {
-				  
-			// Widget IS defined
-			
-			// Find index containing title so we can access other settings
-			foreach( $post_notif_widget_arr as $arr_key => $arr_item ) {
-				if ( is_array( $arr_item ) ) {
-					if ( array_key_exists( 'title', $arr_item ) ) {
-						
-						return $arr_item;
-					}
-				}
-			}
-		}
-		
-		return false;
-	
-	}
-	
-	/**
-	 * Register the (blank) stylesheet and attach admin-configured overrides for
-	 * the widget, if necessary.
-	 *
-	 * @since	1.1.5
-	 * @access	private
-	 * @param	array	$post_notif_widget_settings_arr	The admin-configured settings for the widget.
-	 */
-	private function override_theme_css( $post_notif_widget_settings_arr ) {
-
-		// Define formatting variables
-		$selector_indent = "\t\t\t";
-		$property_indent = "\t\t\t\t";
-		$newline = PHP_EOL;
-		
-		// NOTE: This is a blank stylesheet, merely used as an attachment point for wp_add_inline_style()
-		wp_enqueue_style( $this->get_widget_slug(), plugin_dir_url( __FILE__ ) . 'css/post-notif-widget.css', array(), '1.1.5', 'all' );
-
-		
-		// Define all configurable styling
-		
-		$settings_arr = array(
-			array( 
-				'name' => 'call_to_action'
-				,'selector' => $selector_indent . '#id_lblCallToAction {' . $newline
-			)
-			,array(
-				'name' => 'placeholder'
-				,'selector' => $selector_indent . '#id_txtFirstName::placeholder,' . $newline . $selector_indent . '#id_txtEmailAddr::placeholder {' . $newline
-			)
-			,array(
-				'name' => 'input_fields'
-				,'selector' => $selector_indent . '#id_txtFirstName,' . $newline . $selector_indent . '#id_txtEmailAddr {' . $newline
-			)
-			,array(
-				'name' => 'error'
-				,'selector' => $selector_indent . '#id_spnErrorMsg {' . $newline
-			)
-			,array(
-				'name' => 'message'
-				,'selector' => $selector_indent . '#id_spnSuccessMsg {' . $newline
-			)
-		);
-		
-		$properties_arr = array(
-			'properties' => array(
-				'font-family'
-				,'font-size'
-				,'color'
-			)
-			,'setting_types' => array(
-				'font_family'
-				,'font_size'
-				,'font_color'
-			)
-		);
-			
-		$ruleset_arr = array();
-
-		// Iterate through settings
-		foreach ( $settings_arr as $current_setting_arr ) {
-			$ruleset_arr[ $current_setting_arr['name'] ] = '';
-			
-			// Iterate through properties by setting types
-			foreach ( $properties_arr['setting_types'] as $index => $value ) {
-				$setting_full_name = $current_setting_arr['name'] . '_' . $value;			
-				if ( false != trim( $post_notif_widget_settings_arr[ $setting_full_name ] ) ) {
-					
-					// This property has been overridden, so add it to current rule
-					$ruleset_arr[ $current_setting_arr['name'] ] .= $property_indent . $properties_arr['properties'][ $index ] . ': ' . esc_html( $post_notif_widget_settings_arr[ $setting_full_name ] ) . ';' . $newline;
-				}		
-			}
-			if ( false != trim( $ruleset_arr[ $current_setting_arr['name'] ] ) ) {
-				$ruleset_arr[ $current_setting_arr['name'] ] = $current_setting_arr['selector'] . $ruleset_arr[ $current_setting_arr['name'] ] . $selector_indent . '}' . $newline;
-			}	
-		}
-		
-		$widget_style = '';
-		foreach ( $ruleset_arr as $rule ) {
-			$widget_style .= $rule;
-		}
-
-		if ( false != trim( $widget_style ) ) {
-			$widget_style = $newline . $widget_style;
-			wp_add_inline_style( $this->get_widget_slug(), $widget_style );
-		}
-
-	}	
 
 	/**
 	 * Return the widget slug.
@@ -238,14 +104,52 @@ class Post_Notif_Widget extends WP_Widget {
 				  
 			return print $cache[ $args['widget_id'] ];
 		}
+
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
 		
 		extract( $args, EXTR_SKIP );
 
 		$widget_string = $before_widget;
-
+		
 		ob_start();		
 		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
-		include( plugin_dir_path( __FILE__ ) . 'views/widget.php' );
+		include( plugin_dir_path( __FILE__ ) . 'partials/post-notif-includes-widget-title.php' );
+		echo do_shortcode( '[post_notif_subscribe'
+			. ' is_widget="yes"'
+			. ' id="widget"'
+			. ' call_to_action="' . $instance['call_to_action'] . '"'
+			. ' button_label="' . $instance['button_label'] . '"'
+			. ' first_name_field_size="' . $instance['first_name_field_size'] . '"'
+			. ' first_name_placeholder="' . $instance['first_name_placeholder'] . '"'
+			. ' email_addr_field_size="' . $instance['email_addr_field_size'] . '"'
+			. ' email_addr_placeholder="' . $instance['email_addr_placeholder'] . '"'
+			. ' require_first_name="' . ( ( 1 == $instance['require_first_name'] ) ? 'yes': 'no' ) . '"'
+			. ' override_theme_css="' . ( ( 1 == $instance['override_theme_css'] ) ? 'yes': 'no' ) . '"'
+			. ' stylesheet_filename="' . $instance['stylesheet_filename'] . '"'
+			. ' call_to_action_font_family="' . $instance['call_to_action_font_family'] . '"'
+			. ' call_to_action_font_size="' . $instance['call_to_action_font_size'] . '"'
+			. ' call_to_action_font_color="' . $instance['call_to_action_font_color'] . '"'
+			. ' placeholder_font_family="' . $instance['placeholder_font_family'] . '"'
+			. ' placeholder_font_size="' . $instance['placeholder_font_size'] . '"'
+			. ' placeholder_font_color="' . $instance['placeholder_font_color'] . '"'
+			. ' input_fields_font_family="' . $instance['input_fields_font_family'] . '"'
+			. ' input_fields_font_size="' . $instance['input_fields_font_size'] . '"'
+			. ' input_fields_font_color="' . $instance['input_fields_font_color'] . '"'
+			. ' error_font_family="' . $instance['error_font_family'] . '"'
+			. ' error_font_size="' . $instance['error_font_size'] . '"'
+			. ' error_font_color="' . $instance['error_font_color'] . '"'
+			. ' message_font_family="' . $instance['message_font_family'] . '"'
+			. ' message_font_size="' . $instance['message_font_size'] . '"'
+			. ' message_font_color="' . $instance['message_font_color'] . '"'
+			. ' error_reqd_first_name_blank="' . $post_notif_options_arr['widget_error_reqd_first_name_blank'] . '"'
+			. ' error_email_addr_blank="' . $post_notif_options_arr['widget_error_email_addr_blank'] . '"'
+			. ' error_email_addr_invalid="' . $post_notif_options_arr['widget_error_email_addr_invalid'] . '"'
+			. ' info_message_processing="' . $post_notif_options_arr['widget_info_message_processing'] .'"'
+			. ' info_message_already_subscribed="' . $post_notif_options_arr['widget_info_message_already_subscribed'] . '"'
+			. ' failure_message="' . $post_notif_options_arr['widget_failure_message'] . '"'
+			. ' success_message="' . $post_notif_options_arr['widget_success_message'] . '"'
+			. ']' 
+		);
 		$widget_string .= ob_get_clean();
 		$widget_string .= $after_widget;
 		$cache[ $args['widget_id'] ] = $widget_string;
@@ -287,6 +191,7 @@ class Post_Notif_Widget extends WP_Widget {
 		$instance['email_addr_field_size'] = strip_tags( $new_instance['email_addr_field_size'] );
 		$instance['email_addr_placeholder'] = strip_tags( $new_instance['email_addr_placeholder'] );
 		$instance['override_theme_css'] = isset( $new_instance['override_theme_css'] ) ? (bool) $new_instance['override_theme_css'] : false;
+		$instance['stylesheet_filename'] = strip_tags( $new_instance['stylesheet_filename'] );
 		$instance['call_to_action_font_family'] = strip_tags( $new_instance['call_to_action_font_family'] );
 		$instance['call_to_action_font_size'] = strip_tags( $new_instance['call_to_action_font_size'] );
 		$instance['call_to_action_font_color'] = strip_tags( $new_instance['call_to_action_font_color'] );
@@ -334,6 +239,7 @@ class Post_Notif_Widget extends WP_Widget {
 		$email_addr_field_size = isset( $instance['email_addr_field_size'] ) ? esc_attr( $instance['email_addr_field_size'] ) : $post_notif_widget_defaults_arr['email_addr_field_size_default'];
 		$email_addr_placeholder = isset( $instance['email_addr_placeholder'] ) ? esc_attr( $instance['email_addr_placeholder'] ) : $post_notif_widget_defaults_arr['email_addr_placeholder_default'];
 		$override_theme_css = isset( $instance['override_theme_css'] ) ? (bool) $instance['override_theme_css'] : (bool) $post_notif_widget_defaults_arr['override_theme_css_default'];
+		$stylesheet_filename = isset( $instance['stylesheet_filename'] ) ? esc_attr( $instance['stylesheet_filename'] ) : $post_notif_widget_defaults_arr['stylesheet_filename_default'];
 		$call_to_action_font_family = isset( $instance['call_to_action_font_family'] ) ? esc_attr( $instance['call_to_action_font_family'] ) : $post_notif_widget_defaults_arr['call_to_action_font_family_default'];
 		$call_to_action_font_size = isset( $instance['call_to_action_font_size'] ) ? esc_attr( $instance['call_to_action_font_size'] ) : $post_notif_widget_defaults_arr['call_to_action_font_size_default'];
 		$call_to_action_font_color = isset( $instance['call_to_action_font_color'] ) ? esc_attr( $instance['call_to_action_font_color'] ) : $post_notif_widget_defaults_arr['call_to_action_font_color_default'];
@@ -364,155 +270,7 @@ class Post_Notif_Widget extends WP_Widget {
 
 		load_plugin_textdomain( $this->get_widget_slug(), false, plugin_dir_path( __FILE__ ) . 'language/' );
 
-	}
-
-	/**
-	 * Registers and enqueues widget-specific scripts.
-	 *
-	 * @since	1.0.0
-	 */
-	public function register_widget_scripts() {
-
-		wp_enqueue_script( $this->get_widget_slug().'-script', plugins_url( 'js/widget.min.js', __FILE__ ), array('jquery') );
-
-	}
-	
-	
-	// Functions related to public-facing widget functionality
-
-	/**
-	 * Enqueue AJAX script that fires when "Sign me up!" button (in widget) is pressed.
-	 *
-	 * @since	1.0.0
-	 * @param	string	$hook	The string containing the current page name.
-	 */
-	public function post_notif_widget_enqueue( $hook ) {
-	
-		// Get widget messages from options
-		$post_notif_settings_arr = get_option( 'post_notif_settings' );
-
-		$post_notif_widget_nonce = wp_create_nonce( 'post_notif_widget' );
-		wp_localize_script( 
-			$this->get_widget_slug().'-script'
-			,'post_notif_widget_ajax_obj'
-			,array(
-				'ajax_url' => admin_url( 'admin-ajax.php' )
-				,'nonce'    => $post_notif_widget_nonce
-				,'processing_msg' => $post_notif_settings_arr['widget_info_message_processing']
-			)
-		);
-		
-	}
-	
-	/**
-	 * Handle AJAX event sent when "Sign me up!" button (in widget) is pressed.
-	 *
-	 * @since	1.0.0
-	 */
-	public function post_notif_widget_ajax_handler() {
-		  
-		// Confirm matching nonce
-		check_ajax_referer( 'post_notif_widget' );
- 
-		// Get widget messages from options
-		$post_notif_settings_arr = get_option( 'post_notif_settings' );
-		
-		// Get user's first name and email address from submitted form
-		$first_name =  substr( trim( $_POST['form_data']['first_name'] ), 0, 50 );
-		$email_addr =  substr( trim( $_POST['form_data']['email_addr'] ), 0, 100 );
-
-		$error = '';
-
-		if ( $post_notif_widget_settings_arr = $this->get_post_notif_widget_settings() ) {
-			if ( 1 == $post_notif_widget_settings_arr['require_first_name'] ) {
-				
-				// Confirm that first name is not blank
-				if ( '' == $first_name ) {
-					$error = $post_notif_settings_arr['widget_error_reqd_first_name_blank'] . ' ';
-				}
-			}
-		}
-		
-		// Confirm that email addr is valid
-		if ( '' == $email_addr ) {
-			$error .= $post_notif_settings_arr['widget_error_email_addr_blank'];
-		} 
-		elseif ( ! preg_match( '/([-0-9a-zA-Z.+_]+@[-0-9a-zA-Z.+_]+\.[a-zA-Z]{2,4})/i', $email_addr ) ) {
-			$error .= $post_notif_settings_arr['widget_error_email_addr_invalid'];
-		} 
-   
-		if ( empty( $error ) ) {
-      
-			// Generate authcode			
-			$authcode = Post_Notif_Misc::generate_authcode();
-
-			global $wpdb;
-			
-			// Insert subscriber into table
-			
-			// See if subscriber is already in table
-			$subscriber_exists = $wpdb->get_var( 
-				$wpdb->prepare(
-					"SELECT COUNT(id) FROM " . $wpdb->prefix.'post_notif_subscriber' . " WHERE email_addr = %s"
-					,$email_addr
-				)		
-			);
-			if ( $subscriber_exists ) {
-					  
-				// Subscriber DOES already exist
-				wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_info_message_already_subscribed'] ) );					  
-			}
-			else {
-				
-				// Subscriber is new
-				$first_name = ( $first_name != '') ? $first_name : __( '[Unknown]', 'post-notif' );
-				$subscriber_inserted = $wpdb->insert( 
-					$wpdb->prefix.'post_notif_subscriber' 
-					,array( 
-						'id' => ''
-						,'email_addr' => $email_addr
-						,'first_name' => $first_name
-						,'confirmed' => 0 
-						,'last_modified' => gmdate( "Y-m-d H:i:s" )
-						,'date_subscribed' => gmdate( "Y-m-d H:i:s" )
-						,'authcode' => $authcode
-						,'to_delete' => 0
-						,'last_update_dttm' => gmdate( "Y-m-d H:i:s" )
-					) 
-				);
-    
-				$subscriber_arr = array(
-					'email_addr' => $email_addr
-					,'first_name' => $first_name
-					,'authcode' => $authcode
-				);
-
-				if ( $subscriber_inserted ) {
-					
-					// Send confirmation email
-					Post_Notif_Misc::send_confirmation_email( $subscriber_arr );
-					wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_success_message'] ) );
-				}
-				else {
-				
-					// Subscriber creation failed
-					
-					// Send admin email
-					Post_Notif_Misc::send_admin_failed_subscriber_creation_email( $subscriber_arr );
-					wp_send_json( array( 'success' => true, 'message' => $post_notif_settings_arr['widget_failure_message'] ) );					
-				}
-			}
-		}
-		else {
-				  
-			// Error in form validation
-			wp_send_json( array( 'success' => false, 'message' => $error ) );
-		}
-		
-		// All ajax handlers should die when finished
-    	wp_die(); 
-    	
-    }
+	}  
 
 } // end class
 add_action( 'widgets_init', create_function( '', 'register_widget("Post_Notif_Widget");' ) );

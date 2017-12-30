@@ -53,7 +53,14 @@ class Post_Notif_Deactivator {
     			, notif_end_dttm = '" . gmdate( "Y-m-d H:i:s" ) . "' 
     			WHERE send_status IN ('B','S') 
     		"
- 		);	
+ 		);
+ 		
+ 		// Delete shortcode attribute sets from options table
+ 		$shortcode_atts_set_names_arr = get_option( 'post_notif_shortcode_atts_set_names', array() );
+ 		foreach ( $shortcode_atts_set_names_arr as $shortcode_atts_set ) {
+ 			delete_option( $shortcode_atts_set );	
+ 		}
+ 		delete_option( 'post_notif_shortcode_atts_set_names' );
 
 	}
 

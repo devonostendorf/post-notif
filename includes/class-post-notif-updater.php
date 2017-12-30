@@ -50,7 +50,7 @@ class Post_Notif_Updater {
 	 */
 	public function __construct( $installed_post_notif_db_version ) {
 
-		$this->post_notif_db_version = 6;
+		$this->post_notif_db_version = 7;
 		$this->installed_post_notif_db_version = $installed_post_notif_db_version;
 		  
 	}
@@ -111,13 +111,43 @@ class Post_Notif_Updater {
 			,'widget_error_email_addr_blank' => 'An email address is required.'
 			,'widget_error_email_addr_invalid' => 'A valid email address is required.'
 			,'widget_info_message_processing' => 'Processing...'
-			,'widget_info_message_already_subscribed' => "You're already subscribed so no need to do anything further."
+			,'widget_info_message_already_subscribed' => 'You are already subscribed so no need to do anything further.'
 			,'widget_failure_message' => 'Thanks for subscribing.'
 			,'widget_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
 			,'available_categories' => array( '0' )
 			,'batch_size' => '150'
 			,'batch_pause' => '60'
-			,'admin_menu_position' => '3.389'
+			,'shortcode_title' => 'Subscribe'
+			,'shortcode_call_to_action' => 'Notify me when new posts are published:'
+			,'shortcode_button_label' => 'Sign me up!'
+			,'shortcode_first_name_field_size' => '20'
+			,'shortcode_first_name_placeholder' => 'First Name (optional)'
+			,'shortcode_email_addr_field_size' => '30'
+			,'shortcode_email_addr_placeholder' => 'Email Address'
+			,'shortcode_stylesheet_filename' => ''
+			,'shortcode_call_to_action_font_family' => ''
+			,'shortcode_call_to_action_font_size' => ''
+			,'shortcode_call_to_action_font_color' => ''
+			,'shortcode_placeholder_font_family' => ''
+			,'shortcode_placeholder_font_size' => ''
+			,'shortcode_placeholder_font_color' => ''
+			,'shortcode_input_fields_font_family' => ''
+			,'shortcode_input_fields_font_size' => ''
+			,'shortcode_input_fields_font_color' => ''
+			,'shortcode_error_font_family' => ''
+			,'shortcode_error_font_size' => ''
+			,'shortcode_error_font_color' => ''
+			,'shortcode_message_font_family' => ''
+			,'shortcode_message_font_size' => ''
+			,'shortcode_message_font_color' => ''
+			,'shortcode_error_reqd_first_name_blank' => 'A first name is required.'
+			,'shortcode_error_email_addr_blank' => 'An email address is required.'
+			,'shortcode_error_email_addr_invalid' => 'A valid email address is required.'
+			,'shortcode_info_message_processing' => 'Processing...'
+			,'shortcode_info_message_already_subscribed' => 'You are already subscribed so no need to do anything further.'
+			,'shortcode_failure_message' => 'Thanks for subscribing.'
+			,'shortcode_success_message' => 'Thanks.  Please check your email to confirm your subscription.'
+			,'admin_menu_position' => '3.389'			
 		);
 		// Cleanly future-proof the addition of settings by
 		//		iterating through defaults array and only updating 
@@ -144,6 +174,7 @@ class Post_Notif_Updater {
 			,'email_addr_field_size_default' => '30'
 			,'email_addr_placeholder_default' => 'Email Address'
 			,'override_theme_css_default' => 0
+			,'stylesheet_filename_default' => ''
 			,'call_to_action_font_family_default' => ''
 			,'call_to_action_font_size_default' => ''
 			,'call_to_action_font_color_default' => ''
@@ -381,5 +412,19 @@ class Post_Notif_Updater {
 		dbDelta( $sql );	
 		
 	}
-	
+
+	/**
+	 * Apply changes to get database schema to version 7.
+	 *
+	 * @since	1.3.0
+	 * @access	private
+	 */
+	private function post_notif_db_update_version_7() {
+			
+		// NOOP - Only added shortcode ('shortcode_') settings to
+		// $post_notif_settings_arr and 'stylesheet_filename_default' to
+		// $post_notif_widget_defaults_arr
+		
+	}
+		
 }

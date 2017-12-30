@@ -386,6 +386,298 @@ foreach ( $categories as $category ) {
 } 
 ?>  	
 				</table> 
+				<h2 class="title"><?php esc_html_e( 'Subscriber Form Shortcode Settings', 'post-notif' ); ?></h2>
+				<table class="form-table">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Title:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_title]" id="shortcode_title" value="<?php echo esc_attr( $options['shortcode_title'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Call to Action:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_call_to_action]" id="shortcode_call_to_action" value="<?php echo esc_attr( $options['shortcode_call_to_action'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Button Label:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_button_label]" id="shortcode_button_label" value="<?php echo esc_attr( $options['shortcode_button_label'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'First Name field size:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_first_name_field_size]" id="shortcode_first_name_field_size" value="<?php echo esc_attr( $options['shortcode_first_name_field_size'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'First Name Placeholder:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_first_name_placeholder]" id="shortcode_first_name_placeholder" value="<?php echo esc_attr( $options['shortcode_first_name_placeholder'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Require First Name?', 'post-notif' ); ?>
+            				</th>
+            			<td>
+							<label for="shortcode_require_first_name">
+            					<input type="checkbox" name="post_notif_settings[shortcode_require_first_name]" id="shortcode_require_first_name" value="1" <?php echo ( ( array_key_exists( 'shortcode_require_first_name', $options ) ) ? 'checked' : '' ); ?> />
+            				</label>
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Email Address field size:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_email_addr_field_size]" id="shortcode_email_addr_field_size" value="<?php echo esc_attr( $options['shortcode_email_addr_field_size'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Email Address Placeholder:', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_email_addr_placeholder]" id="shortcode_email_addr_placeholder" value="<?php echo esc_attr( $options['shortcode_email_addr_placeholder'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Override theme CSS:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+							<label for="shortcode_override_theme_css">
+            					<input class="pn-chk-override-theme-options" type="checkbox" name="post_notif_settings[shortcode_override_theme_css]" id="shortcode_override_theme_css" value="1" <?php echo ( ( array_key_exists( 'shortcode_override_theme_css', $options ) ) ? 'checked' : '' ); ?> />
+            				</label>
+            			</td>
+            		</tr>	
+            	</table>
+				<table class="form-table" id="override_theme_css_option" <?php echo ( ( array_key_exists( 'shortcode_override_theme_css', $options ) ) ? '' : 'style="display: none"' ); ?> >					
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Stylesheet filename:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_stylesheet_filename]" id="shortcode_stylesheet_filename" value="<?php echo esc_attr( $options['shortcode_stylesheet_filename'] ); ?>" >
+            				<br />
+            				<p class="description">
+            					<?php esc_html_e( 'This file must be located in the ../post-notif/public/css directory. If this field is populated, all override fields below will be ignored.', 'post-notif' ); ?>
+            				</p>
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Call to Action font family:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_call_to_action_font_family]" id="shortcode_call_to_action_font_family" value="<?php echo esc_attr( $options['shortcode_call_to_action_font_family'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Call to Action font size [include unit of measure]:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_call_to_action_font_size]" id="shortcode_call_to_action_font_size" value="<?php echo esc_attr( $options['shortcode_call_to_action_font_size'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<label for="shortcode_call_to_action_font_color"><?php esc_html_e( 'Call to Action font color:', 'post-notif' ); ?></label>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_call_to_action_font_color]" id="shortcode_call_to_action_font_color" value="<?php echo esc_attr( $options['shortcode_call_to_action_font_color'] ); ?>" class="color-picker" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Placeholder font family:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_placeholder_font_family]" id="shortcode_placeholder_font_family" value="<?php echo esc_attr( $options['shortcode_placeholder_font_family'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Placeholder font size [include unit of measure]:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_placeholder_font_size]" id="shortcode_placeholder_font_size" value="<?php echo esc_attr( $options['shortcode_placeholder_font_size'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<label for="shortcode_placeholder_font_color"><?php esc_html_e( 'Placeholder font color:', 'post-notif' ); ?></label>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_placeholder_font_color]" id="shortcode_placeholder_font_color" value="<?php echo esc_attr( $options['shortcode_placeholder_font_color'] ); ?>" class="color-picker" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Input fields font family:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_input_fields_font_family]" id="shortcode_input_fields_font_family" value="<?php echo esc_attr( $options['shortcode_input_fields_font_family'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Input fields font size [include unit of measure]:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_input_fields_font_size]" id="shortcode_input_fields_font_size" value="<?php echo esc_attr( $options['shortcode_input_fields_font_size'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<label for="shortcode_input_fields_font_color"><?php esc_html_e( 'Input fields font color:', 'post-notif' ); ?></label>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_input_fields_font_color]" id="shortcode_input_fields_font_color" value="<?php echo esc_attr( $options['shortcode_input_fields_font_color'] ); ?>" class="color-picker" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Error message font family:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_error_font_family]" id="shortcode_error_font_family" value="<?php echo esc_attr( $options['shortcode_error_font_family'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Error message font size [include unit of measure]:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_error_font_size]" id="shortcode_error_font_size" value="<?php echo esc_attr( $options['shortcode_error_font_size'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<label for="shortcode_error_font_color"><?php esc_html_e( 'Error message font color:', 'post-notif' ); ?></label>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_error_font_color]" id="shortcode_error_font_color" value="<?php echo esc_attr( $options['shortcode_error_font_color'] ); ?>" class="color-picker" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Success message font family:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="25" name="post_notif_settings[shortcode_message_font_family]" id="shortcode_message_font_family" value="<?php echo esc_attr( $options['shortcode_message_font_family'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<?php esc_html_e( 'Success message font size [include unit of measure]:', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_message_font_size]" id="shortcode_message_font_size" value="<?php echo esc_attr( $options['shortcode_message_font_size'] ); ?>" >
+            			</td>
+            		</tr>
+					<tr valign="top">
+            			<th scope="row" style="padding-left: 50px;">
+            				<label for="shortcode_message_font_color"><?php esc_html_e( 'Success message font color:', 'post-notif' ); ?></label>
+            			</th>
+            			<td>
+            				<input type="text" size="5" name="post_notif_settings[shortcode_message_font_color]" id="shortcode_message_font_color" value="<?php echo esc_attr( $options['shortcode_message_font_color'] ); ?>" class="color-picker" >
+            			</td>
+            		</tr>					
+				</table> 
+            	<h2 class="title"><?php esc_html_e( 'Subscriber Form Shortcode Messages', 'post-notif' ); ?></h2>
+            	<table class="form-table">
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Error (required first name is blank):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_error_reqd_first_name_blank]" id="shortcode_error_reqd_first_name_blank" value="<?php echo esc_attr( $options['shortcode_error_reqd_first_name_blank'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Error (blank email address):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_error_email_addr_blank]" id="shortcode_error_email_addr_blank" value="<?php echo esc_attr( $options['shortcode_error_email_addr_blank'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Error (invalid email address):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_error_email_addr_invalid]" id="shortcode_error_email_addr_invalid" value="<?php echo esc_attr( $options['shortcode_error_email_addr_invalid'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Message (processing):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_info_message_processing]" id="shortcode_info_message_processing" value="<?php echo esc_attr( $options['shortcode_info_message_processing'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Message (already subscribed):', 'post-notif' ); ?>
+            			</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_info_message_already_subscribed]" id="shortcode_info_message_already_subscribed" value="<?php echo esc_attr( $options['shortcode_info_message_already_subscribed'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Message (successful subscription request):', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_success_message]" id="shortcode_success_message" value="<?php echo esc_attr( $options['shortcode_success_message'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            		<tr valign="top">
+            			<th scope="row">
+            				<?php esc_html_e( 'Message (failed subscription request):', 'post-notif' ); ?>
+            				</th>
+            			<td>
+            				<input type="text" size="75" name="post_notif_settings[shortcode_failure_message]" id="shortcode_failure_message" value="<?php echo esc_attr( $options['shortcode_failure_message'] ); ?>">
+            				<br />
+            			</td>
+            		</tr>
+            	</table>
 				<h2 class="title"><?php esc_html_e( 'Admin Menu Settings', 'post-notif' ); ?></h2>
 				<table class="form-table">
             		<tr valign="top">
@@ -400,7 +692,7 @@ foreach ( $categories as $category ) {
             				</p>
             			</td>
             		</tr>
-            	</table> 
+            	</table>
             	<?php submit_button() ?>
             </form>
         </div> <!-- end post-body-content -->

@@ -221,12 +221,12 @@
 		$('.pn-chkoverridetheme').click(function(event) {
 			if (this.checked) {
 				
-				// "Override theme CSS" selected, display all override options
+				// "Override theme CSS" selected in widget config, display all override options
 				$('.pn-overridetheme').slideDown();
 			} 
 			else {
 				
-				// "Override theme CSS" UNselected, hide all override options
+				// "Override theme CSS" UNselected in widget config, hide all override options
 				$('.pn-overridetheme').slideUp();
 			}
 	 	});
@@ -234,10 +234,12 @@
 
 	$(document).ready(function(){
 		checkOverrideTheme();
+		checkOptionsOverrideTheme();
 	});
 	
 	$(document).ajaxComplete(function () {
 		checkOverrideTheme();
+		checkOptionsOverrideTheme();
 	});
 
 	$(function() {
@@ -252,5 +254,20 @@
 			}
 	 	});
 	});
+	
+	function checkOptionsOverrideTheme() {
+		$('.pn-chk-override-theme-options').click(function(event) {
+			if (this.checked) {
+				
+				// "Override theme CSS" selected in shortcode settings, show all override options
+				$('#override_theme_css_option').show();
+			} 
+			else {
+				
+				// "Override theme CSS" UNselected in shortcode settings, hide all override options
+				$('#override_theme_css_option').hide();
+			}
+	 	});
+	};
 	
 })( jQuery );

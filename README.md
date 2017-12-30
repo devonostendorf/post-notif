@@ -5,7 +5,7 @@
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.9   
 **Requires PHP:** 5.6   
-**Stable tag:** 1.2.0   
+**Stable tag:** 1.3.0-1 BETA   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -54,6 +54,13 @@ Simply tailor the subscription widget labels, the email subjects and bodies, and
 	* Widget processing message 	
 	* Already subscribed info message	
 	* Successful subscription request message	
+	
+* Versatile shortcode functionality:
+	* Generates subscriber sign up form
+	* Usable in posts and on pages
+	* Includes all settings and messages available within widget configuration
+	* Attributes default from main settings page but can all be individually overridden
+	* Custom stylesheet can be used for comprehensive CSS changes to form (IF author has fileserver access)
 	
 * Configurable category settings:
 	* Make all or a subset of system categories available to subscribers or turn off categories entirely
@@ -448,6 +455,256 @@ You can later turn category functionality back on by doing the reverse of these 
 	* Can be used in:	
 		* Post notification email body
 
+### How do I use the shortcode? ###
+
+1. Go to Settings >> Post Notif and make sure the default settings in the Subscriber Form Shortcode Settings and Subscriber Form Shortcode Messages sections are populated to your liking
+2. Add `[post_notif_subscribe]` to a post or page
+3. Use none, some, or all of the attributes (listed below) to override the defaults you've defined in #1 (above), using the following convention:
+
+    <code>[post\_notif\_subscribe _attr1_="_value_" _attr2_="_value2_" _attr**n**_="_value**n**_"]</code>
+	
+    Here is an example, passing two attributes (id and title):    
+    
+    <code>[post\_notif\_subscribe id="2" title="Subscribe To The Blog"]</code>
+
+    **Note**: The shortcode will only generate the subscriber form when a single post or page is viewed; it will be ignored when a visitor is on your site's front page or a post index summary page.
+
+### What attributes does the shortcode support? ###
+
+If you do not explicitly specify one or more of the following attributes, their values are defaulted from the corresponding default value as defined in the Subscriber Form Shortcode Settings and Subscriber Form Shortcode Messages sections (under Settings >> Post Notif). 
+
+1. `id`
+	* Description: Unique identifier for each use of shortcode in one post or on one page
+		
+	* Sample usage: `id="2"`
+	
+	* **Note**: If you use the shortcode more than once in a post or on a page, you MUST specify unique id values for each
+
+2. `title`
+	* Description: Subscriber form title
+
+	* Sample usage: `title="Subscribe To The Blog"`
+
+3. `call_to_action`
+	* Description: Subscriber form call to action (text immediately above input fields)
+
+	* Sample usage: `call_to_action="Notify me when new posts are published:"`
+
+4. `button_label`
+	* Description: Subscriber form submit button label
+
+	* Sample usage: `button_label="Sign me up!"`
+
+5. `first_name_field_size`
+	* Description: First Name input field width
+	
+	* Sample usage: `first_name_field_size="20"`
+	
+6. `first_name_placeholder`
+	* Description: First Name input field placeholder text
+	
+	* Sample usage: `first_name_placeholder="First name"`
+	
+7. `email_addr_field_size`
+	* Description: Email Address input field width
+	
+	* Sample usage: `email_addr_field_size="25"`
+	
+8. `email_addr_placeholder`
+	* Description: Email Address field placeholder text
+	
+	* Sample usage: `email_addr_placeholder="Email address"`
+	
+9. `require_first_name`
+	* Description: Should First Name input field be required (to be not blank) on subscriber form?
+	
+	* Sample usage: `require_first_name="yes"`
+				OR: `require_first_name="no"`
+
+10. `override_theme_css`
+	* Description: Should your theme's CSS styles be overridden when rendering subscriber form?
+	
+	* Sample usage: `override_theme_css="yes"`
+				OR: `override_theme_css="no"`
+				
+	* **Notes**: If this is set to "yes", the theme CSS override attributes (#11 - #26, below) will be applied to the relevant form
+	elements
+
+11. `stylesheet_filename`
+	* Description: Name of stylesheet 
+	
+	* Sample usage: `stylesheet_filename="my_custom_subscriber_form_style.css"`
+	
+	* **Notes**:
+		* This file must be a syntactically-correct CSS file, located in the "../post-notif/public/css" directory and with its permissions set such that the web server can read it
+		* If this attribute is populated, the theme CSS override attributes below (#12 - #26, below) are IGNORED by the Shortcode API when executing the shortcode
+		* Therefore, if you have defined a default stylesheet (in Settings >> Post Notif >> Subscriber Form Shortcode Settings >> Stylesheet filename), but want to override one or more stylesheet-related settings, directly in your shortcode call, you need to include `stylesheet_filename=""` in your shortcode call
+		* See FAQ item below ('How do you use the "stylesheet_filename" attribute with the shortcode?') for a comprehensive list of ids and classes you can target with your CSS selectors
+	
+12. `call_to_action_font_family`
+	* Description: Subscriber form call to action text font family
+
+	* Sample usage: `call_to_action_font_family="Times New Roman"`
+
+13. `call_to_action_font_size`
+	* Description: Subscriber form call to action text font size (including unit of measure)
+	
+	* Sample usage: `call_to_action_font_size="20px"`
+
+14. `call_to_action_font_color`
+	* Description: Subscriber form call to action text font color
+	
+	* Sample usage: `call_to_action_font_color="blue"`
+
+15. `placeholder_font_family`
+	* Description: First Name and Email Address input fields' placeholder text font family
+
+	* Sample usage: `placeholder_font_family="Arial"`
+
+16. `placeholder_font_size`
+	* Description: First Name and Email Address input fields' placeholder text font size (including unit of measure)
+	
+	* Sample usage: `placeholder_font_size="10px"`
+
+17. `placeholder_font_color`
+	* Description: First Name and Email Address input fields' placeholder text font color
+	
+	* Sample usage: `placeholder_font_color="grey"`
+
+18. `input_fields_font_family`
+	* Description: First Name and Email Address input fields' text font family
+
+	* Sample usage: `input_fields_font_family="Arial"`
+
+19. `input_fields_font_size`
+	* Description: First Name and Email Address input fields' text font size (including unit of measure)
+	
+	* Sample usage: `input_fields_font_size="10px"`
+
+20. `input_fields_font_color`
+	* Description: First Name and Email Address input fields' text font color
+	
+	* Sample usage: `input_fields_font_color="#000000"`
+
+21. `error_font_family`
+	* Description: Error message text font family
+
+	* Sample usage: `error_font_family="Arial"`
+
+22. `error_font_size`
+	* Description: Error message text font size (including unit of measure)
+	
+	* Sample usage: `error_font_size="10px"`
+
+23. `error_font_color`
+	* Description: Error message text font color
+	
+	* Sample usage: `error_font_color="red"`
+
+24. `message_font_family`
+	* Description: Success message text font family
+
+	* Sample usage: `message_font_family="Arial"`
+
+25. `message_font_size`
+	* Description: Success message text font size (including unit of measure)
+	
+	* Sample usage: `message_font_size="10px"`
+
+26. `message_font_color`
+	* Description: Error message text font color
+	
+	* Sample usage: `message_font_color="green"`
+
+27. `error_reqd_first_name_blank`
+	* Description: Error message text to display when First Name field is blank but has been defined as required
+	
+	* Sample usage: `error_reqd_first_name_blank="A first name is required."`
+
+28. `error_email_addr_blank`
+	* Description: Error message text to display when Email Address field is blank
+	
+	* Sample usage: `error_email_addr_blank="An email address is required."`
+
+29. `error_email_addr_invalid`
+	* Description: Error message text to display when Email Address field contains an invalid email address
+	
+	* Sample usage: `error_email_addr_invalid="A valid email address is required."`
+
+30. `info_message_processing`
+	* Description: Message to display while subscriber form submission is processing
+	
+	* Sample usage: `info_message_processing="Processing..."`
+
+31. `info_message_already_subscribed`
+	* Description: Message to display when email address provided in subscriber form is already registered as a subscriber
+	
+	* Sample usage: `info_message_already_subscribed="You are already subscribed so no need to do anything further."`
+
+32. `failure_message`
+	* Description: Message to display when new subscriber creation process fails.  Because you likely do not want a potential subscriber to be scared off by an error message, you probably want to use a positive message similar to the example below.
+	
+	* Sample usage: `failure_message="Thanks for subscribing."`
+	
+	* **Notes**: A separate email, hidden from the subscriber, is sent to the admin in this scenario, so that manual creation of the subscriber can be done
+
+33. `success_message`
+	* Description: Message to display when new subscriber creation process completes successfully
+	
+	* Sample usage: `success_message="Thanks for subscribing."`
+
+### How do you use the "stylesheet_filename" attribute with the shortcode? ###
+
+If you are going to use the same stylesheet for multiple shortcode instantiations, you should probably target classes.
+Alternately, if you are targeting a single shortcode use/instantiation, you should probably target IDs of the elements.
+
+The naming conventions, used by the subscriber form markup (located in ../post-notif/public/views/post-notif-public-subscriber-form.php) are fairly consistent, as you can see below, with the exceptions being the `aside` tag (which themes the form like a widget) and the `h1` tag (which contains the form title), which use standard WordPress classes (for consistency in appearance with widgets).
+
+1. Subscriber form container (`<aside>`)
+	* id: <code>id\_pn\_aside\_subscriber\_form\__form\_id_</code>
+	
+	* class: `widget class-post-notif`
+	
+2. Subscriber form title (`<h1>`)
+	* id: <code>`id_pn_h1_title_[form_id]`</code>
+	
+	* class: `widget-title`
+	
+3. Subscriber form form (`<form>`)
+	* id: <code>id\_pn\_frm\_subscriber\_form\__form\_id_</code>
+	
+	* class: `pn-frm-subscriber-form`
+	
+4. Subscriber form call to action text (`<label>`)
+	* id: <code>id\_pn\_lbl\_call\_to\_action\__form\_id_</code>
+	
+	* class: `pn-lbl-call-to-action`
+	
+5. Subscriber form First Name text input field (`<input>`)
+	* id: <code>id\_pn\_txt\_first\_name\__form\_id_</code>
+	
+	* class: `pn-txt-first-name`
+	
+6. Subscriber form Email Address email input field (`<input>`)
+	* id: <code>id\_pn\_eml\_email\_addr\__form\_id_</code>
+	
+	* class: `pn-eml-email-addr`
+	
+7. Subscriber form submit button (`<button>`)
+	* id: <code>id\_pn\_btn\_subscriber\_form\_submit\__form\_id_</code>
+	
+	* class: `pn-btn-subscriber-form-submit`
+
+8. Subscriber form success message span (`<span>`)
+	* id: <code>id\_pn\_spn\_success\_msg\__form\_id_</code>
+	
+	* class: `pn-spn-success-msg`
+	
+9. Subscriber form error message span (`<span>`)
+	* id: <code>id\_pn\_spn\_error\_msg\__form\_id_</code>
+	
+	* class: `pn-spn-error-msg`
+	
 ## Screenshots ##
 
 **NOTE:** #1 - 7 depict admin functionality while #8 - 13 show subscriber screenshots: 

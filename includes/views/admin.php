@@ -50,6 +50,13 @@
 	</p>
 	<div class="pn-overridetheme" id="id_divPostNotifOverrideTheme" name="divPostNotifOverrideTheme" <?php echo ( checked( $override_theme_css ) ? '' : 'style="display: none"' ); ?> >
 		<p>
+			&nbsp;&nbsp;&nbsp;<label for="<?php echo esc_attr( $this->get_field_id( 'stylesheet_filename' ) ); ?>"><?php _e( 'Stylesheet filename:', 'post-notif' ); ?></label>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'stylesheet_filename' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'stylesheet_filename' ) ); ?>" type="text" value="<?php echo esc_attr( $stylesheet_filename ); ?>" />
+		</p>
+        <p class="description">
+        	<?php esc_html_e( 'This file must be located in the ../post-notif/public/css directory. If this field is populated, all override fields below will be ignored.', 'post-notif' ); ?>
+		</p>
+		<p>
 			&nbsp;&nbsp;&nbsp;<label for="<?php echo esc_attr( $this->get_field_id( 'call_to_action_font_family' ) ); ?>"><?php _e( 'Call to Action font family:', 'post-notif' ); ?></label>
 			<input id="<?php echo esc_attr( $this->get_field_id( 'call_to_action_font_family' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'call_to_action_font_family' ) ); ?>" type="text" value="<?php echo esc_attr( $call_to_action_font_family ); ?>" />
 		</p>
