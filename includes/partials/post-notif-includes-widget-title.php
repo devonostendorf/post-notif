@@ -12,6 +12,6 @@
  * @subpackage	Post_Notif/includes/partials
  */
 
-if ( ! empty ($instance['title'] )) {
+if ( ! empty( $instance['title'] ) ) {
 	echo $args['before_title'] . $title . $args['after_title'];
 }

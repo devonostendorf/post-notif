@@ -15,7 +15,7 @@
 
 <?php	if ( 'no' == $clean_atts['is_widget'] ) : ?>
 	<aside id="id_pn_aside_subscriber_form_<?php echo $clean_atts['id']; ?>" class="widget class-post-notif">
-<?php		if ( ! empty( $clean_atts['title'] )) : ?>
+<?php		if ( ! empty( $clean_atts['title'] ) ) : ?>
 				<h1 id="id_pn_h1_title_<?php echo $clean_atts['id']; ?>" class="widget-title"><?php echo esc_html( $clean_atts['title'] ); ?></h1>
 <?php 		endif; ?>
 <?php 	endif; ?>
