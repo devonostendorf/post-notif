@@ -469,7 +469,7 @@ foreach ( $categories as $category ) {
             		</tr>
             		<tr valign="top">
             			<th scope="row">
-            				<?php esc_html_e( 'Override theme CSS:', 'post-notif' ); ?>
+            				<?php esc_html_e( 'Override theme CSS?', 'post-notif' ); ?>
             			</th>
             			<td>
 							<label for="shortcode_override_theme_css">
