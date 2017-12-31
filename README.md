@@ -5,7 +5,7 @@
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.9   
 **Requires PHP:** 5.6   
-**Stable tag:** 1.3.0-1 BETA   
+**Stable tag:** 1.3.0-2 BETA   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -453,6 +453,14 @@ You can later turn category functionality back on by doing the reverse of these 
 	* NOTE: This has been deprecated; use @@postexcerptmanual instead!
 	
 	* Can be used in:	
+		* Post notification email body
+
+16. @@postcategory
+	* Description: Post's category(/categories)
+	* NOTE: This will resolve to a comma-delimited list of categories if post has more than one category
+	
+	* Can be used in:	
+		* Post notification email subject
 		* Post notification email body
 
 ### How do I use the shortcode? ###

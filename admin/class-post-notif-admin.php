@@ -807,14 +807,23 @@ class Post_Notif_Admin {
 		$post_author_data = get_userdata( $post_attribs->post_author );
 		$post_author = $post_author_data->display_name;
    		
+		// Get post categories
+		$category_arr = get_the_category( $post_id );
+		$category_list = '';
+		foreach ( $category_arr as $category ) {
+			$category_list .= $category->name . ', ';
+		}
+		$category_list = rtrim( $category_list, ', ');
+
 		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
 		//		will be unable to see and/or click the URL links within their email
 		$post_permalink = get_permalink( $post_id );
-
+		
 		$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
 		$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
 		$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
 		$post_notif_email_subject = str_replace( '@@postauthor', $post_author, $post_notif_email_subject );
+		$post_notif_email_subject = str_replace( '@@postcategory', $category_list, $post_notif_email_subject );
 
 		// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
 		$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
@@ -823,6 +832,7 @@ class Post_Notif_Admin {
 		$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
+		$post_notif_email_body_template = str_replace( '@@postcategory', $category_list, $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@permalinkurl', $post_permalink, $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
 		$post_notif_email_body_template = str_replace( '@@postexcerptauto', Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $post_notif_email_body_template );

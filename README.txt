@@ -454,6 +454,14 @@ You can later turn category functionality back on by doing the reverse of these 
 	* Can be used in:	
 		* Post notification email body
 
+16. @@postcategory
+	* Description: Post's category(/categories)
+	* NOTE: This will resolve to a comma-delimited list of categories if post has more than one category
+	
+	* Can be used in:	
+		* Post notification email subject
+		* Post notification email body
+
 = How do I use the shortcode? =
 
 1. Go to Settings >> Post Notif and make sure the default settings in the Subscriber Form Shortcode Settings and Subscriber Form Shortcode Messages sections are populated to your liking
