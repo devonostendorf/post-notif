@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Post Notif package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Notif 1.2.0\n"
+"Project-Id-Version: Post Notif 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/post-notif\n"
-"POT-Creation-Date: 2017-11-27 05:23:22+00:00\n"
+"POT-Creation-Date: 2017-12-31 21:16:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -38,7 +38,7 @@ msgstr ""
 msgid "Post notif for this post is pending."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:447 admin/class-post-notif-admin.php:1311
+#: admin/class-post-notif-admin.php:447 admin/class-post-notif-admin.php:1321
 msgid "Processing..."
 msgstr ""
 
@@ -50,302 +50,302 @@ msgstr ""
 msgid "Post notification process, for this post, is already running!"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:910
+#: admin/class-post-notif-admin.php:920
 msgid "Post notification has been scheduled for this post!"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:910
+#: admin/class-post-notif-admin.php:920
 #: admin/partials/post-notif-admin-meta-box.php:44
 msgid "Scheduled for:"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:915
+#: admin/class-post-notif-admin.php:925
 msgid "Date cannot be in the past! Please try again."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:920
+#: admin/class-post-notif-admin.php:930
 msgid ""
 "Please choose a date and time after the scheduled publish date and time."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:928
+#: admin/class-post-notif-admin.php:938
 msgid "Post notification is ALREADY scheduled for this post!"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1359
+#: admin/class-post-notif-admin.php:1369
 msgid "Processing...complete."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1360
+#: admin/class-post-notif-admin.php:1370
 msgid "Successfully sent to:"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1362
+#: admin/class-post-notif-admin.php:1372
 msgid "Skipped invalid email addresses:"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1379
+#: admin/class-post-notif-admin.php:1389
 msgid "Post Notif Settings"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1444 admin/class-post-notif-admin.php:1445
+#: admin/class-post-notif-admin.php:1454 admin/class-post-notif-admin.php:1455
 msgid "View Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1453 admin/class-post-notif-admin.php:1454
+#: admin/class-post-notif-admin.php:1463 admin/class-post-notif-admin.php:1464
 msgid "Manage Post Notifs Sent"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1462 admin/class-post-notif-admin.php:1463
+#: admin/class-post-notif-admin.php:1472 admin/class-post-notif-admin.php:1473
 msgid "Manage Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1471 admin/class-post-notif-admin.php:1472
+#: admin/class-post-notif-admin.php:1481 admin/class-post-notif-admin.php:1482
 msgid "Import Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1480 admin/class-post-notif-admin.php:1481
+#: admin/class-post-notif-admin.php:1490 admin/class-post-notif-admin.php:1491
 msgid "Staged Subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1611
+#: admin/class-post-notif-admin.php:1621
 msgid "Blank email address."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1621
+#: admin/class-post-notif-admin.php:1631
 msgid "Email address truncated (more than 100 chars)."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1627
+#: admin/class-post-notif-admin.php:1637
 msgid " Invalid email address."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1636 admin/class-post-notif-admin.php:1650
-#: includes/class-post-notif-widget.php:468
+#: admin/class-post-notif-admin.php:1646 admin/class-post-notif-admin.php:1660
+#: public/class-post-notif-public.php:274
 msgid "[Unknown]"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1661
+#: admin/class-post-notif-admin.php:1671
 msgid " First name truncated (more than 50 chars)."
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1685
+#: admin/class-post-notif-admin.php:1695
 msgid " Non-numeric category "
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1693
+#: admin/class-post-notif-admin.php:1703
 msgid " Invalid category "
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1707
+#: admin/class-post-notif-admin.php:1717
 msgid "Staged (pending creation)"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1775
+#: admin/class-post-notif-admin.php:1785
 msgid "Create"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1787 admin/class-post-notif-admin.php:2535
+#: admin/class-post-notif-admin.php:1797 admin/class-post-notif-admin.php:2545
 msgid "Delete"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1813
+#: admin/class-post-notif-admin.php:1823
 msgid "Created"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1814
+#: admin/class-post-notif-admin.php:1824
 msgid "Staged"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1815
+#: admin/class-post-notif-admin.php:1825
 msgid "Warning"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1816 admin/class-post-notif-admin.php:2132
-#: admin/class-post-notif-admin.php:2307
+#: admin/class-post-notif-admin.php:1826 admin/class-post-notif-admin.php:2142
+#: admin/class-post-notif-admin.php:2317
 msgid "Duplicate email address"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1817
+#: admin/class-post-notif-admin.php:1827
 msgid "Import error"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1818
+#: admin/class-post-notif-admin.php:1828
 msgid "System error"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1908 admin/class-post-notif-admin.php:2731
+#: admin/class-post-notif-admin.php:1918 admin/class-post-notif-admin.php:2741
 msgid "First Name"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1909 admin/class-post-notif-admin.php:2732
+#: admin/class-post-notif-admin.php:1919 admin/class-post-notif-admin.php:2742
 msgid "Email Address"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1910 admin/class-post-notif-admin.php:3661
+#: admin/class-post-notif-admin.php:1920 admin/class-post-notif-admin.php:3671
 msgid "Status"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1911
+#: admin/class-post-notif-admin.php:1921
 msgid "Message"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:1912 admin/class-post-notif-admin.php:2735
+#: admin/class-post-notif-admin.php:1922 admin/class-post-notif-admin.php:2745
 msgid "Categories"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2033 admin/class-post-notif-admin.php:2855
+#: admin/class-post-notif-admin.php:2043 admin/class-post-notif-admin.php:2865
 #: admin/views/post-notif-admin-display-options.php:358
 #: public/views/post-notif-public-display-sub-prefs.php:34
 msgid "All"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2053 admin/class-post-notif-admin.php:2876
+#: admin/class-post-notif-admin.php:2063 admin/class-post-notif-admin.php:2886
 msgid "subscribers"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2191 admin/class-post-notif-admin.php:2366
+#: admin/class-post-notif-admin.php:2201 admin/class-post-notif-admin.php:2376
 msgid "Successfully created"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2214 admin/class-post-notif-admin.php:2388
+#: admin/class-post-notif-admin.php:2224 admin/class-post-notif-admin.php:2398
 msgid "System error - try again later"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2519
+#: admin/class-post-notif-admin.php:2529
 msgid "Export"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2524
+#: admin/class-post-notif-admin.php:2534
 msgid "Confirm"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2540
+#: admin/class-post-notif-admin.php:2550
 msgid "Resend Confirmation"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2733
+#: admin/class-post-notif-admin.php:2743
 msgid "Confirmed?"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2734
+#: admin/class-post-notif-admin.php:2744
 msgid "Date Subscribed"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2863
+#: admin/class-post-notif-admin.php:2873
 msgid "Yes"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:2863
+#: admin/class-post-notif-admin.php:2873
 msgid "No"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3533
+#: admin/class-post-notif-admin.php:3543
 msgid "Batch paused"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3534
+#: admin/class-post-notif-admin.php:3544
 msgid "Send completed"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3535
+#: admin/class-post-notif-admin.php:3545
 msgid "In process"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3536
+#: admin/class-post-notif-admin.php:3546
 msgid "Paused"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3537
+#: admin/class-post-notif-admin.php:3547
 msgid "Scheduled"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3538
+#: admin/class-post-notif-admin.php:3548
 msgid "Cancelled"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3613
+#: admin/class-post-notif-admin.php:3623
 msgid "Pause"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3624
+#: admin/class-post-notif-admin.php:3634
 msgid "Resume"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3636
+#: admin/class-post-notif-admin.php:3646
 msgid "Cancel"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3654
+#: admin/class-post-notif-admin.php:3664
 msgid "Post ID"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3655
+#: admin/class-post-notif-admin.php:3665
 msgid "Post Title"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3656
+#: admin/class-post-notif-admin.php:3666
 msgid "Author"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3657
+#: admin/class-post-notif-admin.php:3667
 msgid "Start Date/Time"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3658
+#: admin/class-post-notif-admin.php:3668
 msgid "Schedule Date/Time"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3659
+#: admin/class-post-notif-admin.php:3669
 msgid "End Date/Time"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3660
+#: admin/class-post-notif-admin.php:3670
 msgid "Sender"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3662
+#: admin/class-post-notif-admin.php:3672
 msgid "Number of Notifs Sent"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3722
+#: admin/class-post-notif-admin.php:3732
 msgid "*** Can''t find user ID "
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3725
+#: admin/class-post-notif-admin.php:3735
 msgid "System (scheduled)"
 msgstr ""
 
 #. translators: used in the Sender column, on the Manage Post Notifs Sent page,
 #. next to the user's name: i.e., "Devon (scheduled)"
-#: admin/class-post-notif-admin.php:3728
+#: admin/class-post-notif-admin.php:3738
 msgid "scheduled"
 msgstr ""
 
 #. translators: used in the Sender column, on the Manage Post Notifs Sent page,
 #. next to the user's name: i.e., "Devon (manual)"
-#: admin/class-post-notif-admin.php:3730
+#: admin/class-post-notif-admin.php:3740
 msgid "manual"
 msgstr ""
 
 #. translators: "Not Applicable"
-#: admin/class-post-notif-admin.php:3732 admin/class-post-notif-admin.php:3778
-#: admin/class-post-notif-admin.php:3784
+#: admin/class-post-notif-admin.php:3742 admin/class-post-notif-admin.php:3788
+#: admin/class-post-notif-admin.php:3794
 msgid "N/A"
 msgstr ""
 
 #. translators: used in the Number of Notifs Sent column, on the Manage Post
 #. Notifs Sent page, between number of notifs sent and number of total subs:
 #. i.e., "3 of 1500"
-#: admin/class-post-notif-admin.php:3734
+#: admin/class-post-notif-admin.php:3744
 msgid "of"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3794
+#: admin/class-post-notif-admin.php:3804
 msgid "notification"
 msgstr ""
 
-#: admin/class-post-notif-admin.php:3795
+#: admin/class-post-notif-admin.php:3805
 msgid "notifications"
 msgstr ""
 
@@ -567,30 +567,37 @@ msgid "Widget Messages"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:276
+#: admin/views/post-notif-admin-display-options.php:619
 msgid "Error (required first name is blank):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:285
+#: admin/views/post-notif-admin-display-options.php:628
 msgid "Error (blank email address):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:294
+#: admin/views/post-notif-admin-display-options.php:637
 msgid "Error (invalid email address):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:303
+#: admin/views/post-notif-admin-display-options.php:646
 msgid "Message (processing):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:312
+#: admin/views/post-notif-admin-display-options.php:655
 msgid "Message (already subscribed):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:321
+#: admin/views/post-notif-admin-display-options.php:664
 msgid "Message (successful subscription request):"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:330
+#: admin/views/post-notif-admin-display-options.php:673
 msgid "Message (failed subscription request):"
 msgstr ""
 
@@ -603,14 +610,154 @@ msgid "Categories available to subscribers:"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:389
-msgid "Admin Menu Settings"
+msgid "Subscriber Form Shortcode Settings"
 msgstr ""
 
 #: admin/views/post-notif-admin-display-options.php:393
+#: includes/views/admin.php:16
+msgid "Title:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:402
+#: includes/views/admin.php:20
+msgid "Call to Action:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:412
+#: includes/views/admin.php:24
+msgid "Button Label:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:422
+#: includes/views/admin.php:28
+msgid "First Name field size:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:432
+#: includes/views/admin.php:32
+msgid "First Name Placeholder:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:442
+#: includes/views/admin.php:37
+msgid "Require First Name?"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:453
+#: includes/views/admin.php:40
+msgid "Email Address field size:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:463
+#: includes/views/admin.php:44
+msgid "Email Address Placeholder:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:472
+#: includes/views/admin.php:49
+msgid "Override theme CSS?"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:484
+#: includes/views/admin.php:53
+msgid "Stylesheet filename:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:490
+#: includes/views/admin.php:57
+msgid ""
+"This file must be located in the ../post-notif/public/css directory. If this "
+"field is populated, all override fields below will be ignored."
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:496
+#: includes/views/admin.php:60
+msgid "Call to Action font family:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:504
+#: includes/views/admin.php:64
+msgid "Call to Action font size [include unit of measure]:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:512
+#: includes/views/admin.php:68
+msgid "Call to Action font color:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:520
+#: includes/views/admin.php:72
+msgid "Placeholder font family:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:528
+#: includes/views/admin.php:76
+msgid "Placeholder font size [include unit of measure]:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:536
+#: includes/views/admin.php:80
+msgid "Placeholder font color:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:544
+#: includes/views/admin.php:84
+msgid "Input fields font family:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:552
+#: includes/views/admin.php:88
+msgid "Input fields font size [include unit of measure]:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:560
+#: includes/views/admin.php:92
+msgid "Input fields font color:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:568
+#: includes/views/admin.php:96
+msgid "Error message font family:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:576
+#: includes/views/admin.php:100
+msgid "Error message font size [include unit of measure]:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:584
+#: includes/views/admin.php:104
+msgid "Error message font color:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:592
+#: includes/views/admin.php:108
+msgid "Success message font family:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:600
+#: includes/views/admin.php:112
+msgid "Success message font size [include unit of measure]:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:608
+#: includes/views/admin.php:116
+msgid "Success message font color:"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:615
+msgid "Subscriber Form Shortcode Messages"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:681
+msgid "Admin Menu Settings"
+msgstr ""
+
+#: admin/views/post-notif-admin-display-options.php:685
 msgid "Position in menu:"
 msgstr ""
 
-#: admin/views/post-notif-admin-display-options.php:399
+#: admin/views/post-notif-admin-display-options.php:691
 msgid ""
 "If you cannot see the Post Notif admin menu, change this to another number "
 "of the form \"3.xyz\"."
@@ -815,102 +962,6 @@ msgstr ""
 
 #: includes/class-post-notif-wp-list-table.php:857
 msgid "Select All"
-msgstr ""
-
-#: includes/views/admin.php:16
-msgid "Title:"
-msgstr ""
-
-#: includes/views/admin.php:20
-msgid "Call to Action:"
-msgstr ""
-
-#: includes/views/admin.php:24
-msgid "Button Label:"
-msgstr ""
-
-#: includes/views/admin.php:28
-msgid "First Name field size:"
-msgstr ""
-
-#: includes/views/admin.php:32
-msgid "First Name Placeholder:"
-msgstr ""
-
-#: includes/views/admin.php:37
-msgid "Require First Name?"
-msgstr ""
-
-#: includes/views/admin.php:40
-msgid "Email Address field size:"
-msgstr ""
-
-#: includes/views/admin.php:44
-msgid "Email Address Placeholder:"
-msgstr ""
-
-#: includes/views/admin.php:49
-msgid "Override theme CSS?"
-msgstr ""
-
-#: includes/views/admin.php:53
-msgid "Call to Action font family:"
-msgstr ""
-
-#: includes/views/admin.php:57
-msgid "Call to Action font size [include unit of measure]:"
-msgstr ""
-
-#: includes/views/admin.php:61
-msgid "Call to Action font color:"
-msgstr ""
-
-#: includes/views/admin.php:65
-msgid "Placeholder font family:"
-msgstr ""
-
-#: includes/views/admin.php:69
-msgid "Placeholder font size [include unit of measure]:"
-msgstr ""
-
-#: includes/views/admin.php:73
-msgid "Placeholder font color:"
-msgstr ""
-
-#: includes/views/admin.php:77
-msgid "Input fields font family:"
-msgstr ""
-
-#: includes/views/admin.php:81
-msgid "Input fields font size [include unit of measure]:"
-msgstr ""
-
-#: includes/views/admin.php:85
-msgid "Input fields font color:"
-msgstr ""
-
-#: includes/views/admin.php:89
-msgid "Error message font family:"
-msgstr ""
-
-#: includes/views/admin.php:93
-msgid "Error message font size [include unit of measure]:"
-msgstr ""
-
-#: includes/views/admin.php:97
-msgid "Error message font color:"
-msgstr ""
-
-#: includes/views/admin.php:101
-msgid "Success message font family:"
-msgstr ""
-
-#: includes/views/admin.php:105
-msgid "Success message font size [include unit of measure]:"
-msgstr ""
-
-#: includes/views/admin.php:109
-msgid "Success message font color:"
 msgstr ""
 
 #: public/views/post-notif-public-display-sub-prefs.php:86

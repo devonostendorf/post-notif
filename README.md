@@ -5,7 +5,7 @@
 **Requires at least:** 4.1.1   
 **Tested up to:** 4.9   
 **Requires PHP:** 5.6   
-**Stable tag:** 1.3.0-2 BETA   
+**Stable tag:** 1.3.0   
 **License:** GPLv2 or later   
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html   
   
@@ -715,23 +715,34 @@ The naming conventions, used by the subscriber form markup (located in ../post-n
 	
 ## Screenshots ##
 
-**NOTE:** #1 - 7 depict admin functionality while #8 - 13 show subscriber screenshots: 
+**NOTE:** #1 - 12 depict admin functionality while #13 - 18 show subscriber screenshots: 
 
 1. Activating the plugin
 2. Overriding the default settings with your own custom values
 3. Adding the widget to a sidebar and overriding the defaults with your own custom values
-4. Sending a post notification
-5. Viewing post notifications sent
-6. Viewing current subscribers
-7. Manage subscribers
-8. User subscribing to post notification via the widget
-9.	User receives subscription confirmation email
-10. User has confirmed subscription request
-11. User has chosen to update their subscription preferences
-12. User receives post notification email
-13. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
+4. Using the shortcode to render the subscriber form at the bottom of a post
+5. Importing subscribers
+6. Viewing results of subscriber import
+7. Viewing results of subscriber create
+8. Viewing current subscribers
+9. Sending a post notification
+10. Viewing post notifications sent and managing those scheduled, pending, or in process
+11. Manage subscribers (preparing to delete unconfirmed subscribers)
+12. Manage subscribers (preparing to export subscribers for use with another plugin)
+13. User subscribing to post notification
+14.	User receives subscription confirmation email
+15. User has confirmed subscription request
+16. User has chosen to update their subscription preferences
+17. User receives post notification email
+18. User has decided to unsubscribe (via either link in post notification email or unsubscribe link at the bottom of subscription preferences page)
 
 ## Changelog ##
+
+### 1.3.0 ###
+Release Date: January 6, 2018
+
+* NEW: Added shortcode to generate subscriber form
+* NEW: Added @@postcategory variable for post notif email template
 
 ### 1.2.0 ###
 Release Date: November 30, 2017
@@ -859,6 +870,9 @@ Release Date: April 13, 2015
 * Initial release
 
 ## Upgrade Notice ##
+
+### 1.3.0 ###
+Added shortcode to generate subscriber form.  Added @@postcategory variable for post notif email template.
 
 ### 1.2.0 ###
 Added new page to check status of, pause, or cancel, post notif send processes.  Added send process batch mode options.  Bolstered post notif send process (to avoid PHP timeouts).  Removed progress bar from metabox.  Fixed code to unschedule all Post Notif WP Cron events on plugin deactivation.
