@@ -798,15 +798,55 @@ class Post_Notif_Admin {
 		
 		$post_notif_options_arr = get_option( 'post_notif_settings' );
 
-		// Replace variables in both the post notif email subject and body 
-   		
-		// Get post title and author's name
-		$post_attribs = get_post( $post_id ); 
-		$post_title = $post_attribs->post_title;
-   				
+		// Set sender name and email address
+		$headers[] = 'From: ' . $this->resolve_vars( $post_id, $post_notif_options_arr['eml_sender_name'] )
+			. ' <' . $this->resolve_vars( $post_id, $post_notif_options_arr['eml_sender_eml_addr'] ) . '>';
+
+		// Specify HTML-formatted email
+		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+
+		$post_notif_email_subject = $this->resolve_vars( $post_id, $post_notif_options_arr['post_notif_eml_subj'] );
+		// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
+		$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
+		$post_notif_email_body_template = $this->resolve_vars ( $post_id, $post_notif_options_arr['post_notif_eml_body'] );
+
+		return array ( $headers, $post_notif_email_subject, $post_notif_email_body_template );
+	}
+
+	/**
+	 * Do the resolving of variables.
+	 *
+	 * @since	1.3.0
+	 * @param	int		$post_id	Post to resolve variables for.
+	 * @param	string	$content	Subject to resolve variables in..
+	 * @return	string	Content with resolved variables
+	 */
+	private function resolve_vars ( $post_id, $content ) {
+		$keys = array(
+			'@@blogname',
+			'@@posttitle',
+			'@@postauthor',
+			'@@postcategory',
+			'@@postcontent',
+			'@@permalinkurl',
+			'@@permalink',
+			'@@postexcerptauto',
+			'@@postexcerptmanual',
+			'@@postteaser',
+			'@@featuredimage',
+			'@@signature',
+			'@@medialinks',
+
+			// NOTE: @@postexcerpt is deprecated, use @@postexcerptmanual instead!
+			'@@postexcerpt'
+		);
+
+		// Get pointers to most info
+		$post_notif_options_arr = get_option( 'post_notif_settings' );
+		$post_attribs = get_post( $post_id );
+		$post_meta = get_post_meta( $post_id, '', false );
 		$post_author_data = get_userdata( $post_attribs->post_author );
-		$post_author = $post_author_data->display_name;
-   		
+
 		// Get post categories
 		$category_arr = get_the_category( $post_id );
 		$category_list = '';
@@ -815,44 +855,81 @@ class Post_Notif_Admin {
 		}
 		$category_list = rtrim( $category_list, ', ');
 
-		// NOTE: This is in place to minimize chance that, due to email client settings, subscribers
-		//		will be unable to see and/or click the URL links within their email
-		$post_permalink = get_permalink( $post_id );
-		
-		$post_notif_email_subject = $post_notif_options_arr['post_notif_eml_subj'];
-		$post_notif_email_subject = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_subject );
-		$post_notif_email_subject = str_replace( '@@posttitle', $post_title, $post_notif_email_subject );
-		$post_notif_email_subject = str_replace( '@@postauthor', $post_author, $post_notif_email_subject );
-		$post_notif_email_subject = str_replace( '@@postcategory', $category_list, $post_notif_email_subject );
+		// Add custom metadata
+		foreach (array_keys($post_meta) as $key) {
+			$keys[] = '@@custom_' . $key;
+		}
 
-		// Tell PHP mail() to convert both double and single quotes from their respective HTML entities to their applicable characters
-		$post_notif_email_subject = html_entity_decode (  $post_notif_email_subject, ENT_QUOTES, 'UTF-8' );
-   			
-		$post_notif_email_body_template = $post_notif_options_arr['post_notif_eml_body'];
-		$post_notif_email_body_template = str_replace( '@@blogname', get_bloginfo('name'), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@posttitle', $post_title, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postauthor', $post_author, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postcategory', $category_list, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@permalinkurl', $post_permalink, $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@permalink', '<a href="' . $post_permalink . '">' . $post_permalink . '</a>', $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postexcerptauto', Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postexcerptmanual', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
+		foreach ($keys as $key) {
+			if ( strpos( $content, $key ) === FALSE ) {
+				continue;
+			}
 
-		// NOTE: @@postexcerpt is deprecated, use @@postexcerptmanual instead!
-   		$post_notif_email_body_template = str_replace( '@@postexcerpt', Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@postteaser', Post_Notif_Misc::generate_excerpt( $post_id, 'teaser' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@featuredimage', ( ( has_post_thumbnail( $post_id ) ) ? get_the_post_thumbnail( $post_id, 'thumbnail' ) : '' ), $post_notif_email_body_template );
-		$post_notif_email_body_template = str_replace( '@@signature', $post_notif_options_arr['@@signature'], $post_notif_email_body_template );
+			switch ($key) {
+				case '@@blogname':
+					$content = str_replace( $key, get_bloginfo('name'), $content );
+					break;
 
-		// Set sender name and email address
-		$headers[] = 'From: ' . $post_notif_options_arr['eml_sender_name'] 
-			. ' <' . $post_notif_options_arr['eml_sender_eml_addr'] . '>';
-  		
-		// Specify HTML-formatted email
-		$headers[] = 'Content-Type: text/html; charset=UTF-8';
+				case '@@posttitle':
+					$content = str_replace( $key, $post_attribs->post_title, $content );
+					break;
 
-		return array ( $headers, $post_notif_email_subject, $post_notif_email_body_template );
-		
+				case '@@postauthor':
+					$content = str_replace( $key, $post_author_data->display_name, $content );
+					break;
+
+				case '@@postcategory':
+					$content = str_replace( $key, $category_list, $content );
+					break;
+
+				case '@@postcontent':
+					$content = str_replace( $key, nl2br($post_attribs->post_content), $content );
+					break;
+
+				case '@@permalinkurl':
+					$content = str_replace( $key, get_permalink( $post_id ), $content );
+					break;
+
+				case '@@permalink':
+					$content = str_replace( $key, '<a href="' . get_permalink( $post_id ) . '">' . get_permalink( $post_id ) . '</a>', $content );
+					break;
+
+				case '@@postexcerptauto':
+					$content = str_replace( $key, Post_Notif_Misc::generate_excerpt( $post_id, 'auto' ), $content );
+					break;
+
+				case '@@postexcerptmanual':
+				case '@@postexcerpt':
+					$content = str_replace( $key, Post_Notif_Misc::generate_excerpt( $post_id, 'manual' ), $content );
+					break;
+
+				case '@@postteaser':
+					$content = str_replace( $key, Post_Notif_Misc::generate_excerpt( $post_id, 'teaser' ), $content );
+					break;
+
+				case '@@featuredimage':
+					$content = str_replace( $key, ( ( has_post_thumbnail( $post_id ) ) ? get_the_post_thumbnail( $post_id, 'thumbnail' ) : '' ), $content );
+					break;
+
+				case '@@signature':
+					$content = str_replace( $key, $post_notif_options_arr['@@signature'], $content );
+					break;
+
+				case '@@medialinks':
+					$medialinks = '';
+					foreach(get_attached_media( '', $post_id ) as $media) {
+						$medialinks .= '<a href="' . wp_get_attachment_url($media->ID) . '">' . basename(wp_get_attachment_url($media->ID)) . '</a><br />';
+					}
+					$content = str_replace( $key, $medialinks, $content );
+					break;
+
+				default:
+					$content = str_replace( $key, $post_meta[str_replace( '@@custom_', '', $key)][0], $content );
+					break;
+			}
+		}
+
+		return $content;
 	}
 	
 	/**
